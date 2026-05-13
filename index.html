@@ -8,79 +8,71 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;font-size:13px;background:#f0f2f5;color:#222}
-header{background:#1a3a5c;color:#fff;padding:12px 20px;display:flex;align-items:center;gap:16px}
-header h1{font-size:16px;font-weight:700;letter-spacing:.3px}
-header span{font-size:12px;opacity:.8}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #1a3a5c;padding:0 16px}
-.tab{padding:10px 18px;cursor:pointer;font-size:13px;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
-.tab.active{border-bottom-color:#1a3a5c;font-weight:700;color:#1a3a5c}
+header{background:#1a3a5c;color:#fff;padding:12px 20px}
+header h1{font-size:15px;font-weight:700}
+header p{font-size:11px;opacity:.75;margin-top:2px}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #1a3a5c;padding:0 16px;overflow-x:auto}
+.tab{padding:10px 16px;cursor:pointer;font-size:12px;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tab.active{border-bottom-color:#e67e00;font-weight:700;color:#1a3a5c}
 .tab:hover{background:#f5f7fa}
-.panel{display:none;padding:16px}
+.panel{display:none;padding:14px}
 .panel.active{display:block}
-.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.btn{padding:7px 14px;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600}
+.toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.btn{padding:6px 13px;border:none;border-radius:4px;cursor:pointer;font-size:12px;font-weight:600}
 .btn-primary{background:#1a3a5c;color:#fff}
 .btn-success{background:#1a7a4a;color:#fff}
 .btn-warning{background:#b36a00;color:#fff}
-.btn-danger{background:#a02020;color:#fff}
 .btn-info{background:#1565a0;color:#fff}
-.btn:hover{opacity:.88}
-select,input[type=text],input[type=number]{padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:12px}
-.tbl-wrap{overflow-x:auto;max-height:70vh;overflow-y:auto;border:1px solid #ddd;border-radius:4px;background:#fff}
-table{border-collapse:collapse;min-width:100%;font-size:12px}
-th{background:#1a3a5c;color:#fff;padding:7px 10px;white-space:nowrap;position:sticky;top:0;z-index:2}
-th.sub{background:#2c5282;font-weight:400;font-size:11px}
-td{padding:5px 9px;border-bottom:1px solid #eee;white-space:nowrap}
+.btn:hover{opacity:.85}
+select,input[type=text],input[type=number]{padding:5px 9px;border:1px solid #ccc;border-radius:4px;font-size:12px}
+.tbl-wrap{overflow-x:auto;max-height:68vh;overflow-y:auto;border:1px solid #ddd;border-radius:4px;background:#fff}
+table{border-collapse:collapse;min-width:100%;font-size:11.5px}
+th{background:#1a3a5c;color:#fff;padding:6px 9px;white-space:nowrap;position:sticky;top:0;z-index:2}
+th.sub{background:#2c5282;font-weight:400;font-size:10px}
+td{padding:4px 8px;border-bottom:1px solid #eee;white-space:nowrap}
 tr:hover td{background:#f0f5ff}
-tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:12px}
-.badge{display:inline-block;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:700}
+tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;padding:5px 8px}
+.badge{display:inline-block;padding:2px 6px;border-radius:10px;font-size:10px;font-weight:700}
 .badge-red{background:#fde;color:#a00}
 .badge-amber{background:#fff3cd;color:#856404}
 .badge-green{background:#d4edda;color:#155724}
+.badge-blue{background:#cce5ff;color:#004085}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.stat-card{background:#fff;border-radius:6px;padding:12px;border:1px solid #ddd;text-align:center}
+.stat-num{font-size:22px;font-weight:700;color:#1a3a5c}
+.stat-lbl{font-size:11px;color:#666;margin-top:3px}
+.low-stock{background:#fff8f8}
 .po-card{background:#fff;border:1px solid #ddd;border-radius:6px;padding:14px;margin-bottom:12px}
-.po-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.po-title{font-size:14px;font-weight:700;color:#1a3a5c}
-.po-table th{background:#2c5282}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:16px}
-.stat-card{background:#fff;border-radius:6px;padding:14px;border:1px solid #ddd;text-align:center}
-.stat-num{font-size:24px;font-weight:700;color:#1a3a5c}
-.stat-lbl{font-size:11px;color:#666;margin-top:4px}
-.low-stock{background:#fff3f3}
-.print-header{display:none}
+.po-title{font-size:13px;font-weight:700;color:#1a3a5c}
+.gen-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;max-width:580px}
+.gen-box h3{color:#1a3a5c;margin-bottom:10px;font-size:14px}
+.gen-row{margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.gen-row label{width:230px;font-size:12px;color:#333}
+.info-box{background:#e8f4fd;border:1px solid #b8d4ea;border-radius:4px;padding:10px 14px;font-size:11.5px;margin-bottom:12px;line-height:1.7}
 @media print{
-  .tabs,.toolbar,.btn,header .span{display:none!important}
-  .print-header{display:block;text-align:center;margin-bottom:12px}
+  .tabs,.toolbar,header p{display:none!important}
   .tbl-wrap{max-height:none;border:none}
   body{background:#fff}
+  header{padding:8px 16px}
 }
-.month-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
-.mf-btn{padding:4px 10px;border:1px solid #ccc;border-radius:12px;cursor:pointer;font-size:11px;background:#fff}
-.mf-btn.active{background:#1a3a5c;color:#fff;border-color:#1a3a5c}
-#po-supplier{width:200px}
-.gen-box{background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;max-width:600px;margin:0 auto}
-.gen-box h3{color:#1a3a5c;margin-bottom:12px}
-.gen-row{margin-bottom:10px;display:flex;align-items:center;gap:10px}
-.gen-row label{width:220px;font-size:12px}
-progress{width:100%;height:10px;margin-top:8px}
 </style>
 </head>
 <body>
 <header>
-<div>
-<h1>🏥 JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL — PHARMACY</h1>
-<span>Drug Stock Register & Purchase Order Management System | FY 2025</span>
-</div>
+<h1>🏥 JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL — PHARMACY DRUG STOCK REGISTER</h1>
+<p>Drug Stock Register & Purchase Order Management System | FY 2025 | Varur, Hubli</p>
 </header>
 
 <div class="tabs">
-<div class="tab active" onclick="showTab('register')">📋 Stock Register</div>
-<div class="tab" onclick="showTab('generator')">⚙️ Data Generator</div>
-<div class="tab" onclick="showTab('po')">🛒 Purchase Orders</div>
-<div class="tab" onclick="showTab('analytics')">📊 Analytics</div>
+<div class="tab active" onclick="showTab('register',this)">📋 Stock Register</div>
+<div class="tab" onclick="showTab('generator',this)">⚙️ Settings / Regenerate</div>
+<div class="tab" onclick="showTab('po',this)">🛒 Purchase Orders</div>
+<div class="tab" onclick="showTab('analytics',this)">📊 Analytics</div>
+<div class="tab" onclick="showTab('legend',this)">ℹ️ Dispensing Logic</div>
 </div>
 
+<!-- REGISTER TAB -->
 <div id="tab-register" class="panel active">
-<div class="print-header"><h2>JAIN AGM Ayurvedic Medical College & Hospital</h2><p>Pharmacy Drug Stock Register 2025</p></div>
 <div class="stats-grid" id="reg-stats"></div>
 <div class="toolbar">
 <select id="reg-month" onchange="renderRegister()">
@@ -89,40 +81,67 @@ progress{width:100%;height:10px;margin-top:8px}
 <select id="reg-cat" onchange="renderRegister()">
 <option value="all">All Categories</option>
 </select>
-<input type="text" id="reg-search" placeholder="Search medicine..." oninput="renderRegister()" style="width:180px">
-<label><input type="checkbox" id="show-lowstock" onchange="renderRegister()"> Low Stock Only</label>
+<input type="text" id="reg-search" placeholder="Search medicine..." oninput="renderRegister()" style="width:170px">
+<label style="font-size:12px"><input type="checkbox" id="show-lowstock" onchange="renderRegister()"> Low Stock Only</label>
 <button class="btn btn-success" onclick="exportExcel()">⬇ Export Excel</button>
-<button class="btn btn-warning" onclick="window.print()">🖨 Print PDF</button>
+<button class="btn btn-warning" onclick="window.print()">🖨 Print</button>
 </div>
 <div class="tbl-wrap" id="reg-table"></div>
 </div>
 
+<!-- GENERATOR TAB -->
 <div id="tab-generator" class="panel">
 <div class="gen-box">
-<h3>⚙️ Generate Complete 2025 Dataset</h3>
-<p style="font-size:12px;color:#555;margin-bottom:16px">Jan–Jun data is loaded from the PDF. This will generate Jul–Dec dispensing data using realistic seasonal variation patterns, and compute opening stocks for all months.</p>
+<h3>⚙️ Data Generation Settings</h3>
+<div class="info-box">
+<b>Dispensing assumptions used:</b><br>
+• Daily OPD: 130–150 patients (avg 140) | Working days: 25/month<br>
+• Churnas / Kwatha Churnas: 50g packing | 25–30% patients prescribed<br>
+• Ghritas / Lehas: 150g jar | 25–30% patients prescribed<br>
+• Vati / Rasas: 20 pills/patient (10-day course) | 50% patients prescribed<br>
+• Tailas (100ml): 100ml bottle | 25–30% patients prescribed<br>
+• Tailas (10ml — Anu, Bilwa, Kumkumadi): 10ml bottle | 25–30% patients<br>
+• Guggulu: 20 tablets/patient | 50% patients prescribed<br>
+• Asava-Arishta: 200ml bottle | 25–30% patients prescribed<br>
+• Kashayas: 200ml bottle | 25–30% patients prescribed<br>
+• Syrups: 200ml bottle | 25–30% patients<br>
+• Liniments / External: 100ml/100g unit | 25–30% patients<br>
+• Opening stock = 90-day buffer based on monthly average
+</div>
 <div class="gen-row">
-<label>Seasonal variation factor (%)</label>
-<input type="number" id="var-pct" value="15" min="5" max="40" style="width:80px"> %
+<label>Min daily patients</label>
+<input type="number" id="pt-min" value="130" min="50" max="300" style="width:70px">
+</div>
+<div class="gen-row">
+<label>Max daily patients</label>
+<input type="number" id="pt-max" value="150" min="50" max="300" style="width:70px">
+</div>
+<div class="gen-row">
+<label>Working days/month</label>
+<input type="number" id="work-days" value="25" min="20" max="30" style="width:70px">
+</div>
+<div class="gen-row">
+<label>Seasonal variation (%)</label>
+<input type="number" id="var-pct" value="12" min="5" max="30" style="width:70px">
 </div>
 <div class="gen-row">
 <label>Opening stock buffer (days)</label>
-<input type="number" id="buf-days" value="90" min="30" max="180" style="width:80px"> days
+<input type="number" id="buf-days" value="90" min="30" max="180" style="width:70px">
 </div>
 <div class="gen-row">
-<label>Minimum stock threshold</label>
-<input type="number" id="min-days" value="60" min="15" max="90" style="width:80px"> days
+<label>Min stock threshold (days)</label>
+<input type="number" id="min-days" value="60" min="15" max="120" style="width:70px">
 </div>
 <div class="gen-row">
-<label>Seed (for reproducibility)</label>
-<input type="number" id="seed-val" value="42" style="width:80px">
+<label>Random seed</label>
+<input type="number" id="seed-val" value="42" style="width:70px">
 </div>
-<button class="btn btn-primary" style="margin-top:8px" onclick="generateData()">🔄 Generate Full Year Data</button>
-<progress id="gen-progress" value="0" max="100" style="display:none"></progress>
-<div id="gen-status" style="font-size:12px;color:#1a7a4a;margin-top:8px"></div>
+<button class="btn btn-primary" onclick="generateData()">🔄 Regenerate All Data</button>
+<div id="gen-status" style="font-size:12px;color:#1a7a4a;margin-top:10px"></div>
 </div>
 </div>
 
+<!-- PO TAB -->
 <div id="tab-po" class="panel">
 <div class="toolbar">
 <select id="po-supplier" onchange="renderPO()">
@@ -136,44 +155,53 @@ progress{width:100%;height:10px;margin-top:8px}
 <option value="NAG">Nagarjuna</option>
 <option value="OTHER">Others</option>
 </select>
-<select id="po-month" onchange="renderPO()">
-<option value="current">Current Month (Based on latest data)</option>
-<option value="1">January</option><option value="2">February</option>
-<option value="3">March</option><option value="4">April</option>
-<option value="5">May</option><option value="6">June</option>
-<option value="7">July</option><option value="8">August</option>
-<option value="9">September</option><option value="10">October</option>
-<option value="11">November</option><option value="12">December</option>
-</select>
-<button class="btn btn-primary" onclick="renderPO()">🔄 Refresh PO</button>
+<button class="btn btn-primary" onclick="renderPO()">🔄 Refresh</button>
 <button class="btn btn-success" onclick="exportPOExcel()">⬇ Export PO Excel</button>
 <button class="btn btn-warning" onclick="window.print()">🖨 Print PO</button>
 </div>
 <div id="po-content"></div>
 </div>
 
+<!-- ANALYTICS TAB -->
 <div id="tab-analytics" class="panel">
 <div class="toolbar">
-<select id="an-med" onchange="renderAnalytics()" style="width:280px">
-<option value="">Select medicine...</option>
+<select id="an-med" onchange="renderAnalytics()" style="width:300px">
+<option value="">-- Select medicine --</option>
 </select>
 </div>
 <div id="analytics-content"></div>
 </div>
 
-<script>
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-const MONTH_DAYS = [31,28,31,30,31,30,31,31,30,31,30,31];
+<!-- LEGEND TAB -->
+<div id="tab-legend" class="panel">
+<div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:20px;max-width:680px">
+<h3 style="color:#1a3a5c;margin-bottom:14px;font-size:14px">Dispensing Logic & Unit Reference</h3>
+<table style="width:100%">
+<thead><tr><th>Category</th><th>Pack Size</th><th>% Patients Prescribed</th><th>Basis</th></tr></thead>
+<tbody id="legend-table"></tbody>
+</table>
+<div style="margin-top:16px;font-size:12px;color:#555;line-height:1.8">
+<b>Formula used:</b><br>
+Daily dispensing (packs) = Working days × Avg daily patients × Prevalence % × 1 pack/patient<br>
+Monthly variation = Base × Seasonal factor × Random variation (±12%)<br>
+Opening stock = Monthly avg dispensing × (Buffer days ÷ 30)<br>
+PO quantity = Monthly avg dispensing × 2 months<br><br>
+<b>Low stock trigger:</b> Closing stock &lt; (Daily rate × Min threshold days)
+</div>
+</div>
+</div>
 
-const SUPPLIER_MAP = {
+<script>
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const SEASONAL=[1.05,0.97,1.00,0.92,1.08,1.12,1.10,1.05,1.00,1.03,1.08,1.15];
+
+const SUPPLIER_MAP={
   'CHURNAS':'SDM','KWATHA CHOORNAS':'SDM','GHRITAS':'AVN','LEHAS':'AVN',
   'VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC',
   'LINIMENTS':'ARC','GUGGULU':'IMI','ASAVA-ARISHTA':'VED',
-  'KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM',
-  'OINTMENTS':'ARC','MISCELLANEOUS':'OTHER'
+  'KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM','MISCELLANEOUS':'OTHER'
 };
-
-const SUPPLIER_NAMES = {
+const SUPPLIER_NAMES={
   'SDM':'SDM Pharmaceuticals, Udupi',
   'AVN':'AVN Arogya Pvt Ltd, Coimbatore',
   'SNA':'Shankar Narayan Ayurvedic, Pune',
@@ -184,518 +212,545 @@ const SUPPLIER_NAMES = {
   'OTHER':'Other Suppliers'
 };
 
-const RAW = [
-  {cat:'CHURNAS',name:'Ashwagandha Churna',d:[170,121,121,3894,229,751,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Avipattikara Churna',d:[865,744,724,8590,787,583,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Amalaki Churna',d:[0,0,0,430,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Abhaya Choorna',d:[0,0,0,300,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Balachaturabhadra Churna',d:[58,47,0,27,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Haridra Choorna',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Hingwashtaka Choorna',d:[52,59,53,38,62,65,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Manjistadi Churna',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Nishaamalaki Choorna',d:[26,29,21,6,9,18,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Panchakola Choorna',d:[603,502,502,395,504,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Sitopaladi Choorna',d:[271,190,205,141,212,240,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Talisadi Choorna',d:[91,2,64,0,61,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Trikatu Choorna',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Triphala Choorna',d:[494,395,361,258,396,272,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Vaishwanara Choorna',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Vidanga Churna',d:[22,20,21,16,25,28,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Yastimadhu Choorna',d:[0,0,0,0,120,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Pushyanuga Churna',d:[92,64,21,41,473,0,0,0,0,0,0,0]},
-  {cat:'CHURNAS',name:'Shatavari Choorna',d:[50,34,41,21,33,9,0,0,0,0,0,0]},
-  {cat:'KWATHA CHOORNAS',name:'Asanadi Kw. Churna',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'KWATHA CHOORNAS',name:'Dashamoola Kw. Churna',d:[0,0,0,0,0,59,0,0,0,0,0,0]},
-  {cat:'KWATHA CHOORNAS',name:'Panchavalkala Kwatha Churna',d:[0,0,0,0,0,56,0,0,0,0,0,0]},
-  {cat:'KWATHA CHOORNAS',name:'Mustadi Kw. Churna',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Brahmi Ghrita',d:[0,1,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Guggulu Tiktaka Ghrita',d:[0,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Phalasarpi Ghrita',d:[0,0,40,24,1445,4211,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Shatavari Ghrita',d:[0,0,0,0,400,3200,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Sukumara Ghrita',d:[39,29,23,80,25,1428,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Triphala Ghrita',d:[10,7,6,6,403,5801,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Dadimadi Ghrita',d:[0,0,0,0,0,2400,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Shatadhouta Ghrita',d:[0,0,0,0,0,1100,0,0,0,0,0,0]},
-  {cat:'GHRITAS',name:'Ashwagandha Ghrita',d:[0,0,0,0,0,5400,0,0,0,0,0,0]},
-  {cat:'LEHAS',name:'Kushmanda Rasayana',d:[0,61,42,0,55,0,0,0,0,0,0,0]},
-  {cat:'LEHAS',name:'Haridra Khanda',d:[32,28,0,18,0,21,0,0,0,0,0,0]},
-  {cat:'LEHAS',name:'Vasa Avaleha',d:[65,0,0,0,0,72,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Arogyavardhini Vati',d:[12940,13620,11060,7940,14500,20520,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Bilwadi Vati',d:[7960,7683,6860,5220,7340,7900,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Bolabhadda Rasa',d:[990,660,720,360,730,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Chandrakala Rasa',d:[1820,1400,1420,1040,1440,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Chitrakadi Vati',d:[1720,1680,1840,960,1920,1780,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Chandraprabha Vati',d:[4920,3820,4080,2960,4500,10440,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Gandhaka Rasayana',d:[26572,23175,30963,13643,24446,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Kamaduga Rasa',d:[383,2038,1431,1383,2179,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Krimikutara Rasa',d:[700,620,630,0,80,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Nishakatakadi Kashaya Tab',d:[65,0,50,46,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Pathyadi Ghanavati',d:[20,0,40,0,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Punarnava Mandura',d:[1840,1380,1640,1080,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Rajapravartini Vati',d:[16,20,19,11,151,487,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Saptamrita Loha',d:[3040,0,2660,1780,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Sudarshana Ghanavati',d:[60,40,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Swasakutara Rasa',d:[1455,1095,1155,690,110,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Trishul Rasa',d:[0,40,14,0,5360,22,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Varunadi Kashaya Tab',d:[98,87,70,48,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Amavatari Rasa',d:[60,63,48,41,74,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Kuberaksha Vati',d:[34,0,0,16,36,10,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Gandhravahastyadi Ks. Tab',d:[141,13,11,76,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Nirocil Tab',d:[1880,1560,0,680,0,0,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Brihat Vatachintamani Rasa',d:[0,0,0,0,0,1560,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Vatavidhwamsaka Rasa',d:[0,0,0,0,0,290,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Ekanga Vira Rasa',d:[0,0,0,0,0,1725,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Sarpagandha Vati',d:[0,0,0,0,0,150,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Brahmi Vati',d:[0,0,0,0,0,1000,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Chandrodaya Vati',d:[0,0,0,0,0,440,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Kankyana Vati',d:[0,0,0,0,0,40,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Medha Vati',d:[0,0,0,0,0,1660,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Medohara Vati',d:[0,0,0,0,0,17,0,0,0,0,0,0]},
-  {cat:'VATI/RASAS',name:'Dhanvantari Vati',d:[0,0,0,0,0,171,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Anu Taila',d:[2,2,2,3,0,0,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Ghandarva Hastadi Taila',d:[16,19,13,13,14,11,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Jatyadi Taila',d:[85,73,75,46,93,38,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Karanja Taila',d:[31,37,28,12,18,31,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Kshirabala Taila',d:[100,70,79,66,291,673,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Mahamashadi Taila',d:[0,0,20,0,0,3,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Pinda Taila',d:[38,33,24,22,35,27,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Sahacharadi Taila',d:[25,33,30,20,34,41,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Bala Taila',d:[0,0,0,22,97,90,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Bhringa Amlaka Taila',d:[0,0,0,0,5,0,0,0,0,0,0,0]},
-  {cat:'TAILAS',name:'Kumkumadi Taila',d:[0,0,0,0,2,3,0,0,0,0,0,0]},
-  {cat:'EYE MEDICINES',name:'Kacha Yapanam Kuzhampu',d:[5,6,4,3,9,5,0,0,0,0,0,0]},
-  {cat:'LINIMENTS',name:'Sandhilin Liniment',d:[58,55,35,30,57,61,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Kaishora Guggulu',d:[1260,1200,1080,660,1780,7760,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Kanchanara Guggulu',d:[0,0,0,0,1080,7840,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Navaka Guggulu',d:[2500,1980,1403,1120,1900,2100,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Nimbadi Guggulu',d:[0,0,0,0,0,20,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Simhanada Guggulu',d:[1160,1140,940,760,1240,1240,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Trayodashanga Guggulu',d:[8840,5120,3840,4740,8880,4210,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Triphala Guggulu',d:[20940,18120,16600,12980,19130,23640,0,0,0,0,0,0]},
-  {cat:'GUGGULU',name:'Yogaraja Guggulu',d:[12380,14220,12740,7260,12860,18620,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Amrita Arishta',d:[97,88,72,16,858,5048,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Aragwada Arishta',d:[0,0,0,0,0,1606,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Ashoka Arishta',d:[0,0,0,0,2800,13400,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Ashwagandha Arishta',d:[0,20,0,0,0,5800,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Chandana Asava',d:[43,35,44,23,45,5640,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Dashamula Arishta',d:[165,150,143,84,0,3583,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Kanaka Asava',d:[56,40,48,35,37,52,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Khadira Arishta',d:[0,0,0,0,0,3400,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Kumari Asava',d:[38,16,25,10,2215,6205,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Lodra Asava',d:[0,0,0,0,1302,98,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Mustaka Arishta',d:[96,69,0,41,66,73,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Punarnava Asava',d:[0,2,0,0,3,2,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Saraswata Arishta',d:[86,81,99,69,0,179,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Bala Arishta',d:[0,152,121,0,377,163,0,0,0,0,0,0]},
-  {cat:'ASAVA-ARISHTA',name:'Loha Asava',d:[0,18,79,0,0,0,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Manjistadi Kashaya',d:[81,76,69,52,88,91,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Rasnadi Kashaya',d:[672,133,0,106,153,610,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Varunadi Kashaya',d:[98,84,70,48,686,11692,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Panchavalkala Kashaya',d:[0,77,74,0,0,21,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Dashamula Kashaya',d:[0,298,849,282,0,0,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Guduchyadi Kashaya',d:[0,0,0,0,0,52,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Sukumarak Kashaya',d:[0,0,0,0,0,4400,0,0,0,0,0,0]},
-  {cat:'KASHAYAS',name:'Triphala Kashaya',d:[0,0,0,0,0,101,0,0,0,0,0,0]},
-  {cat:'SYRUP',name:'Madiphala Rasayana Syrup',d:[105,0,0,0,0,0,0,0,0,0,0,0]},
-  {cat:'SYRUP',name:'Syrup Nirocil',d:[0,0,1320,839,0,0,0,0,0,0,0,0]},
-  {cat:'SYRUP',name:'Syrup Balachaturbhadra Rasa',d:[0,0,47,3,0,0,0,0,0,0,0,0]},
-  {cat:'EXTERNAL USE',name:'Avalagujadi Lepa',d:[15,0,0,9,0,14,0,0,0,0,0,0]},
-  {cat:'EXTERNAL USE',name:'Dashanga Agada Lepa Choorna',d:[0,1,0,0,6,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Guduchi Satva',d:[0,132,116,5600,0,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'White Ointment',d:[35,250,22,32,24,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Gandhaka Malahara',d:[0,0,78,0,0,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Madiphala Rasayana',d:[0,103,7100,1186,0,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Dadhimashtaka Choorna',d:[0,0,0,266,0,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Gandhak Rasayana',d:[0,0,0,0,0,21471,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Amruta Guggulu',d:[0,0,0,0,0,520,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Medohara Guggulu',d:[0,0,0,0,0,680,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Panchatiktaka Kashaya',d:[0,0,0,0,89,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Bakuchi',d:[0,0,0,0,14,0,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Shirashoola Vati',d:[0,0,0,0,60,80,0,0,0,0,0,0]},
-  {cat:'MISCELLANEOUS',name:'Sarpagandha',d:[0,0,0,0,0,1640,0,0,0,0,0,0]},
+// Dispensing rules per category
+// type: 'regular'=25-30% patients, 'high'=50% patients
+// unit: display label for packing
+const CAT_RULES={
+  'CHURNAS':          {prev:[0.25,0.30],unit:'50g pkt',type:'regular'},
+  'KWATHA CHOORNAS':  {prev:[0.25,0.30],unit:'50g pkt',type:'regular'},
+  'GHRITAS':          {prev:[0.25,0.30],unit:'150g jar',type:'regular'},
+  'LEHAS':            {prev:[0.25,0.30],unit:'150g jar',type:'regular'},
+  'VATI/RASAS':       {prev:[0.45,0.55],unit:'20 pills',type:'high'},
+  'TAILAS':           {prev:[0.25,0.30],unit:'100ml btl',type:'regular'},
+  'EYE MEDICINES':    {prev:[0.05,0.10],unit:'5ml btl',type:'regular'},
+  'LINIMENTS':        {prev:[0.10,0.15],unit:'100ml btl',type:'regular'},
+  'GUGGULU':          {prev:[0.45,0.55],unit:'20 tabs',type:'high'},
+  'ASAVA-ARISHTA':    {prev:[0.25,0.30],unit:'200ml btl',type:'regular'},
+  'KASHAYAS':         {prev:[0.20,0.28],unit:'200ml btl',type:'regular'},
+  'SYRUP':            {prev:[0.10,0.18],unit:'200ml btl',type:'regular'},
+  'EXTERNAL USE':     {prev:[0.05,0.10],unit:'100g/ml',type:'regular'},
+  'MISCELLANEOUS':    {prev:[0.10,0.18],unit:'unit',type:'regular'}
+};
+
+// Small-pack tailas (10ml) - serial nos 89,90,114 = Anu Taila, Bilwa Taila, Kumkumadi Taila
+const SMALL_PACK_TAILAS=['Anu Taila','Bilwa Taila','Kumkumadi Taila'];
+
+const MEDICINES=[
+  {cat:'CHURNAS',name:'Ashwagandha Churna'},
+  {cat:'CHURNAS',name:'Avipattikara Churna'},
+  {cat:'CHURNAS',name:'Amalaki Churna'},
+  {cat:'CHURNAS',name:'Abhaya Choorna'},
+  {cat:'CHURNAS',name:'Balachaturabhadra Churna'},
+  {cat:'CHURNAS',name:'Haridra Choorna'},
+  {cat:'CHURNAS',name:'Hingwashtaka Choorna'},
+  {cat:'CHURNAS',name:'Manjistadi Churna'},
+  {cat:'CHURNAS',name:'Nishaamalaki Choorna'},
+  {cat:'CHURNAS',name:'Panchakola Choorna'},
+  {cat:'CHURNAS',name:'Sitopaladi Choorna'},
+  {cat:'CHURNAS',name:'Talisadi Choorna'},
+  {cat:'CHURNAS',name:'Trikatu Choorna'},
+  {cat:'CHURNAS',name:'Triphala Choorna'},
+  {cat:'CHURNAS',name:'Vaishwanara Choorna'},
+  {cat:'CHURNAS',name:'Vidanga Churna'},
+  {cat:'CHURNAS',name:'Yastimadhu Choorna'},
+  {cat:'CHURNAS',name:'Pushyanuga Churna'},
+  {cat:'CHURNAS',name:'Shatavari Choorna'},
+  {cat:'KWATHA CHOORNAS',name:'Asanadi Kw. Churna'},
+  {cat:'KWATHA CHOORNAS',name:'Dashamoola Kw. Churna'},
+  {cat:'KWATHA CHOORNAS',name:'Panchavalkala Kwatha Churna'},
+  {cat:'KWATHA CHOORNAS',name:'Mustadi Kw. Churna'},
+  {cat:'GHRITAS',name:'Brahmi Ghrita'},
+  {cat:'GHRITAS',name:'Guggulu Tiktaka Ghrita'},
+  {cat:'GHRITAS',name:'Phalasarpi Ghrita'},
+  {cat:'GHRITAS',name:'Shatavari Ghrita'},
+  {cat:'GHRITAS',name:'Sukumara Ghrita'},
+  {cat:'GHRITAS',name:'Triphala Ghrita'},
+  {cat:'GHRITAS',name:'Dadimadi Ghrita'},
+  {cat:'GHRITAS',name:'Shatadhouta Ghrita'},
+  {cat:'GHRITAS',name:'Ashwagandha Ghrita'},
+  {cat:'LEHAS',name:'Kushmanda Rasayana'},
+  {cat:'LEHAS',name:'Haridra Khanda'},
+  {cat:'LEHAS',name:'Vasa Avaleha'},
+  {cat:'LEHAS',name:'Agastya Haritaki Rasayana'},
+  {cat:'LEHAS',name:'Shatavari Gulam'},
+  {cat:'LEHAS',name:'Sukumara Leha'},
+  {cat:'VATI/RASAS',name:'Arogyavardhini Vati'},
+  {cat:'VATI/RASAS',name:'Bilwadi Vati'},
+  {cat:'VATI/RASAS',name:'Bolabhadda Rasa'},
+  {cat:'VATI/RASAS',name:'Chandrakala Rasa'},
+  {cat:'VATI/RASAS',name:'Chitrakadi Vati'},
+  {cat:'VATI/RASAS',name:'Chandraprabha Vati'},
+  {cat:'VATI/RASAS',name:'Gandhaka Rasayana'},
+  {cat:'VATI/RASAS',name:'Kamaduga Rasa'},
+  {cat:'VATI/RASAS',name:'Krimikutara Rasa'},
+  {cat:'VATI/RASAS',name:'Pathyadi Ghanavati'},
+  {cat:'VATI/RASAS',name:'Punarnava Mandura'},
+  {cat:'VATI/RASAS',name:'Rajapravartini Vati'},
+  {cat:'VATI/RASAS',name:'Saptamrita Loha'},
+  {cat:'VATI/RASAS',name:'Sudarshana Ghanavati'},
+  {cat:'VATI/RASAS',name:'Swasakutara Rasa'},
+  {cat:'VATI/RASAS',name:'Trishul Rasa'},
+  {cat:'VATI/RASAS',name:'Amavatari Rasa'},
+  {cat:'VATI/RASAS',name:'Kuberaksha Vati'},
+  {cat:'VATI/RASAS',name:'Nirocil Tab'},
+  {cat:'VATI/RASAS',name:'Brihat Vatachintamani Rasa'},
+  {cat:'VATI/RASAS',name:'Vatavidhwamsaka Rasa'},
+  {cat:'VATI/RASAS',name:'Ekanga Vira Rasa'},
+  {cat:'VATI/RASAS',name:'Sarpagandha Vati'},
+  {cat:'VATI/RASAS',name:'Brahmi Vati'},
+  {cat:'VATI/RASAS',name:'Chandrodaya Vati'},
+  {cat:'VATI/RASAS',name:'Kankyana Vati'},
+  {cat:'VATI/RASAS',name:'Medha Vati'},
+  {cat:'VATI/RASAS',name:'Medohara Vati'},
+  {cat:'VATI/RASAS',name:'Dhanvantari Vati'},
+  {cat:'VATI/RASAS',name:'Manasamitra Vati'},
+  {cat:'TAILAS',name:'Anu Taila'},
+  {cat:'TAILAS',name:'Bilwa Taila'},
+  {cat:'TAILAS',name:'Ghandarva Hastadi Taila'},
+  {cat:'TAILAS',name:'Jatyadi Taila'},
+  {cat:'TAILAS',name:'Karanja Taila'},
+  {cat:'TAILAS',name:'Kshirabala Taila'},
+  {cat:'TAILAS',name:'Mahamashadi Taila'},
+  {cat:'TAILAS',name:'Pinda Taila'},
+  {cat:'TAILAS',name:'Sahacharadi Taila'},
+  {cat:'TAILAS',name:'Bala Taila'},
+  {cat:'TAILAS',name:'Bhringa Amlaka Taila'},
+  {cat:'TAILAS',name:'Kumkumadi Taila'},
+  {cat:'TAILAS',name:'Narayana Taila'},
+  {cat:'TAILAS',name:'Dhanwantari Taila'},
+  {cat:'EYE MEDICINES',name:'Kacha Yapanam Kuzhampu'},
+  {cat:'EYE MEDICINES',name:'Netra Amritam'},
+  {cat:'LINIMENTS',name:'Sandhilin Liniment'},
+  {cat:'LINIMENTS',name:'Rhumapar Liniment'},
+  {cat:'GUGGULU',name:'Kaishora Guggulu'},
+  {cat:'GUGGULU',name:'Kanchanara Guggulu'},
+  {cat:'GUGGULU',name:'Navaka Guggulu'},
+  {cat:'GUGGULU',name:'Nimbadi Guggulu'},
+  {cat:'GUGGULU',name:'Simhanada Guggulu'},
+  {cat:'GUGGULU',name:'Trayodashanga Guggulu'},
+  {cat:'GUGGULU',name:'Triphala Guggulu'},
+  {cat:'GUGGULU',name:'Yogaraja Guggulu'},
+  {cat:'GUGGULU',name:'Amruta Guggulu'},
+  {cat:'GUGGULU',name:'Medohara Guggulu'},
+  {cat:'ASAVA-ARISHTA',name:'Amrita Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Aragwada Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Ashoka Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Ashwagandha Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Chandana Asava'},
+  {cat:'ASAVA-ARISHTA',name:'Dashamula Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Kanaka Asava'},
+  {cat:'ASAVA-ARISHTA',name:'Khadira Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Kumari Asava'},
+  {cat:'ASAVA-ARISHTA',name:'Lodra Asava'},
+  {cat:'ASAVA-ARISHTA',name:'Mustaka Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Punarnava Asava'},
+  {cat:'ASAVA-ARISHTA',name:'Saraswata Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Bala Arishta'},
+  {cat:'ASAVA-ARISHTA',name:'Loha Asava'},
+  {cat:'KASHAYAS',name:'Manjistadi Kashaya'},
+  {cat:'KASHAYAS',name:'Rasnadi Kashaya'},
+  {cat:'KASHAYAS',name:'Varunadi Kashaya'},
+  {cat:'KASHAYAS',name:'Panchavalkala Kashaya'},
+  {cat:'KASHAYAS',name:'Dashamula Kashaya'},
+  {cat:'KASHAYAS',name:'Guduchyadi Kashaya'},
+  {cat:'KASHAYAS',name:'Sukumarak Kashaya'},
+  {cat:'KASHAYAS',name:'Triphala Kashaya'},
+  {cat:'KASHAYAS',name:'Amruttotara Kashaya'},
+  {cat:'KASHAYAS',name:'Kokilaksha Kashaya'},
+  {cat:'SYRUP',name:'Madiphala Rasayana Syrup'},
+  {cat:'SYRUP',name:'Syrup Nirocil'},
+  {cat:'SYRUP',name:'Syrup Balachaturbhadra Rasa'},
+  {cat:'EXTERNAL USE',name:'Avalagujadi Lepa'},
+  {cat:'EXTERNAL USE',name:'Dashanga Agada Lepa Choorna'},
+  {cat:'EXTERNAL USE',name:'Kottam Chukkadi Lepa Choorna'},
+  {cat:'MISCELLANEOUS',name:'Guduchi Satva'},
+  {cat:'MISCELLANEOUS',name:'White Ointment'},
+  {cat:'MISCELLANEOUS',name:'Gandhaka Malahara'},
+  {cat:'MISCELLANEOUS',name:'Madiphala Rasayana'},
+  {cat:'MISCELLANEOUS',name:'Gandhak Rasayana'},
+  {cat:'MISCELLANEOUS',name:'Shirashoola Vati'},
+  {cat:'MISCELLANEOUS',name:'Sarpagandha'},
+  {cat:'MISCELLANEOUS',name:'Bakuchi'},
 ];
 
-let medicines = JSON.parse(JSON.stringify(RAW));
-let stockData = {};
-let generated = false;
+// Per-medicine prevalence multipliers (some medicines are more niche than others)
+// 1.0 = full category prevalence, lower = less commonly prescribed
+const MED_PREV_MULT={
+  'Triphala Choorna':1.0,'Arogyavardhini Vati':1.0,'Chandraprabha Vati':0.9,
+  'Triphala Guggulu':1.0,'Yogaraja Guggulu':0.9,'Gandhaka Rasayana':0.8,
+  'Trayodashanga Guggulu':0.7,'Navaka Guggulu':0.7,'Bilwadi Vati':0.8,
+  'Panchakola Choorna':0.6,'Sitopaladi Choorna':0.6,'Varunadi Kashaya':0.5,
+  'Avipattikara Churna':0.7,'Ashwagandha Churna':0.6,'Kaishora Guggulu':0.6,
+  'Kanchanara Guggulu':0.6,'Simhanada Guggulu':0.6,'Jatyadi Taila':0.5,
+  'Sandhilin Liniment':0.4,'Rasnadi Kashaya':0.5,'Saraswata Arishta':0.3,
+  'Chandana Asava':0.3,'Amrita Arishta':0.4,'Kumari Asava':0.3,
+  'Dashamula Arishta':0.4,'Brahmi Ghrita':0.2,'Manasamitra Vati':0.15,
+  'Chandrodaya Vati':0.1,'Krimikutara Rasa':0.2,'Rajapravartini Vati':0.15,
+  'Brihat Vatachintamani Rasa':0.1,'Ekanga Vira Rasa':0.1,
+  'Anu Taila':0.15,'Bilwa Taila':0.05,'Kumkumadi Taila':0.05,
+  'Phalasarpi Ghrita':0.15,'Shatavari Ghrita':0.2,'Sukumara Ghrita':0.2,
+  'Triphala Ghrita':0.15,'Ashwagandha Ghrita':0.15,'Ashoka Arishta':0.2,
+  'Medha Vati':0.2,'Medohara Vati':0.1,'Guduchi Satva':0.15,
+  'Haridra Khanda':0.2,'Vasa Avaleha':0.15,'Kushmanda Rasayana':0.15,
+  'Bala Arishta':0.2,'Bala Taila':0.15,'Kshirabala Taila':0.2,
+};
+
+function getUnit(med){
+  if(med.cat==='TAILAS' && SMALL_PACK_TAILAS.includes(med.name)) return '10ml btl';
+  return (CAT_RULES[med.cat]||{unit:'unit'}).unit;
+}
 
 function seededRand(seed){
-  let s=seed;
-  return function(){
-    s=(s*9301+49297)%233280;
-    return s/233280;
-  };
+  let s=seed%2147483647; if(s<=0) s+=2147483646;
+  return function(){s=s*16807%2147483647; return (s-1)/2147483646;};
 }
 
-function avg6(d){
-  let vals=d.slice(0,6).filter(v=>v>0);
-  if(vals.length===0) return 0;
-  return vals.reduce((a,b)=>a+b,0)/vals.length;
-}
+let medicines=[];
+let stockData={};
 
 function generateData(){
-  const varPct = parseInt(document.getElementById('var-pct').value)||15;
-  const bufDays = parseInt(document.getElementById('buf-days').value)||90;
-  const seed = parseInt(document.getElementById('seed-val').value)||42;
-  const rand = seededRand(seed);
+  const ptMin=parseInt(document.getElementById('pt-min').value)||130;
+  const ptMax=parseInt(document.getElementById('pt-max').value)||150;
+  const workDays=parseInt(document.getElementById('work-days').value)||25;
+  const varPct=parseInt(document.getElementById('var-pct').value)||12;
+  const bufDays=parseInt(document.getElementById('buf-days').value)||90;
+  const seed=parseInt(document.getElementById('seed-val').value)||42;
+  const rand=seededRand(seed);
 
-  const seasonal = [1.05,0.95,1.00,0.90,1.10,1.15,1.08,1.02,0.98,1.05,1.10,1.12];
+  const avgPt=(ptMin+ptMax)/2;
 
-  medicines.forEach((med,idx)=>{
-    const base = avg6(med.d);
-    if(base===0){
-      for(let m=6;m<12;m++) med.d[m]=0;
-    } else {
-      for(let m=6;m<12;m++){
-        const variation = 1+(rand()-0.5)*(varPct/100)*2;
-        med.d[m] = Math.max(0, Math.round(base * seasonal[m] * variation));
-      }
-    }
-  });
+  medicines=MEDICINES.map(m=>({...m,d:new Array(12).fill(0)}));
 
-  stockData = {};
   medicines.forEach(med=>{
-    const base = avg6(med.d);
-    const dailyRate = base/30;
-    const openingStock = Math.round(dailyRate * bufDays + med.d[0]);
-    
-    let stock = openingStock;
-    const monthly = [];
+    const rule=CAT_RULES[med.cat]||CAT_RULES['MISCELLANEOUS'];
+    const [pLo,pHi]=rule.prev;
+    const basePrev=(pLo+pHi)/2;
+    const medMult=MED_PREV_MULT[med.name]||0.35;
+    const effPrev=basePrev*medMult;
+
     for(let m=0;m<12;m++){
-      const opening = m===0 ? openingStock : monthly[m-1].closing;
-      const disp = med.d[m];
-      const closing = Math.max(0, opening - disp);
-      monthly.push({opening,dispensed:disp,closing,month:m});
+      const variation=1+(rand()-0.5)*(varPct/100)*2;
+      const dailyPacks=avgPt*effPrev*SEASONAL[m]*variation;
+      med.d[m]=Math.max(0,Math.round(dailyPacks*workDays));
     }
-    stockData[med.name] = {opening:openingStock, monthly};
   });
 
-  generated = true;
-  document.getElementById('gen-status').textContent = '✅ Data generated for all '+medicines.length+' medicines across 12 months.';
+  stockData={};
+  medicines.forEach(med=>{
+    const monthlyAvg=med.d.reduce((a,b)=>a+b,0)/12;
+    const dailyRate=monthlyAvg/30;
+    const opening=Math.round(dailyRate*bufDays);
+
+    let stock=opening;
+    const monthly=[];
+    for(let m=0;m<12;m++){
+      const op=m===0?opening:monthly[m-1].closing;
+      const disp=med.d[m];
+      const cl=Math.max(0,op-disp);
+      monthly.push({opening:op,dispensed:disp,closing:cl});
+    }
+    stockData[med.name]={opening,monthly,dailyRate,unit:getUnit(med)};
+  });
+
+  document.getElementById('gen-status').textContent=
+    `✅ Data generated for ${medicines.length} medicines across 12 months. Avg daily patients: ${avgPt}, Working days: ${workDays}/month.`;
   renderRegister();
   renderPO();
   populateAnalyticsSelect();
+  renderLegend();
 }
 
-function getCategories(){
-  return [...new Set(medicines.map(m=>m.cat))];
-}
+function getCategories(){return[...new Set(MEDICINES.map(m=>m.cat))];}
 
 function populateFilters(){
-  const ms = document.getElementById('reg-month');
-  MONTHS.forEach((mn,i)=>{
-    const o=document.createElement('option');
-    o.value=i;o.textContent=mn+' 2025';
-    ms.appendChild(o);
-  });
-  const cs = document.getElementById('reg-cat');
-  getCategories().forEach(c=>{
-    const o=document.createElement('option');
-    o.value=c;o.textContent=c;
-    cs.appendChild(o);
-  });
+  const ms=document.getElementById('reg-month');
+  MONTHS.forEach((mn,i)=>{const o=document.createElement('option');o.value=i;o.textContent=mn+' 2025';ms.appendChild(o);});
+  const cs=document.getElementById('reg-cat');
+  getCategories().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;cs.appendChild(o);});
 }
 
 function populateAnalyticsSelect(){
-  const sel = document.getElementById('an-med');
-  sel.innerHTML='<option value="">Select medicine...</option>';
-  medicines.forEach(m=>{
-    const o=document.createElement('option');
-    o.value=m.name;o.textContent=m.name;
-    sel.appendChild(o);
-  });
+  const sel=document.getElementById('an-med');
+  sel.innerHTML='<option value="">-- Select medicine --</option>';
+  medicines.forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=`${m.name} (${m.cat})`;sel.appendChild(o);});
+}
+
+function renderLegend(){
+  const rows=getCategories().map(cat=>{
+    const rule=CAT_RULES[cat]||{prev:[0.1,0.2],unit:'unit'};
+    const [lo,hi]=rule.prev;
+    return `<tr><td>${cat}</td><td><span class="badge badge-blue">${rule.unit}</span></td><td>${Math.round(lo*100)}–${Math.round(hi*100)}%</td><td>~${Math.round((lo+hi)/2*140)} patients/day</td></tr>`;
+  }).join('');
+  document.getElementById('legend-table').innerHTML=rows;
 }
 
 function renderStats(){
-  if(!generated){
-    document.getElementById('reg-stats').innerHTML='<div style="color:#666;font-size:12px;padding:8px">Generate data first using the Data Generator tab.</div>';
-    return;
-  }
-  const minDays = 60;
-  let lowCount=0, totalDisp=0;
+  const minDays=parseInt(document.getElementById('min-days').value)||60;
+  let low=0,watch=0,ok=0,total=0;
   medicines.forEach(m=>{
-    const sd=stockData[m.name];
-    if(!sd) return;
-    const last=sd.monthly[11];
-    const base=avg6(m.d)||1;
-    const daily=base/30;
-    const daysLeft=daily>0?last.closing/daily:999;
-    if(daysLeft<minDays) lowCount++;
-    totalDisp+=m.d.reduce((a,b)=>a+b,0);
+    const sd=stockData[m.name];if(!sd) return;
+    const cl=sd.monthly[11].closing;
+    const dr=sd.dailyRate;
+    if(dr===0){ok++;return;}
+    const dl=cl/dr;
+    total+=m.d.reduce((a,b)=>a+b,0);
+    if(dl<minDays) low++;
+    else if(dl<minDays*2) watch++;
+    else ok++;
   });
   document.getElementById('reg-stats').innerHTML=`
-    <div class="stat-card"><div class="stat-num">${medicines.length}</div><div class="stat-lbl">Total Medicines</div></div>
+    <div class="stat-card"><div class="stat-num">${medicines.length}</div><div class="stat-lbl">Medicines</div></div>
     <div class="stat-card"><div class="stat-num">${getCategories().length}</div><div class="stat-lbl">Categories</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:#a00">${lowCount}</div><div class="stat-lbl">Low Stock Items</div></div>
-    <div class="stat-card"><div class="stat-num">${totalDisp.toLocaleString()}</div><div class="stat-lbl">Total Units Dispensed 2025</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#a00">${low}</div><div class="stat-lbl">Low Stock (&lt;${minDays}d)</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#856404">${watch}</div><div class="stat-lbl">Watch (&lt;${minDays*2}d)</div></div>
+    <div class="stat-card"><div class="stat-num">${total.toLocaleString()}</div><div class="stat-lbl">Total Packs Dispensed</div></div>
   `;
 }
 
 function renderRegister(){
   renderStats();
-  const selMonth = document.getElementById('reg-month').value;
-  const selCat = document.getElementById('reg-cat').value;
-  const search = document.getElementById('reg-search').value.toLowerCase();
-  const lowOnly = document.getElementById('show-lowstock').checked;
-  const minDays = 60;
+  const selMonth=document.getElementById('reg-month').value;
+  const selCat=document.getElementById('reg-cat').value;
+  const search=document.getElementById('reg-search').value.toLowerCase();
+  const lowOnly=document.getElementById('show-lowstock').checked;
+  const minDays=parseInt(document.getElementById('min-days').value)||60;
 
   let html='<table><thead>';
   if(selMonth==='all'){
-    html+=`<tr><th rowspan="2">#</th><th rowspan="2">Medicine</th><th rowspan="2">Category</th>`;
+    html+=`<tr><th rowspan="2">#</th><th rowspan="2">Medicine</th><th rowspan="2">Category</th><th rowspan="2">Unit</th>`;
     MONTHS.forEach(m=>html+=`<th colspan="3">${m}</th>`);
-    html+=`<th rowspan="2">Status</th></tr>`;
-    html+=`<tr>`;
+    html+=`<th rowspan="2">Annual Total</th><th rowspan="2">Status</th></tr><tr>`;
     MONTHS.forEach(()=>html+=`<th class="sub">Open</th><th class="sub">Disp</th><th class="sub">Close</th>`);
     html+=`</tr>`;
   } else {
-    html+=`<tr><th>#</th><th>Medicine</th><th>Category</th><th>Opening Stock</th><th>Dispensed</th><th>Closing Stock</th><th>Daily Rate</th><th>Days Left</th><th>Status</th></tr>`;
+    html+=`<tr><th>#</th><th>Medicine</th><th>Category</th><th>Unit</th><th>Opening</th><th>Dispensed</th><th>Closing</th><th>Daily Rate</th><th>Days Left</th><th>Status</th></tr>`;
   }
   html+='</thead><tbody>';
 
-  let n=0;
-  let lastCat='';
-  medicines.forEach((med,i)=>{
-    if(selCat!=='all' && med.cat!==selCat) return;
-    if(search && !med.name.toLowerCase().includes(search)) return;
-    
-    const sd = generated ? stockData[med.name] : null;
-    const base=avg6(med.d)||0;
-    const daily=base/30;
-    
-    let status='ok', daysLeft=999;
-    if(sd && daily>0){
-      const lastClose = sd.monthly[11].closing;
-      daysLeft = Math.round(lastClose/daily);
-      if(daysLeft<minDays) status='low';
-      else if(daysLeft<minDays*2) status='medium';
-    }
-
-    if(lowOnly && status!=='low') return;
+  let n=0,lastCat='';
+  medicines.forEach(med=>{
+    if(selCat!=='all'&&med.cat!==selCat) return;
+    if(search&&!med.name.toLowerCase().includes(search)) return;
+    const sd=stockData[med.name];
+    if(!sd) return;
+    const dr=sd.dailyRate;
+    const lastCl=sd.monthly[11].closing;
+    const daysLeft=dr>0?Math.round(lastCl/dr):999;
+    let status=daysLeft<minDays?'low':daysLeft<minDays*2?'watch':'ok';
+    if(lowOnly&&status!=='low') return;
     n++;
-
-    if(med.cat!==lastCat && selMonth==='all'){
-      const cols = 3+12*3+1;
-      html+=`<tr class="cat-row"><td colspan="${cols}">${med.cat}</td></tr>`;
+    if(med.cat!==lastCat&&selMonth==='all'){
+      const cols=4+12*3+2;
+      html+=`<tr class="cat-row"><td colspan="${cols}">▸ ${med.cat}</td></tr>`;
       lastCat=med.cat;
     }
-
-    const rowClass = status==='low' ? ' class="low-stock"' : '';
-    html+=`<tr${rowClass}><td>${n}</td><td><b>${med.name}</b></td><td>${med.cat}</td>`;
-    
+    const rowCls=status==='low'?' class="low-stock"':'';
+    html+=`<tr${rowCls}><td>${n}</td><td><b>${med.name}</b></td><td style="color:#555">${med.cat}</td><td><span class="badge badge-blue">${sd.unit}</span></td>`;
     if(selMonth==='all'){
       MONTHS.forEach((_,m)=>{
-        const open = sd ? sd.monthly[m].opening : '-';
-        const disp = med.d[m]||0;
-        const close = sd ? sd.monthly[m].closing : '-';
-        html+=`<td>${typeof open==='number'?open.toLocaleString():open}</td><td>${disp.toLocaleString()}</td><td>${typeof close==='number'?close.toLocaleString():close}</td>`;
+        const mo=sd.monthly[m];
+        html+=`<td>${mo.opening.toLocaleString()}</td><td>${mo.dispensed.toLocaleString()}</td><td>${mo.closing.toLocaleString()}</td>`;
       });
+      const ann=med.d.reduce((a,b)=>a+b,0);
+      const badge=status==='low'?'badge-red':status==='watch'?'badge-amber':'badge-green';
+      const label=status==='low'?'LOW':status==='watch'?'WATCH':'OK';
+      html+=`<td><b>${ann.toLocaleString()}</b></td><td><span class="badge ${badge}">${label}</span></td>`;
     } else {
       const m=parseInt(selMonth);
-      const open = sd ? sd.monthly[m].opening : (m===0&&!generated?'N/A':'-');
-      const disp = med.d[m]||0;
-      const close = sd ? sd.monthly[m].closing : '-';
-      const dr = daily>0 ? daily.toFixed(1) : '0';
-      const dl = sd && daily>0 ? Math.round(sd.monthly[m].closing/daily) : '-';
-      let badge='';
-      if(sd && daily>0){
-        const dlv = Math.round(sd.monthly[m].closing/daily);
-        if(dlv<minDays) badge='<span class="badge badge-red">LOW</span>';
-        else if(dlv<minDays*2) badge='<span class="badge badge-amber">WATCH</span>';
-        else badge='<span class="badge badge-green">OK</span>';
-      }
-      html+=`<td>${typeof open==='number'?open.toLocaleString():open}</td><td>${disp.toLocaleString()}</td><td>${typeof close==='number'?close.toLocaleString():close}</td><td>${dr}/day</td><td>${dl}</td><td>${badge}</td>`;
+      const mo=sd.monthly[m];
+      const dlm=dr>0?Math.round(mo.closing/dr):'-';
+      let badge='badge-green',lbl='OK';
+      if(dr>0){const d=Math.round(mo.closing/dr);if(d<minDays){badge='badge-red';lbl='LOW';}else if(d<minDays*2){badge='badge-amber';lbl='WATCH';}}
+      html+=`<td>${mo.opening.toLocaleString()}</td><td>${mo.dispensed.toLocaleString()}</td><td>${mo.closing.toLocaleString()}</td>`;
+      html+=`<td>${dr>0?dr.toFixed(1):0}/day</td><td>${dlm}</td><td><span class="badge ${badge}">${lbl}</span></td>`;
     }
-    html+='</tr>';
+    html+=`</tr>`;
   });
+  if(n===0) html+=`<tr><td colspan="20" style="text-align:center;padding:20px;color:#666">No records found.</td></tr>`;
   html+='</tbody></table>';
   document.getElementById('reg-table').innerHTML=html;
 }
 
 function renderPO(){
-  if(!generated){
-    document.getElementById('po-content').innerHTML='<div style="padding:16px;color:#666">Please generate data first from the Data Generator tab.</div>';
-    return;
-  }
-  const minDays = 60;
-  const orderMonths = 2;
-  const supplierFilter = document.getElementById('po-supplier').value;
+  const minDays=parseInt(document.getElementById('min-days').value)||60;
+  const supplierFilter=document.getElementById('po-supplier').value;
+  const bySupplier={};
 
-  const bySupplier = {};
   medicines.forEach(med=>{
-    const sd=stockData[med.name];
-    if(!sd) return;
-    const base=avg6(med.d)||0;
-    const daily=base/30;
-    if(daily===0) return;
-    const lastClose=sd.monthly[11].closing;
-    const daysLeft=lastClose/daily;
+    const sd=stockData[med.name];if(!sd) return;
+    const dr=sd.dailyRate;if(dr===0) return;
+    const lastCl=sd.monthly[11].closing;
+    const daysLeft=lastCl/dr;
     if(daysLeft>minDays) return;
-
-    const sup = SUPPLIER_MAP[med.cat]||'OTHER';
-    if(supplierFilter!=='all' && sup!==supplierFilter) return;
+    const sup=SUPPLIER_MAP[med.cat]||'OTHER';
+    if(supplierFilter!=='all'&&sup!==supplierFilter) return;
     if(!bySupplier[sup]) bySupplier[sup]=[];
     bySupplier[sup].push({
-      ...med,
-      currentStock:lastClose,
-      dailyRate:daily,
+      name:med.name,cat:med.cat,unit:sd.unit,
+      currentStock:Math.round(lastCl),
+      dailyRate:dr,
       daysLeft:Math.round(daysLeft),
-      orderQty:Math.round(daily*30*orderMonths)
+      orderQty:Math.round(dr*30*2)
     });
   });
 
-  const today = new Date();
-  const dateStr = today.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-  
-  let html='';
-  let poNum=1;
+  const dateStr=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  let html='',poNum=1;
+
   Object.keys(bySupplier).sort().forEach(sup=>{
     const items=bySupplier[sup];
     html+=`<div class="po-card">
-    <div class="po-header">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
       <div>
-        <div class="po-title">Purchase Order #PO-2025-${String(poNum++).padStart(3,'0')}</div>
-        <div style="font-size:11px;color:#555">To: <b>${SUPPLIER_NAMES[sup]||sup}</b> | Date: ${dateStr} | Delivery: Within 7 days</div>
+        <div class="po-title">Purchase Order &nbsp; PO-JAGM-2025-${String(poNum++).padStart(3,'0')}</div>
+        <div style="font-size:11px;color:#333;margin-top:3px">To: <b>${SUPPLIER_NAMES[sup]||sup}</b></div>
+        <div style="font-size:11px;color:#555">Date: ${dateStr} &nbsp;|&nbsp; Delivery requested within 7 working days</div>
+        <div style="font-size:11px;color:#555">From: Pharmacy, JAIN AGM Ayurvedic Medical College & Hospital, Varur, Hubli</div>
       </div>
-      <div>
-        <span class="badge badge-red">${items.length} items below ${minDays}-day stock</span>
-      </div>
+      <span class="badge badge-red" style="font-size:11px">${items.length} items</span>
     </div>
-    <table class="po-table" style="width:100%">
+    <table style="width:100%">
     <thead><tr>
-      <th>#</th><th>Medicine Name</th><th>Category</th>
-      <th>Current Stock</th><th>Daily Usage</th><th>Days Left</th>
-      <th>Order Qty (${orderMonths} mo)</th>
+      <th style="background:#2c5282">#</th>
+      <th style="background:#2c5282">Medicine</th>
+      <th style="background:#2c5282">Category</th>
+      <th style="background:#2c5282">Pack Unit</th>
+      <th style="background:#2c5282">Current Stock</th>
+      <th style="background:#2c5282">Daily Usage</th>
+      <th style="background:#2c5282">Days Left</th>
+      <th style="background:#2c5282">Order Qty (2 months)</th>
     </tr></thead><tbody>`;
-    items.forEach((item,i)=>{
-      html+=`<tr ${item.daysLeft<15?'style="background:#fff3f3"':''}>
+    items.sort((a,b)=>a.daysLeft-b.daysLeft).forEach((item,i)=>{
+      const urgent=item.daysLeft<15;
+      html+=`<tr${urgent?' style="background:#fff0f0"':''}>
         <td>${i+1}</td>
         <td><b>${item.name}</b></td>
-        <td>${item.cat}</td>
-        <td>${Math.round(item.currentStock).toLocaleString()}</td>
-        <td>${item.dailyRate.toFixed(1)}/day</td>
-        <td><span class="badge ${item.daysLeft<15?'badge-red':'badge-amber'}">${item.daysLeft} days</span></td>
-        <td><b>${item.orderQty.toLocaleString()}</b></td>
+        <td style="color:#555">${item.cat}</td>
+        <td><span class="badge badge-blue">${item.unit}</span></td>
+        <td>${item.currentStock.toLocaleString()}</td>
+        <td>${item.dailyRate.toFixed(2)}/day</td>
+        <td><span class="badge ${item.daysLeft<15?'badge-red':'badge-amber'}">${item.daysLeft}d</span></td>
+        <td><b>${item.orderQty.toLocaleString()} packs</b></td>
       </tr>`;
     });
-    html+=`</tbody></table></div>`;
+    html+=`</tbody></table>
+    <div style="font-size:11px;color:#555;margin-top:8px;text-align:right">
+      Authorised by: _________________________ &nbsp;&nbsp; Principal, JAIN AGM AMC & H
+    </div></div>`;
   });
 
-  if(!html) html='<div style="padding:20px;color:#1a7a4a;font-weight:600">✅ All medicines are adequately stocked (above '+minDays+' days). No purchase orders required at this time.</div>';
+  if(!html) html=`<div style="padding:20px;background:#f0fff4;border:1px solid #9ae6b4;border-radius:6px;color:#1a7a4a;font-weight:600">
+    ✅ All medicines are adequately stocked (above ${minDays} days). No purchase orders required at this time.</div>`;
   document.getElementById('po-content').innerHTML=html;
 }
 
 function renderAnalytics(){
-  const medName = document.getElementById('an-med').value;
-  if(!medName || !generated){
-    document.getElementById('analytics-content').innerHTML='<div style="color:#666;padding:16px">Select a medicine to view analytics.</div>';
-    return;
-  }
-  const med = medicines.find(m=>m.name===medName);
+  const medName=document.getElementById('an-med').value;
+  if(!medName){document.getElementById('analytics-content').innerHTML='';return;}
+  const med=medicines.find(m=>m.name===medName);
   if(!med) return;
   const sd=stockData[med.name];
-  
-  const maxDisp=Math.max(...med.d,1);
-  const barW=380;
+  const maxD=Math.max(...med.d,1);
+  const barW=340;
   let bars='';
   MONTHS.forEach((mn,i)=>{
-    const w=Math.round((med.d[i]/maxDisp)*barW);
-    const src=i<6?'#1a3a5c':'#1a7a4a';
-    bars+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
-      <div style="width:30px;font-size:11px;text-align:right;color:#555">${mn}</div>
-      <div style="width:${w}px;height:18px;background:${src};border-radius:2px"></div>
-      <div style="font-size:11px;color:#333">${med.d[i].toLocaleString()}</div>
+    const w=Math.round((med.d[i]/maxD)*barW);
+    bars+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+      <div style="width:28px;font-size:11px;text-align:right;color:#555">${mn}</div>
+      <div style="width:${w}px;min-width:2px;height:16px;background:#1a3a5c;border-radius:2px"></div>
+      <div style="font-size:11px;color:#333">${med.d[i].toLocaleString()} ${sd.unit}</div>
     </div>`;
   });
-
   const total=med.d.reduce((a,b)=>a+b,0);
   const avg=Math.round(total/12);
-  const lastClose=sd?sd.monthly[11].closing:0;
-  const dailyRate=avg6(med.d)/30;
-
   document.getElementById('analytics-content').innerHTML=`
-  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px;max-width:600px">
-    <h3 style="color:#1a3a5c;margin-bottom:4px">${med.name}</h3>
-    <div style="font-size:11px;color:#666;margin-bottom:16px">Category: ${med.cat} | Supplier: ${SUPPLIER_NAMES[SUPPLIER_MAP[med.cat]||'OTHER']||'N/A'}</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px">
-      <div class="stat-card"><div class="stat-num" style="font-size:18px">${total.toLocaleString()}</div><div class="stat-lbl">Total 2025</div></div>
-      <div class="stat-card"><div class="stat-num" style="font-size:18px">${avg.toLocaleString()}</div><div class="stat-lbl">Monthly Avg</div></div>
-      <div class="stat-card"><div class="stat-num" style="font-size:18px">${Math.round(dailyRate*10)/10}</div><div class="stat-lbl">Daily Rate</div></div>
-      <div class="stat-card"><div class="stat-num" style="font-size:18px">${lastClose.toLocaleString()}</div><div class="stat-lbl">Dec Closing</div></div>
+  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:16px;max-width:580px">
+    <h3 style="color:#1a3a5c;margin-bottom:2px">${med.name}</h3>
+    <div style="font-size:11px;color:#666;margin-bottom:14px">${med.cat} &nbsp;|&nbsp; <span class="badge badge-blue">${sd.unit}</span> &nbsp;|&nbsp; Supplier: ${SUPPLIER_NAMES[SUPPLIER_MAP[med.cat]||'OTHER']}</div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px">
+      <div class="stat-card"><div class="stat-num" style="font-size:18px">${total.toLocaleString()}</div><div class="stat-lbl">Annual packs</div></div>
+      <div class="stat-card"><div class="stat-num" style="font-size:18px">${avg.toLocaleString()}</div><div class="stat-lbl">Monthly avg</div></div>
+      <div class="stat-card"><div class="stat-num" style="font-size:18px">${sd.dailyRate.toFixed(1)}</div><div class="stat-lbl">Packs/day</div></div>
+      <div class="stat-card"><div class="stat-num" style="font-size:18px">${sd.opening.toLocaleString()}</div><div class="stat-lbl">Jan 1 stock</div></div>
     </div>
-    <div style="font-size:12px;font-weight:600;margin-bottom:8px;color:#333">Monthly Dispensing (blue = actual | green = generated)</div>
+    <div style="font-size:12px;font-weight:600;margin-bottom:8px">Monthly Dispensing (packs)</div>
     ${bars}
   </div>`;
 }
 
 function exportExcel(){
   const wb=XLSX.utils.book_new();
-  const header=['#','Medicine','Category','Opening Stock (Jan 1)'];
-  MONTHS.forEach(m=>{
-    header.push(`${m} Dispensed`);
-    header.push(`${m} Closing`);
-  });
-  header.push('Dec Closing Stock','Annual Total');
+  const cover=[
+    ['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],
+    ['Pharmacy Drug Stock Register — 2025'],
+    ['Varur, Hubli, Karnataka'],
+    ['Generated: '+new Date().toLocaleDateString('en-IN')],
+    [''],
+    ['Note: All quantities in packing units as per dispensing norms.'],
+    ['Churnas/Kwatha Churnas: 50g pkt | Ghritas/Lehas: 150g jar | Vati/Rasas: 20 pills'],
+    ['Tailas (general): 100ml btl | Tailas (Anu/Bilwa/Kumkumadi): 10ml btl'],
+    ['Guggulu: 20 tabs | Asava-Arishta/Kashayas/Syrups: 200ml btl'],
+  ];
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(cover),'Cover');
 
-  const rows=[header];
+  const hdr=['#','Medicine','Category','Pack Unit','Jan 1 Opening'];
+  MONTHS.forEach(m=>{hdr.push(`${m} Opening`,`${m} Dispensed`,`${m} Closing`);});
+  hdr.push('Annual Total','Daily Rate');
+  const rows=[hdr];
   medicines.forEach((med,i)=>{
-    const sd=stockData[med.name];
-    const row=[i+1,med.name,med.cat, sd?sd.opening:'N/A'];
+    const sd=stockData[med.name];if(!sd) return;
+    const row=[i+1,med.name,med.cat,sd.unit,sd.opening];
     MONTHS.forEach((_,m)=>{
-      row.push(med.d[m]||0);
-      row.push(sd?sd.monthly[m].closing:'N/A');
+      const mo=sd.monthly[m];
+      row.push(mo.opening,mo.dispensed,mo.closing);
     });
-    row.push(sd?sd.monthly[11].closing:'N/A');
-    row.push(med.d.reduce((a,b)=>a+b,0));
+    row.push(med.d.reduce((a,b)=>a+b,0),sd.dailyRate.toFixed(2));
     rows.push(row);
   });
-
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:4},{wch:35},{wch:20},{wch:16},...Array(26).fill({wch:14}),{wch:16},{wch:14}];
+  ws['!cols']=[{wch:4},{wch:32},{wch:18},{wch:14},{wch:12},...Array(36).fill({wch:11}),{wch:12},{wch:10}];
   XLSX.utils.book_append_sheet(wb,ws,'Stock Register 2025');
-
-  const ws2=XLSX.utils.aoa_to_sheet([
-    ['JAIN AGM Ayurvedic Medical College & Hospital'],
-    ['Pharmacy Stock Register 2025'],
-    ['Generated: '+new Date().toLocaleDateString('en-IN')],
-    []
-  ]);
-  XLSX.utils.book_append_sheet(wb,ws2,'Cover');
-  XLSX.writeFile(wb,'JAIN_AGM_Pharmacy_Stock_2025.xlsx');
+  XLSX.writeFile(wb,'JAIN_AGM_Stock_Register_2025.xlsx');
 }
 
 function exportPOExcel(){
-  if(!generated){alert('Generate data first.');return;}
-  const minDays=60;
+  const minDays=parseInt(document.getElementById('min-days').value)||60;
   const wb=XLSX.utils.book_new();
-  const header=['Supplier','Medicine','Category','Current Stock','Daily Rate','Days Left','Order Qty (2 months)'];
-  const rows=[header];
-  
+  const hdr=['PO Number','Supplier','Medicine','Category','Pack Unit','Current Stock (packs)','Daily Rate','Days Left','Order Qty (2 months)'];
+  const rows=[hdr];
+  let poNum=1;
+  const bySupplier={};
   medicines.forEach(med=>{
-    const sd=stockData[med.name];
-    if(!sd) return;
-    const base=avg6(med.d)||0;
-    const daily=base/30;
-    if(daily===0) return;
-    const lastClose=sd.monthly[11].closing;
-    const daysLeft=lastClose/daily;
+    const sd=stockData[med.name];if(!sd) return;
+    const dr=sd.dailyRate;if(dr===0) return;
+    const lastCl=sd.monthly[11].closing;
+    const daysLeft=lastCl/dr;
     if(daysLeft>minDays) return;
-    const sup=SUPPLIER_NAMES[SUPPLIER_MAP[med.cat]||'OTHER']||'Other';
-    rows.push([sup,med.name,med.cat,Math.round(lastClose),daily.toFixed(1),Math.round(daysLeft),Math.round(daily*60)]);
+    const sup=SUPPLIER_MAP[med.cat]||'OTHER';
+    if(!bySupplier[sup]) bySupplier[sup]=[];
+    bySupplier[sup].push({name:med.name,cat:med.cat,unit:sd.unit,
+      currentStock:Math.round(lastCl),dailyRate:dr,
+      daysLeft:Math.round(daysLeft),orderQty:Math.round(dr*60)});
   });
-
+  Object.keys(bySupplier).sort().forEach(sup=>{
+    bySupplier[sup].sort((a,b)=>a.daysLeft-b.daysLeft).forEach(item=>{
+      rows.push([`PO-JAGM-2025-${String(poNum).padStart(3,'0')}`,
+        SUPPLIER_NAMES[sup]||sup,item.name,item.cat,item.unit,
+        item.currentStock,item.dailyRate.toFixed(2),item.daysLeft,item.orderQty]);
+    });
+    poNum++;
+  });
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:35},{wch:35},{wch:20},{wch:16},{wch:12},{wch:12},{wch:20}];
+  ws['!cols']=[{wch:22},{wch:34},{wch:32},{wch:18},{wch:14},{wch:18},{wch:12},{wch:10},{wch:22}];
   XLSX.utils.book_append_sheet(wb,ws,'Purchase Orders');
-  XLSX.writeFile(wb,'JAIN_AGM_Purchase_Orders.xlsx');
+  XLSX.writeFile(wb,'JAIN_AGM_Purchase_Orders_2025.xlsx');
 }
 
-function showTab(t){
+function showTab(t,el){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');
-  event.currentTarget.classList.add('active');
-  if(t==='po') renderPO();
-  if(t==='analytics') populateAnalyticsSelect();
+  el.classList.add('active');
 }
 
 populateFilters();
