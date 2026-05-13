@@ -12,7 +12,7 @@ header{background:#1a3a5c;color:#fff;padding:11px 18px}
 header h1{font-size:14px;font-weight:700}
 header p{font-size:11px;opacity:.75;margin-top:2px}
 .tabs{display:flex;background:#fff;border-bottom:2px solid #1a3a5c;padding:0 14px;overflow-x:auto}
-.tab{padding:9px 14px;cursor:pointer;font-size:12px;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.tab{padding:9px 13px;cursor:pointer;font-size:12px;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
 .tab.active{border-bottom-color:#e67e00;font-weight:700;color:#1a3a5c}
 .tab:hover{background:#f5f7fa}
 .panel{display:none;padding:13px}
@@ -22,10 +22,11 @@ header p{font-size:11px;opacity:.75;margin-top:2px}
 .btn-primary{background:#1a3a5c;color:#fff}
 .btn-success{background:#1a7a4a;color:#fff}
 .btn-warning{background:#b36a00;color:#fff}
-.btn-danger{background:#8b0000;color:#fff}
+.btn-info{background:#1565a0;color:#fff}
+.btn-purple{background:#6b3fa0;color:#fff}
 .btn:hover{opacity:.85}
-select,input[type=text],input[type=number]{padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px}
-.tbl-wrap{overflow-x:auto;max-height:66vh;overflow-y:auto;border:1px solid #ddd;border-radius:4px;background:#fff}
+select,input[type=text],input[type=number],input[type=date]{padding:5px 8px;border:1px solid #ccc;border-radius:4px;font-size:12px}
+.tbl-wrap{overflow-x:auto;max-height:65vh;overflow-y:auto;border:1px solid #ddd;border-radius:4px;background:#fff}
 table{border-collapse:collapse;min-width:100%;font-size:11.5px}
 th{background:#1a3a5c;color:#fff;padding:6px 8px;white-space:nowrap;position:sticky;top:0;z-index:2}
 th.sub{background:#2c5282;font-weight:400;font-size:10px}
@@ -37,6 +38,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 .badge-amber{background:#fff3cd;color:#856404}
 .badge-green{background:#d4edda;color:#155724}
 .badge-blue{background:#cce5ff;color:#004085}
+.badge-purple{background:#e8d5ff;color:#5a0099}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:9px;margin-bottom:12px}
 .stat-card{background:#fff;border-radius:6px;padding:11px;border:1px solid #ddd;text-align:center}
 .stat-num{font-size:21px;font-weight:700;color:#1a3a5c}
@@ -49,52 +51,48 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 .gen-row{margin-bottom:9px;display:flex;align-items:center;gap:10px}
 .gen-row label{width:230px;font-size:12px;color:#333}
 .info-box{background:#e8f4fd;border:1px solid #b8d4ea;border-radius:4px;padding:9px 13px;font-size:11px;margin-bottom:11px;line-height:1.8}
-
-/* INVOICE STYLES */
-.inv-modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 0}
-.inv-modal{background:#fff;width:780px;max-width:96vw;border-radius:6px;padding:0;overflow:hidden}
-.inv-modal-header{background:#1a3a5c;color:#fff;padding:11px 16px;display:flex;justify-content:space-between;align-items:center}
-.inv-modal-header h3{font-size:13px}
-.inv-modal-body{padding:16px}
-.inv-close{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1}
-
-/* Print invoice */
+/* Modal */
+.modal-bg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 0}
+.modal-box{background:#fff;width:820px;max-width:97vw;border-radius:6px;overflow:hidden}
+.modal-header{background:#1a3a5c;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:13px}
+.modal-body{padding:16px}
+.modal-close{background:none;border:none;color:#fff;font-size:18px;cursor:pointer}
+/* Indent doc */
+.ind-doc{font-family:Arial,sans-serif;font-size:12px;color:#111;border:1px solid #aaa;padding:20px;border-radius:4px;background:#fff}
+.ind-doc h2{font-size:16px;color:#1a3a5c;text-align:center;margin-bottom:2px}
+.ind-doc .ind-sub{font-size:11px;color:#555;text-align:center;margin-bottom:14px}
+.ind-doc table{width:100%;border-collapse:collapse;font-size:11.5px}
+.ind-doc table th{background:#1a3a5c;color:#fff;padding:6px 7px;text-align:left;border:1px solid #aaa}
+.ind-doc table td{padding:5px 7px;border:1px solid #ddd;vertical-align:top}
+.ind-doc .sig-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:18px}
+.ind-doc .sig-box{border-top:1px solid #555;padding-top:7px;font-size:11px;text-align:center;color:#333}
+/* Invoice doc */
+.inv-doc{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:20px;border:1px solid #ccc;border-radius:4px;background:#fff}
+.inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.inv-box{border:1px solid #ddd;border-radius:4px;padding:10px;font-size:11.5px;line-height:1.8}
+.inv-box strong{font-size:12px;color:#1a3a5c}
+.inv-totals{float:right;width:300px;border:1px solid #ddd;border-radius:4px;padding:10px;font-size:12px;margin-bottom:10px}
+.inv-totals table{margin:0;width:100%}
+.inv-totals td{border:none!important;padding:3px 6px!important}
+.inv-totals .grand{font-weight:700;font-size:13px;color:#1a3a5c;border-top:1px solid #ccc!important}
+.inv-footer{clear:both;border-top:1px solid #ddd;padding-top:10px;margin-top:10px;font-size:11px;color:#555;display:flex;justify-content:space-between}
+.price-input{width:72px}
+.dept-tag{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700;margin:1px;background:#e8d5ff;color:#5a0099}
 @media print{
-  .tabs,.toolbar,header p,.no-print{display:none!important}
+  .tabs,.toolbar,.no-print,header p{display:none!important}
   .tbl-wrap{max-height:none;border:none}
   body{background:#fff}
-  .inv-modal-bg{position:static;background:none;padding:0}
-  .inv-modal{width:100%;border-radius:0;box-shadow:none}
-  .inv-modal-header{display:none}
-  .inv-print-area{display:block!important}
+  .modal-bg{position:static;background:none;padding:0}
+  .modal-box{width:100%;border-radius:0}
+  .modal-header{display:none}
 }
-.inv-print-area{display:none}
-
-/* Invoice document */
-.inv-doc{font-family:Arial,sans-serif;font-size:12px;color:#111;padding:20px;border:1px solid #ccc;border-radius:4px;background:#fff}
-.inv-doc h2{font-size:18px;color:#1a3a5c;margin-bottom:2px}
-.inv-doc .inv-sub{font-size:11px;color:#555;margin-bottom:12px}
-.inv-doc .inv-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-.inv-doc .inv-box{border:1px solid #ddd;border-radius:4px;padding:10px;font-size:11.5px;line-height:1.8}
-.inv-doc .inv-box strong{font-size:12px;color:#1a3a5c}
-.inv-doc table{width:100%;border-collapse:collapse;font-size:11.5px;margin-bottom:10px}
-.inv-doc table th{background:#1a3a5c;color:#fff;padding:6px 8px;text-align:left}
-.inv-doc table td{padding:5px 8px;border-bottom:1px solid #eee}
-.inv-doc table tr:last-child td{border-bottom:none}
-.inv-doc .inv-totals{float:right;width:300px;border:1px solid #ddd;border-radius:4px;padding:10px;font-size:12px;margin-bottom:10px}
-.inv-doc .inv-totals table{margin:0}
-.inv-doc .inv-totals td{border:none;padding:3px 6px}
-.inv-doc .inv-totals .grand{font-weight:700;font-size:13px;color:#1a3a5c;border-top:1px solid #ccc}
-.inv-doc .inv-footer{clear:both;border-top:1px solid #ddd;padding-top:10px;margin-top:10px;font-size:11px;color:#555;display:flex;justify-content:space-between}
-.inv-doc .inv-watermark{color:#1a7a4a;font-weight:700;font-size:11px;margin-top:4px}
-.price-input{width:75px}
-.gst-select{width:70px}
 </style>
 </head>
 <body>
 <header>
-<h1>🏥 JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL — PHARMACY DRUG STOCK REGISTER</h1>
-<p>Stock Register, Purchase Orders & Invoice Management | FY 2025 | Varur, Hubli</p>
+<h1>🏥 JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL — PHARMACY MANAGEMENT SYSTEM</h1>
+<p>Stock Register | Purchase Orders | Invoices | Department Indent Register | FY 2025 | Varur, Hubli</p>
 </header>
 
 <div class="tabs">
@@ -102,10 +100,12 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <div class="tab" onclick="showTab('generator',this)">⚙️ Settings</div>
 <div class="tab" onclick="showTab('po',this)">🛒 Purchase Orders</div>
 <div class="tab" onclick="showTab('invoices',this)">🧾 Invoices</div>
+<div class="tab" onclick="showTab('indent',this)">📝 Dept. Indent Register</div>
 <div class="tab" onclick="showTab('analytics',this)">📊 Analytics</div>
-<div class="tab" onclick="showTab('legend',this)">ℹ️ Dispensing Logic</div>
+<div class="tab" onclick="showTab('legend',this)">ℹ️ Logic</div>
 </div>
 
+<!-- REGISTER -->
 <div id="tab-register" class="panel active">
 <div class="stats-grid" id="reg-stats"></div>
 <div class="toolbar">
@@ -119,39 +119,34 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <div class="tbl-wrap" id="reg-table"></div>
 </div>
 
+<!-- SETTINGS -->
 <div id="tab-generator" class="panel">
 <div class="gen-box">
 <h3>⚙️ Data Generation Settings</h3>
-<div class="info-box">
-Daily OPD: 130–150 patients | Working days: 25/month<br>
+<div class="info-box">Daily OPD: 130–150 patients | Working days: 25/month<br>
 Churnas/Kwatha: 50g pkt | Ghritas/Lehas: 150g jar | Vati/Rasas: 20 pills<br>
-Tailas (100ml) | Anu/Bilwa/Kumkumadi: 10ml | Guggulu: 20 tabs<br>
-Asava-Arishta/Kashayas/Syrups: 200ml btl
-</div>
-<div class="gen-row"><label>Min daily patients</label><input type="number" id="pt-min" value="130" min="50" max="300" style="width:65px"></div>
-<div class="gen-row"><label>Max daily patients</label><input type="number" id="pt-max" value="150" min="50" max="300" style="width:65px"></div>
-<div class="gen-row"><label>Working days/month</label><input type="number" id="work-days" value="25" min="20" max="30" style="width:65px"></div>
-<div class="gen-row"><label>Seasonal variation (%)</label><input type="number" id="var-pct" value="12" min="5" max="30" style="width:65px"></div>
-<div class="gen-row"><label>Opening stock buffer (days)</label><input type="number" id="buf-days" value="90" min="30" max="180" style="width:65px"></div>
-<div class="gen-row"><label>Min stock threshold (days)</label><input type="number" id="min-days" value="60" min="15" max="120" style="width:65px"></div>
+Tailas: 100ml (Anu/Bilwa/Kumkumadi: 10ml) | Guggulu: 20 tabs | Asava-Arishta/Kashayas: 200ml</div>
+<div class="gen-row"><label>Min daily patients</label><input type="number" id="pt-min" value="130" style="width:65px"></div>
+<div class="gen-row"><label>Max daily patients</label><input type="number" id="pt-max" value="150" style="width:65px"></div>
+<div class="gen-row"><label>Working days/month</label><input type="number" id="work-days" value="25" style="width:65px"></div>
+<div class="gen-row"><label>Seasonal variation (%)</label><input type="number" id="var-pct" value="12" style="width:65px"></div>
+<div class="gen-row"><label>Opening stock buffer (days)</label><input type="number" id="buf-days" value="90" style="width:65px"></div>
+<div class="gen-row"><label>Min stock threshold (days)</label><input type="number" id="min-days" value="60" style="width:65px"></div>
 <div class="gen-row"><label>Random seed</label><input type="number" id="seed-val" value="42" style="width:65px"></div>
 <button class="btn btn-primary" onclick="generateData()">🔄 Regenerate</button>
 <div id="gen-status" style="font-size:12px;color:#1a7a4a;margin-top:9px"></div>
 </div>
 </div>
 
+<!-- PO -->
 <div id="tab-po" class="panel">
 <div class="toolbar">
 <select id="po-supplier" onchange="renderPO()">
 <option value="all">All Suppliers</option>
-<option value="SDM">SDM Pharmaceuticals</option>
-<option value="AVN">AVN Arogya</option>
-<option value="SNA">Shankar Narayan</option>
-<option value="ARC">Arco Lab</option>
-<option value="IMI">Impcops</option>
-<option value="VED">Veda Pharma</option>
-<option value="NAG">Nagarjuna</option>
-<option value="OTHER">Others</option>
+<option value="SDM">SDM Pharmaceuticals</option><option value="AVN">AVN Arogya</option>
+<option value="SNA">Shankar Narayan</option><option value="ARC">Arco Lab</option>
+<option value="IMI">Impcops</option><option value="VED">Veda Pharma</option>
+<option value="NAG">Nagarjuna</option><option value="OTHER">Others</option>
 </select>
 <button class="btn btn-primary" onclick="renderPO()">🔄 Refresh</button>
 <button class="btn btn-success" onclick="exportPOExcel()">⬇ Excel</button>
@@ -160,13 +155,22 @@ Asava-Arishta/Kashayas/Syrups: 200ml btl
 <div id="po-content"></div>
 </div>
 
+<!-- INVOICES -->
 <div id="tab-invoices" class="panel">
-<div class="toolbar no-print">
-<span style="font-size:12px;color:#555">Select a Purchase Order to generate its invoice:</span>
-</div>
 <div id="inv-po-list"></div>
 </div>
 
+<!-- INDENT -->
+<div id="tab-indent" class="panel">
+<div class="toolbar no-print">
+<button class="btn btn-purple" onclick="openIndentEditor()">📝 Create / Edit Indent</button>
+<button class="btn btn-success" onclick="exportIndentExcel()">⬇ Excel</button>
+<button class="btn btn-warning" onclick="printIndent()">🖨 Print Indent</button>
+</div>
+<div id="indent-preview"></div>
+</div>
+
+<!-- ANALYTICS -->
 <div id="tab-analytics" class="panel">
 <div class="toolbar">
 <select id="an-med" onchange="renderAnalytics()" style="width:290px"><option value="">-- Select medicine --</option></select>
@@ -174,68 +178,76 @@ Asava-Arishta/Kashayas/Syrups: 200ml btl
 <div id="analytics-content"></div>
 </div>
 
+<!-- LEGEND -->
 <div id="tab-legend" class="panel">
 <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:18px;max-width:660px">
 <h3 style="color:#1a3a5c;margin-bottom:12px;font-size:13px">Dispensing Logic & Unit Reference</h3>
-<table style="width:100%">
-<thead><tr><th>Category</th><th>Pack Size</th><th>% Patients</th><th>Est. Daily Packs</th></tr></thead>
-<tbody id="legend-table"></tbody>
-</table>
-<div style="margin-top:14px;font-size:11.5px;color:#555;line-height:1.9">
-<b>Formula:</b> Daily packs = Working days × Avg patients × Prevalence% × Med multiplier<br>
-<b>Opening stock</b> = Monthly avg × (Buffer days ÷ 30)<br>
-<b>PO qty</b> = Daily rate × 60 days (2 months supply)<br>
-<b>Low stock trigger:</b> Closing stock &lt; Daily rate × Threshold days
-</div>
+<table style="width:100%"><thead><tr><th>Category</th><th>Pack Size</th><th>% Patients</th><th>Est. Daily Packs</th></tr></thead>
+<tbody id="legend-table"></tbody></table>
 </div>
 </div>
 
 <!-- Invoice Modal -->
-<div id="inv-modal" class="inv-modal-bg" style="display:none">
-<div class="inv-modal">
-<div class="inv-modal-header no-print">
+<div id="inv-modal" class="modal-bg" style="display:none">
+<div class="modal-box">
+<div class="modal-header no-print">
 <h3 id="inv-modal-title">Invoice</h3>
-<div style="display:flex;gap:8px;align-items:center">
-<button class="btn btn-success no-print" onclick="printInvoice()">🖨 Print Invoice</button>
+<div style="display:flex;gap:7px;align-items:center">
+<button class="btn btn-success no-print" onclick="printInvoice()">🖨 Print</button>
 <button class="btn btn-success no-print" onclick="exportInvoiceExcel()">⬇ Excel</button>
-<button class="inv-close no-print" onclick="closeInvoice()">✕</button>
+<button class="modal-close no-print" onclick="closeModal('inv-modal')">✕</button>
 </div>
 </div>
-<div class="inv-modal-body">
-<!-- Editable controls -->
-<div id="inv-controls" class="no-print" style="background:#f8f9fa;border:1px solid #ddd;border-radius:4px;padding:12px;margin-bottom:14px">
-<div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Edit Prices & GST before generating invoice</div>
-<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;align-items:center">
-<div>
-<label style="font-size:11px;display:block;margin-bottom:3px">Invoice Date</label>
-<input type="date" id="inv-date" style="font-size:12px">
+<div class="modal-body">
+<div id="inv-controls" class="no-print" style="background:#f8f9fa;border:1px solid #ddd;border-radius:4px;padding:11px;margin-bottom:13px">
+<div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Edit Prices & GST</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:9px;align-items:flex-end">
+<div><label style="font-size:11px;display:block;margin-bottom:3px">Invoice Date</label><input type="date" id="inv-date"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:3px">Invoice Number</label><input type="text" id="inv-number" style="width:190px"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:3px">Default GST %</label>
+<select id="inv-gst-default"><option value="5">5%</option><option value="12" selected>12%</option></select></div>
+<button class="btn btn-primary" onclick="applyDefaultGST()">Apply GST to all</button>
+<button class="btn btn-primary" onclick="buildInvoiceDoc()">🔄 Refresh</button>
 </div>
-<div>
-<label style="font-size:11px;display:block;margin-bottom:3px">Invoice Number</label>
-<input type="text" id="inv-number" style="width:200px;font-size:12px">
+<div class="tbl-wrap" style="max-height:200px">
+<table><thead><tr><th>#</th><th>Medicine</th><th>Pack Unit</th><th>Qty</th><th>Rate/Pack (₹)</th><th>GST %</th></tr></thead>
+<tbody id="inv-price-body"></tbody></table>
 </div>
-<div>
-<label style="font-size:11px;display:block;margin-bottom:3px">Default GST %</label>
-<select id="inv-gst-default" onchange="applyDefaultGST()" style="font-size:12px">
-<option value="5">5%</option>
-<option value="12" selected>12%</option>
-</select>
 </div>
-<button class="btn btn-primary" style="margin-top:14px" onclick="applyDefaultGST()">Apply GST to all</button>
-<button class="btn btn-primary" style="margin-top:14px" onclick="buildInvoiceDoc()">🔄 Refresh Invoice</button>
+<div id="inv-doc-wrap"></div>
 </div>
-<div class="tbl-wrap" style="max-height:220px">
-<table id="inv-price-table">
+</div>
+</div>
+
+<!-- Indent Editor Modal -->
+<div id="indent-modal" class="modal-bg" style="display:none">
+<div class="modal-box" style="width:900px">
+<div class="modal-header no-print">
+<h3>📝 Department Indent Register — Assign Medicines to Departments</h3>
+<div style="display:flex;gap:7px">
+<button class="btn btn-success no-print" onclick="saveIndent()">✅ Save & Preview Indent</button>
+<button class="modal-close no-print" onclick="closeModal('indent-modal')">✕</button>
+</div>
+</div>
+<div class="modal-body">
+<div class="info-box no-print">
+For each medicine in the current Purchase Orders, assign the requesting department and indent quantity. A medicine may be assigned to multiple departments — add a row using the <b>+ Add Dept</b> button. Total assigned qty should not exceed the PO order quantity.
+</div>
+<div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-end" class="no-print">
+<div><label style="font-size:11px;display:block;margin-bottom:3px">Indent Number</label><input type="text" id="ind-number" style="width:190px"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:3px">Indent Date</label><input type="date" id="ind-date"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:3px">Filter by PO</label>
+<select id="ind-po-filter" onchange="buildIndentEditor()" style="width:180px"><option value="all">All POs</option></select></div>
+</div>
+<div class="tbl-wrap" style="max-height:55vh">
+<table id="indent-editor-table">
 <thead><tr>
-<th>#</th><th>Medicine</th><th>Pack Unit</th><th>Qty</th>
-<th>Rate/Pack (₹)</th><th>GST %</th>
+<th>#</th><th>Medicine</th><th>Category</th><th>Pack Unit</th><th>PO Ref</th>
+<th>PO Qty</th><th>Department</th><th>Indent Qty</th><th>Remarks</th><th class="no-print">Action</th>
 </tr></thead>
-<tbody id="inv-price-body"></tbody>
+<tbody id="indent-editor-body"></tbody>
 </table>
 </div>
-</div>
-<!-- Invoice document -->
-<div id="inv-doc-wrap"></div>
 </div>
 </div>
 </div>
@@ -243,11 +255,12 @@ Asava-Arishta/Kashayas/Syrups: 200ml btl
 <script>
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const SEASONAL=[1.05,0.97,1.00,0.92,1.08,1.12,1.10,1.05,1.00,1.03,1.08,1.15];
+const DEPTS=['Kayachikitsa','Shalya Tantra','Shalakya Tantra','Panchakarma','Kaumara Bhritya','Prasuti Tantra & Stri Roga','Agada Tantra'];
 const SUPPLIER_MAP={
   'CHURNAS':'SDM','KWATHA CHOORNAS':'SDM','GHRITAS':'AVN','LEHAS':'AVN',
-  'VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC',
-  'LINIMENTS':'ARC','GUGGULU':'IMI','ASAVA-ARISHTA':'VED',
-  'KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM','MISCELLANEOUS':'OTHER'
+  'VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC','LINIMENTS':'ARC',
+  'GUGGULU':'IMI','ASAVA-ARISHTA':'VED','KASHAYAS':'VED','SYRUP':'ARC',
+  'EXTERNAL USE':'SDM','MISCELLANEOUS':'OTHER'
 };
 const SUPPLIER_NAMES={
   'SDM':'SDM Pharmaceuticals, Udupi','AVN':'AVN Arogya Pvt Ltd, Coimbatore',
@@ -256,20 +269,13 @@ const SUPPLIER_NAMES={
   'NAG':'Nagarjuna Ayurvedic, Thrissur','OTHER':'Other Suppliers'
 };
 const CAT_RULES={
-  'CHURNAS':{prev:[0.25,0.30],unit:'50g pkt'},
-  'KWATHA CHOORNAS':{prev:[0.25,0.30],unit:'50g pkt'},
-  'GHRITAS':{prev:[0.25,0.30],unit:'150g jar'},
-  'LEHAS':{prev:[0.25,0.30],unit:'150g jar'},
-  'VATI/RASAS':{prev:[0.45,0.55],unit:'20 pills'},
-  'TAILAS':{prev:[0.25,0.30],unit:'100ml btl'},
-  'EYE MEDICINES':{prev:[0.05,0.10],unit:'5ml btl'},
-  'LINIMENTS':{prev:[0.10,0.15],unit:'100ml btl'},
-  'GUGGULU':{prev:[0.45,0.55],unit:'20 tabs'},
-  'ASAVA-ARISHTA':{prev:[0.25,0.30],unit:'200ml btl'},
-  'KASHAYAS':{prev:[0.20,0.28],unit:'200ml btl'},
-  'SYRUP':{prev:[0.10,0.18],unit:'200ml btl'},
-  'EXTERNAL USE':{prev:[0.05,0.10],unit:'100g/ml'},
-  'MISCELLANEOUS':{prev:[0.10,0.18],unit:'unit'}
+  'CHURNAS':{prev:[0.25,0.30],unit:'50g pkt'},'KWATHA CHOORNAS':{prev:[0.25,0.30],unit:'50g pkt'},
+  'GHRITAS':{prev:[0.25,0.30],unit:'150g jar'},'LEHAS':{prev:[0.25,0.30],unit:'150g jar'},
+  'VATI/RASAS':{prev:[0.45,0.55],unit:'20 pills'},'TAILAS':{prev:[0.25,0.30],unit:'100ml btl'},
+  'EYE MEDICINES':{prev:[0.05,0.10],unit:'5ml btl'},'LINIMENTS':{prev:[0.10,0.15],unit:'100ml btl'},
+  'GUGGULU':{prev:[0.45,0.55],unit:'20 tabs'},'ASAVA-ARISHTA':{prev:[0.25,0.30],unit:'200ml btl'},
+  'KASHAYAS':{prev:[0.20,0.28],unit:'200ml btl'},'SYRUP':{prev:[0.10,0.18],unit:'200ml btl'},
+  'EXTERNAL USE':{prev:[0.05,0.10],unit:'100g/ml'},'MISCELLANEOUS':{prev:[0.10,0.18],unit:'unit'}
 };
 const SMALL_PACK_TAILAS=['Anu Taila','Bilwa Taila','Kumkumadi Taila'];
 const MED_PREV_MULT={
@@ -291,12 +297,7 @@ const MED_PREV_MULT={
   'Haridra Khanda':0.2,'Vasa Avaleha':0.15,'Kushmanda Rasayana':0.15,
   'Bala Arishta':0.2,'Bala Taila':0.15,'Kshirabala Taila':0.2,
 };
-// Default price per pack (₹) — editable in invoice
-const DEFAULT_PRICES={
-  '50g pkt':45,'150g jar':180,'20 pills':35,'100ml btl':120,'10ml btl':40,
-  '20 tabs':38,'200ml btl':95,'5ml btl':60,'100g/ml':55,'unit':50
-};
-
+const DEFAULT_PRICES={'50g pkt':45,'150g jar':180,'20 pills':35,'100ml btl':120,'10ml btl':40,'20 tabs':38,'200ml btl':95,'5ml btl':60,'100g/ml':55,'unit':50};
 const MEDICINES=[
   {cat:'CHURNAS',name:'Ashwagandha Churna'},{cat:'CHURNAS',name:'Avipattikara Churna'},
   {cat:'CHURNAS',name:'Amalaki Churna'},{cat:'CHURNAS',name:'Abhaya Choorna'},
@@ -371,16 +372,15 @@ const MEDICINES=[
 ];
 
 function getUnit(med){
-  if(med.cat==='TAILAS'&&SMALL_PACK_TAILAS.includes(med.name)) return '10ml btl';
+  if(med.cat==='TAILAS'&&SMALL_PACK_TAILAS.includes(med.name))return '10ml btl';
   return (CAT_RULES[med.cat]||{unit:'unit'}).unit;
 }
-function seededRand(seed){
-  let s=seed%2147483647;if(s<=0)s+=2147483646;
-  return function(){s=s*16807%2147483647;return(s-1)/2147483646;};
-}
+function seededRand(seed){let s=seed%2147483647;if(s<=0)s+=2147483646;return function(){s=s*16807%2147483647;return(s-1)/2147483646;};}
 
 let medicines=[],stockData={},currentPOItems=null,currentPONum='';
-let invCounter=1;
+// Indent data: array of {rowId, medName, cat, unit, poRef, poQty, dept, indentQty, remarks}
+let indentRows=[];
+let indentSaved=false;
 
 function generateData(){
   const ptMin=parseInt(document.getElementById('pt-min').value)||130;
@@ -395,28 +395,28 @@ function generateData(){
   medicines.forEach(med=>{
     const rule=CAT_RULES[med.cat]||CAT_RULES['MISCELLANEOUS'];
     const [pLo,pHi]=rule.prev;
-    const basePrev=(pLo+pHi)/2;
-    const medMult=MED_PREV_MULT[med.name]||0.35;
-    const effPrev=basePrev*medMult;
+    const effPrev=(pLo+pHi)/2*(MED_PREV_MULT[med.name]||0.35);
     for(let m=0;m<12;m++){
-      const variation=1+(rand()-0.5)*(varPct/100)*2;
-      med.d[m]=Math.max(0,Math.round(avgPt*effPrev*SEASONAL[m]*variation*workDays));
+      const v=1+(rand()-0.5)*(varPct/100)*2;
+      med.d[m]=Math.max(0,Math.round(avgPt*effPrev*SEASONAL[m]*v*workDays));
     }
   });
   stockData={};
   medicines.forEach(med=>{
-    const monthlyAvg=med.d.reduce((a,b)=>a+b,0)/12;
-    const dailyRate=monthlyAvg/30;
-    const opening=Math.round(dailyRate*bufDays);
+    const avg=med.d.reduce((a,b)=>a+b,0)/12;
+    const dr=avg/30;
+    const opening=Math.round(dr*bufDays);
     let monthly=[];
     for(let m=0;m<12;m++){
       const op=m===0?opening:monthly[m-1].closing;
       monthly.push({opening:op,dispensed:med.d[m],closing:Math.max(0,op-med.d[m])});
     }
-    stockData[med.name]={opening,monthly,dailyRate,unit:getUnit(med)};
+    stockData[med.name]={opening,monthly,dailyRate:dr,unit:getUnit(med)};
   });
-  document.getElementById('gen-status').textContent=`✅ Data generated for ${medicines.length} medicines.`;
+  document.getElementById('gen-status').textContent=`✅ ${medicines.length} medicines generated.`;
   renderRegister();renderPO();renderInvoiceList();populateAnalyticsSelect();renderLegend();
+  indentRows=[];indentSaved=false;
+  renderIndentPreview();
 }
 
 function getCategories(){return[...new Set(MEDICINES.map(m=>m.cat))];}
@@ -432,7 +432,7 @@ function renderLegend(){
   document.getElementById('legend-table').innerHTML=getCategories().map(cat=>{
     const rule=CAT_RULES[cat]||{prev:[0.1,0.2],unit:'unit'};
     const [lo,hi]=rule.prev;
-    return `<tr><td>${cat}</td><td><span class="badge badge-blue">${rule.unit}</span></td><td>${Math.round(lo*100)}–${Math.round(hi*100)}%</td><td>~${Math.round((lo+hi)/2*140)} patients/day</td></tr>`;
+    return `<tr><td>${cat}</td><td><span class="badge badge-blue">${rule.unit}</span></td><td>${Math.round(lo*100)}–${Math.round(hi*100)}%</td><td>~${Math.round((lo+hi)/2*140)} packs/day</td></tr>`;
   }).join('');
 }
 
@@ -477,36 +477,31 @@ function renderRegister(){
     if(selCat!=='all'&&med.cat!==selCat)return;
     if(search&&!med.name.toLowerCase().includes(search))return;
     const sd=stockData[med.name];if(!sd)return;
-    const dr=sd.dailyRate;
-    const lastCl=sd.monthly[11].closing;
-    const daysLeft=dr>0?Math.round(lastCl/dr):999;
-    const status=daysLeft<minDays?'low':daysLeft<minDays*2?'watch':'ok';
-    if(lowOnly&&status!=='low')return;
+    const dr=sd.dailyRate,lastCl=sd.monthly[11].closing;
+    const dl=dr>0?Math.round(lastCl/dr):999;
+    const st=dl<minDays?'low':dl<minDays*2?'watch':'ok';
+    if(lowOnly&&st!=='low')return;
     n++;
-    if(med.cat!==lastCat&&selMonth==='all'){
-      html+=`<tr class="cat-row"><td colspan="${4+12*3+2}">▸ ${med.cat}</td></tr>`;
-      lastCat=med.cat;
-    }
-    html+=`<tr${status==='low'?' class="low-stock"':''}><td>${n}</td><td><b>${med.name}</b></td><td style="color:#555">${med.cat}</td><td><span class="badge badge-blue">${sd.unit}</span></td>`;
+    if(med.cat!==lastCat&&selMonth==='all'){html+=`<tr class="cat-row"><td colspan="${4+12*3+2}">▸ ${med.cat}</td></tr>`;lastCat=med.cat;}
+    html+=`<tr${st==='low'?' class="low-stock"':''}><td>${n}</td><td><b>${med.name}</b></td><td style="color:#555">${med.cat}</td><td><span class="badge badge-blue">${sd.unit}</span></td>`;
     if(selMonth==='all'){
       MONTHS.forEach((_,m)=>{const mo=sd.monthly[m];html+=`<td>${mo.opening.toLocaleString()}</td><td>${mo.dispensed.toLocaleString()}</td><td>${mo.closing.toLocaleString()}</td>`;});
-      const badge=status==='low'?'badge-red':status==='watch'?'badge-amber':'badge-green';
-      html+=`<td><b>${med.d.reduce((a,b)=>a+b,0).toLocaleString()}</b></td><td><span class="badge ${badge}">${status.toUpperCase()}</span></td>`;
+      const bg=st==='low'?'badge-red':st==='watch'?'badge-amber':'badge-green';
+      html+=`<td><b>${med.d.reduce((a,b)=>a+b,0).toLocaleString()}</b></td><td><span class="badge ${bg}">${st.toUpperCase()}</span></td>`;
     } else {
       const m=parseInt(selMonth),mo=sd.monthly[m];
       const dlm=dr>0?Math.round(mo.closing/dr):'-';
-      const badge=dr>0&&Math.round(mo.closing/dr)<minDays?'badge-red':dr>0&&Math.round(mo.closing/dr)<minDays*2?'badge-amber':'badge-green';
-      const lbl=dr>0&&Math.round(mo.closing/dr)<minDays?'LOW':dr>0&&Math.round(mo.closing/dr)<minDays*2?'WATCH':'OK';
-      html+=`<td>${mo.opening.toLocaleString()}</td><td>${mo.dispensed.toLocaleString()}</td><td>${mo.closing.toLocaleString()}</td><td>${dr>0?dr.toFixed(1):0}/day</td><td>${dlm}</td><td><span class="badge ${badge}">${lbl}</span></td>`;
+      const bg=dr>0&&Math.round(mo.closing/dr)<minDays?'badge-red':dr>0&&Math.round(mo.closing/dr)<minDays*2?'badge-amber':'badge-green';
+      const lb=dr>0&&Math.round(mo.closing/dr)<minDays?'LOW':dr>0&&Math.round(mo.closing/dr)<minDays*2?'WATCH':'OK';
+      html+=`<td>${mo.opening.toLocaleString()}</td><td>${mo.dispensed.toLocaleString()}</td><td>${mo.closing.toLocaleString()}</td><td>${dr>0?dr.toFixed(1):0}/day</td><td>${dlm}</td><td><span class="badge ${bg}">${lb}</span></td>`;
     }
     html+=`</tr>`;
   });
-  if(n===0)html+=`<tr><td colspan="20" style="text-align:center;padding:18px;color:#666">No records found.</td></tr>`;
+  if(n===0)html+=`<tr><td colspan="20" style="text-align:center;padding:16px;color:#666">No records found.</td></tr>`;
   html+='</tbody></table>';
   document.getElementById('reg-table').innerHTML=html;
 }
 
-// Build PO data structure
 function getPOData(){
   const minDays=parseInt(document.getElementById('min-days').value)||60;
   const bySupplier={};
@@ -540,7 +535,7 @@ function renderPO(){
       </div>
       <div style="display:flex;gap:6px;align-items:center">
         <span class="badge badge-red" style="font-size:11px">${items.length} items</span>
-        <button class="btn btn-info no-print" style="font-size:11px" onclick="openInvoice('${sup}','${poId}')">🧾 Generate Invoice</button>
+        <button class="btn btn-info no-print" style="font-size:11px" onclick="openInvoice('${sup}','${poId}')">🧾 Invoice</button>
       </div>
     </div>
     <table style="width:100%"><thead><tr>
@@ -555,8 +550,7 @@ function renderPO(){
         <td><span class="badge badge-blue">${item.unit}</span></td>
         <td>${item.currentStock.toLocaleString()}</td>
         <td><span class="badge ${item.daysLeft<15?'badge-red':'badge-amber'}">${item.daysLeft}d</span></td>
-        <td><b>${item.orderQty.toLocaleString()} packs</b></td>
-      </tr>`;
+        <td><b>${item.orderQty.toLocaleString()} packs</b></td></tr>`;
     });
     html+=`</tbody></table>
     <div style="font-size:11px;color:#555;margin-top:7px;text-align:right">Authorised by: _________________________ &nbsp; Principal, JAIN AGM AMC & H</div>
@@ -567,9 +561,259 @@ function renderPO(){
   document.getElementById('po-content').innerHTML=html;
 }
 
+// ——— INDENT ———
+let indentRowCounter=0;
+
+function openIndentEditor(){
+  const bySupplier=getPOData();
+  const allItems=[];
+  let poNum=1;
+  Object.keys(bySupplier).sort().forEach(sup=>{
+    const poId=`PO-JAGM-2025-${String(poNum).padStart(3,'0')}`;
+    bySupplier[sup].forEach(item=>{
+      allItems.push({...item,poRef:poId});
+    });
+    poNum++;
+  });
+
+  if(allItems.length===0){
+    alert('No purchase orders found. All medicines are adequately stocked.');return;
+  }
+
+  // Populate PO filter
+  const poSet=[...new Set(allItems.map(i=>i.poRef))];
+  const poSel=document.getElementById('ind-po-filter');
+  poSel.innerHTML='<option value="all">All POs</option>';
+  poSet.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;poSel.appendChild(o);});
+
+  // Pre-populate indent rows from allItems if empty
+  if(indentRows.length===0){
+    indentRows=allItems.map(item=>({
+      rowId:++indentRowCounter,
+      medName:item.name,cat:item.cat,unit:item.unit,
+      poRef:item.poRef,poQty:item.orderQty,
+      dept:DEPTS[0],indentQty:item.orderQty,remarks:''
+    }));
+  }
+
+  const today=new Date().toISOString().split('T')[0];
+  if(!document.getElementById('ind-date').value) document.getElementById('ind-date').value=today;
+  const indNum=`IND-JAGM-2025-${String(Object.keys(bySupplier).length).padStart(3,'0')}`;
+  if(!document.getElementById('ind-number').value) document.getElementById('ind-number').value=indNum;
+
+  buildIndentEditor();
+  document.getElementById('indent-modal').style.display='flex';
+}
+
+function buildIndentEditor(){
+  const filter=document.getElementById('ind-po-filter').value;
+  const rows=filter==='all'?indentRows:indentRows.filter(r=>r.poRef===filter);
+  const deptOptions=DEPTS.map(d=>`<option value="${d}">${d}</option>`).join('');
+  let html='';
+  rows.forEach(row=>{
+    // Calculate total assigned qty for this medicine across all rows
+    const totalAssigned=indentRows.filter(r=>r.medName===row.medName&&r.rowId!==row.rowId).reduce((s,r)=>s+(parseInt(r.indentQty)||0),0);
+    const remaining=row.poQty-totalAssigned;
+    html+=`<tr id="irow-${row.rowId}">
+      <td style="color:#555">${row.rowId}</td>
+      <td><b>${row.medName}</b></td>
+      <td style="color:#555;font-size:11px">${row.cat}</td>
+      <td><span class="badge badge-blue">${row.unit}</span></td>
+      <td><span class="badge badge-amber" style="font-size:10px">${row.poRef}</span></td>
+      <td style="text-align:right">${row.poQty.toLocaleString()}</td>
+      <td><select style="font-size:11px;width:170px" onchange="updateIndentRow(${row.rowId},'dept',this.value)">
+        ${DEPTS.map(d=>`<option value="${d}"${d===row.dept?' selected':''}>${d}</option>`).join('')}
+      </select></td>
+      <td><input type="number" style="width:70px;font-size:11px" value="${row.indentQty}" min="0" max="${remaining+parseInt(row.indentQty)||row.poQty}"
+        onchange="updateIndentRow(${row.rowId},'indentQty',this.value)"></td>
+      <td><input type="text" style="width:110px;font-size:11px" placeholder="Optional..." value="${row.remarks}"
+        onchange="updateIndentRow(${row.rowId},'remarks',this.value)"></td>
+      <td class="no-print">
+        <button class="btn btn-info" style="font-size:10px;padding:3px 7px" onclick="addDeptRow(${row.rowId})">+ Dept</button>
+        <button class="btn btn-danger" style="font-size:10px;padding:3px 7px;background:#8b0000;color:#fff;margin-left:3px" onclick="deleteIndentRow(${row.rowId})">✕</button>
+      </td>
+    </tr>`;
+  });
+  document.getElementById('indent-editor-body').innerHTML=html||'<tr><td colspan="10" style="text-align:center;padding:14px;color:#666">No items. All medicines adequately stocked.</td></tr>';
+}
+
+function updateIndentRow(rowId,field,value){
+  const row=indentRows.find(r=>r.rowId===rowId);
+  if(row) row[field]=field==='indentQty'?parseInt(value)||0:value;
+}
+
+function addDeptRow(sourceRowId){
+  const src=indentRows.find(r=>r.rowId===sourceRowId);
+  if(!src)return;
+  const newRow={rowId:++indentRowCounter,
+    medName:src.medName,cat:src.cat,unit:src.unit,
+    poRef:src.poRef,poQty:src.poQty,
+    dept:DEPTS[1]||DEPTS[0],indentQty:0,remarks:''};
+  const idx=indentRows.findIndex(r=>r.rowId===sourceRowId);
+  indentRows.splice(idx+1,0,newRow);
+  buildIndentEditor();
+}
+
+function deleteIndentRow(rowId){
+  indentRows=indentRows.filter(r=>r.rowId!==rowId);
+  buildIndentEditor();
+}
+
+function saveIndent(){
+  // Collect latest values from inputs before saving
+  indentRows.forEach(row=>{
+    const deptEl=document.querySelector(`#irow-${row.rowId} select`);
+    const qtyEl=document.querySelector(`#irow-${row.rowId} input[type=number]`);
+    const remEl=document.querySelector(`#irow-${row.rowId} input[type=text]`);
+    if(deptEl)row.dept=deptEl.value;
+    if(qtyEl)row.indentQty=parseInt(qtyEl.value)||0;
+    if(remEl)row.remarks=remEl.value;
+  });
+  indentSaved=true;
+  closeModal('indent-modal');
+  renderIndentPreview();
+}
+
+function renderIndentPreview(){
+  const el=document.getElementById('indent-preview');
+  if(!indentSaved||indentRows.length===0){
+    el.innerHTML=`<div style="padding:20px;background:#f8f9fa;border:1px solid #ddd;border-radius:6px;color:#666;text-align:center">
+      <div style="font-size:24px;margin-bottom:8px">📝</div>
+      <div style="font-weight:600;margin-bottom:6px">No indent created yet</div>
+      <div style="font-size:12px">Click <b>Create / Edit Indent</b> to assign medicines to departments, then save to preview the indent register here.</div>
+    </div>`;
+    return;
+  }
+  const indNum=document.getElementById('ind-number').value||'IND-JAGM-2025-001';
+  const indDate=document.getElementById('ind-date').value;
+  const dateStr=indDate?new Date(indDate).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+
+  // Group by dept for summary
+  const deptSummary={};
+  indentRows.forEach(r=>{
+    if(!deptSummary[r.dept])deptSummary[r.dept]=0;
+    deptSummary[r.dept]+=r.indentQty;
+  });
+
+  let rows='';
+  indentRows.forEach((row,i)=>{
+    rows+=`<tr>
+      <td style="text-align:center">${i+1}</td>
+      <td><b>${row.medName}</b></td>
+      <td>${row.cat}</td>
+      <td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 5px;border-radius:3px;font-size:10px">${row.unit}</span></td>
+      <td style="text-align:center"><span style="background:#fff3cd;color:#856404;padding:1px 5px;border-radius:3px;font-size:10px">${row.poRef}</span></td>
+      <td style="text-align:center">${row.poQty.toLocaleString()}</td>
+      <td style="text-align:center"><span style="background:#e8d5ff;color:#5a0099;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:700">${row.dept}</span></td>
+      <td style="text-align:center;font-weight:700">${row.indentQty.toLocaleString()}</td>
+      <td style="color:#666;font-size:11px">${row.remarks||'—'}</td>
+    </tr>`;
+  });
+
+  const sigBoxes=DEPTS.map(d=>`
+    <div class="sig-box">
+      <div style="margin-bottom:30px"></div>
+      <div style="font-weight:700">${d}</div>
+      <div style="font-size:10px;color:#555">Head of Department</div>
+    </div>`).join('');
+
+  el.innerHTML=`<div class="ind-doc" id="indent-doc-print">
+    <div style="text-align:center;border-bottom:2px solid #1a3a5c;padding-bottom:10px;margin-bottom:12px">
+      <h2>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h2>
+      <div style="font-size:12px;color:#555">Varur, Hubli — 581207, Karnataka | Ph: +91 836 000 0000</div>
+      <div style="font-size:14px;font-weight:700;margin-top:6px;color:#1a3a5c">DEPARTMENT MEDICINE INDENT REGISTER</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;font-size:11.5px">
+      <div><b>Indent No:</b> ${indNum}</div>
+      <div><b>Date:</b> ${dateStr}</div>
+      <div><b>Total Line Items:</b> ${indentRows.length}</div>
+    </div>
+    <div style="margin-bottom:10px;font-size:11px;color:#555">
+      <b>PO References:</b> ${[...new Set(indentRows.map(r=>r.poRef))].join(', ')}
+    </div>
+    <table>
+      <thead><tr>
+        <th style="width:30px;text-align:center">#</th>
+        <th>Medicine Name</th><th>Category</th>
+        <th style="text-align:center">Pack Unit</th>
+        <th style="text-align:center">PO Ref</th>
+        <th style="text-align:center">PO Qty</th>
+        <th>Department</th>
+        <th style="text-align:center">Indent Qty</th>
+        <th>Remarks</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <!-- Dept summary -->
+    <div style="margin-top:14px;margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:6px">Department-wise Summary</div>
+      <table style="width:auto;min-width:340px">
+        <thead><tr><th>Department</th><th style="text-align:right">Total Packs Indented</th></tr></thead>
+        <tbody>
+          ${Object.entries(deptSummary).map(([d,q])=>`<tr><td><span class="dept-tag">${d}</span></td><td style="text-align:right;font-weight:700">${q.toLocaleString()}</td></tr>`).join('')}
+          <tr style="background:#e8f0fe"><td><b>Grand Total</b></td><td style="text-align:right;font-weight:700">${Object.values(deptSummary).reduce((a,b)=>a+b,0).toLocaleString()}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Signatures -->
+    <div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:8px">HOD Signatures</div>
+    <div class="sig-row">${sigBoxes}</div>
+
+    <div style="margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="sig-box" style="border-top:1px solid #555;padding-top:7px;font-size:11px;text-align:center">
+        <div style="margin-bottom:30px"></div>
+        <div style="font-weight:700">Medical Superintendent</div>
+        <div style="font-size:10px;color:#555">JAIN AGM AMC & H</div>
+      </div>
+      <div class="sig-box" style="border-top:1px solid #555;padding-top:7px;font-size:11px;text-align:center">
+        <div style="margin-bottom:30px"></div>
+        <div style="font-weight:700">Pharmacist In-charge</div>
+        <div style="font-size:10px;color:#555">Hospital Pharmacy</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:8px">
+      Generated by JAIN AGM Pharmacy Management System | ${dateStr}
+    </div>
+  </div>`;
+}
+
+function printIndent(){
+  if(!indentSaved||indentRows.length===0){alert('Please create and save an indent first.');return;}
+  window.print();
+}
+
+function exportIndentExcel(){
+  if(!indentSaved||indentRows.length===0){alert('Please create and save an indent first.');return;}
+  const indNum=document.getElementById('ind-number').value||'IND-JAGM-2025-001';
+  const indDate=document.getElementById('ind-date').value;
+  const wb=XLSX.utils.book_new();
+  const hdr=[
+    ['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],
+    ['Department Medicine Indent Register'],
+    ['Indent No: '+indNum,'','','','Date: '+indDate],[''],
+    ['#','Medicine','Category','Pack Unit','PO Reference','PO Qty','Department','Indent Qty','Remarks']
+  ];
+  indentRows.forEach((row,i)=>{
+    hdr.push([i+1,row.medName,row.cat,row.unit,row.poRef,row.poQty,row.dept,row.indentQty,row.remarks||'']);
+  });
+  // Summary
+  hdr.push([''],['Department-wise Summary'],['Department','Total Packs']);
+  const deptSummary={};
+  indentRows.forEach(r=>{if(!deptSummary[r.dept])deptSummary[r.dept]=0;deptSummary[r.dept]+=r.indentQty;});
+  Object.entries(deptSummary).forEach(([d,q])=>hdr.push([d,q]));
+  hdr.push(['Grand Total',Object.values(deptSummary).reduce((a,b)=>a+b,0)]);
+  const ws=XLSX.utils.aoa_to_sheet(hdr);
+  ws['!cols']=[{wch:4},{wch:30},{wch:18},{wch:12},{wch:20},{wch:10},{wch:28},{wch:12},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,'Indent Register');
+  XLSX.writeFile(wb,`${indNum}_Indent_Register.xlsx`);
+}
+
+// ——— INVOICE ———
 function renderInvoiceList(){
   const bySupplier=getPOData();
-  let html='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:10px">';
+  let html='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px">';
   let poNum=1;
   Object.keys(bySupplier).sort().forEach(sup=>{
     const items=bySupplier[sup];
@@ -578,39 +822,33 @@ function renderInvoiceList(){
     html+=`<div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:13px">
       <div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:3px">🧾 ${invId}</div>
       <div style="font-size:11px;color:#555;margin-bottom:2px">PO Ref: ${poId}</div>
-      <div style="font-size:11px;color:#333;margin-bottom:8px">Supplier: ${SUPPLIER_NAMES[sup]||sup}</div>
+      <div style="font-size:11px;margin-bottom:8px">${SUPPLIER_NAMES[sup]||sup}</div>
       <div style="font-size:11px;color:#555;margin-bottom:10px">${items.length} line items</div>
-      <button class="btn btn-primary" style="font-size:11px;width:100%" onclick="openInvoice('${sup}','${poId}')">Open &amp; Edit Invoice →</button>
+      <button class="btn btn-primary" style="font-size:11px;width:100%" onclick="openInvoice('${sup}','${poId}')">Open Invoice →</button>
     </div>`;
     poNum++;
   });
   html+='</div>';
-  if(Object.keys(bySupplier).length===0) html='<div style="padding:18px;color:#666">No purchase orders to invoice. All stock levels are adequate.</div>';
+  if(Object.keys(bySupplier).length===0)html='<div style="padding:18px;color:#666">No purchase orders to invoice.</div>';
   document.getElementById('inv-po-list').innerHTML=html;
 }
 
 function openInvoice(sup,poId){
   currentPOItems=getPOData()[sup]||[];
   currentPONum=poId;
-  const invNum=poId.replace('PO-','INV-');
-  const today=new Date().toISOString().split('T')[0];
-  document.getElementById('inv-date').value=today;
-  document.getElementById('inv-number').value=invNum;
-  document.getElementById('inv-modal-title').textContent=`Invoice — ${invNum} | ${SUPPLIER_NAMES[sup]||sup}`;
-
-  // Build price table
+  document.getElementById('inv-number').value=poId.replace('PO-','INV-');
+  document.getElementById('inv-date').value=new Date().toISOString().split('T')[0];
+  document.getElementById('inv-modal-title').textContent=`Invoice — ${poId.replace('PO-','INV-')}`;
   let pbHtml='';
   currentPOItems.forEach((item,i)=>{
     const defPrice=DEFAULT_PRICES[item.unit]||50;
-    pbHtml+=`<tr>
-      <td>${i+1}</td><td><b>${item.name}</b></td>
+    pbHtml+=`<tr><td>${i+1}</td><td><b>${item.name}</b></td>
       <td><span class="badge badge-blue">${item.unit}</span></td>
       <td>${item.orderQty.toLocaleString()}</td>
       <td><input type="number" class="price-input" id="price-${i}" value="${defPrice}" min="1" oninput="buildInvoiceDoc()"></td>
-      <td><select class="gst-select" id="gst-${i}" onchange="buildInvoiceDoc()">
+      <td><select id="gst-${i}" onchange="buildInvoiceDoc()">
         <option value="5">5%</option><option value="12" selected>12%</option>
-      </select></td>
-    </tr>`;
+      </select></td></tr>`;
   });
   document.getElementById('inv-price-body').innerHTML=pbHtml;
   buildInvoiceDoc();
@@ -619,169 +857,132 @@ function openInvoice(sup,poId){
 
 function applyDefaultGST(){
   const gst=document.getElementById('inv-gst-default').value;
-  currentPOItems.forEach((_,i)=>{
-    const el=document.getElementById(`gst-${i}`);
-    if(el) el.value=gst;
-  });
+  currentPOItems.forEach((_,i)=>{const el=document.getElementById(`gst-${i}`);if(el)el.value=gst;});
   buildInvoiceDoc();
 }
 
 function buildInvoiceDoc(){
   const invNum=document.getElementById('inv-number').value;
   const invDate=document.getElementById('inv-date').value;
-  const dateFormatted=invDate?new Date(invDate).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
-  const dueDate=invDate?new Date(new Date(invDate).getTime()+30*86400000).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
-
+  const dateFmt=invDate?new Date(invDate).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
+  const dueFmt=invDate?new Date(new Date(invDate).getTime()+30*86400000).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
   let rows='',subtotal=0,totalGST=0;
   currentPOItems.forEach((item,i)=>{
     const price=parseFloat(document.getElementById(`price-${i}`)?.value)||0;
     const gstPct=parseFloat(document.getElementById(`gst-${i}`)?.value)||12;
-    const qty=item.orderQty;
-    const base=price*qty;
-    const gstAmt=base*gstPct/100;
-    const total=base+gstAmt;
+    const base=price*item.orderQty,gstAmt=base*gstPct/100;
     subtotal+=base;totalGST+=gstAmt;
     rows+=`<tr>
       <td>${i+1}</td><td>${item.name}</td><td style="color:#555">${item.cat}</td>
       <td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 5px;border-radius:3px;font-size:10px">${item.unit}</span></td>
-      <td style="text-align:right">${qty.toLocaleString()}</td>
+      <td style="text-align:right">${item.orderQty.toLocaleString()}</td>
       <td style="text-align:right">₹${price.toFixed(2)}</td>
       <td style="text-align:right">₹${base.toFixed(2)}</td>
       <td style="text-align:center">${gstPct}%</td>
       <td style="text-align:right">₹${gstAmt.toFixed(2)}</td>
-      <td style="text-align:right"><b>₹${total.toFixed(2)}</b></td>
-    </tr>`;
+      <td style="text-align:right"><b>₹${(base+gstAmt).toFixed(2)}</b></td></tr>`;
   });
-  const grandTotal=subtotal+totalGST;
+  const grand=subtotal+totalGST;
   function toWords(n){
     const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
     const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-    function convert(num){
+    function cv(num){
       if(num===0)return'';if(num<20)return a[num]+' ';
       if(num<100)return b[Math.floor(num/10)]+' '+(num%10?a[num%10]+' ':'');
-      if(num<1000)return a[Math.floor(num/100)]+' Hundred '+(num%100?convert(num%100):'');
-      if(num<100000)return convert(Math.floor(num/1000))+'Thousand '+convert(num%1000);
-      if(num<10000000)return convert(Math.floor(num/100000))+'Lakh '+convert(num%100000);
-      return convert(Math.floor(num/10000000))+'Crore '+convert(num%10000000);
+      if(num<1000)return a[Math.floor(num/100)]+' Hundred '+(num%100?cv(num%100):'');
+      if(num<100000)return cv(Math.floor(num/1000))+'Thousand '+cv(num%1000);
+      if(num<10000000)return cv(Math.floor(num/100000))+'Lakh '+cv(num%100000);
+      return cv(Math.floor(num/10000000))+'Crore '+cv(num%10000000);
     }
-    const r=Math.round(n);return(convert(r)||'Zero')+' Rupees Only';
+    return(cv(Math.round(n))||'Zero')+' Rupees Only';
   }
-
   document.getElementById('inv-doc-wrap').innerHTML=`
   <div class="inv-doc">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a3a5c;padding-bottom:12px;margin-bottom:12px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid #1a3a5c;padding-bottom:11px;margin-bottom:11px">
       <div>
-        <div style="font-size:18px;font-weight:700;color:#1a3a5c">TAX INVOICE</div>
+        <div style="font-size:17px;font-weight:700;color:#1a3a5c">TAX INVOICE</div>
         <div style="font-size:13px;font-weight:700;margin-top:3px">Astanga Wellness Distributors</div>
-        <div style="font-size:11px;color:#555;line-height:1.8">Vidyanagar, Hubli, Karnataka — 580021<br>
-        GSTIN: 29AAPCA9132R1ZP<br>
-        Phone: +91 836 000 0000 | Email: info@astangawellness.com</div>
+        <div style="font-size:11px;color:#555;line-height:1.8">Vidyanagar, Hubli, Karnataka — 580021<br>GSTIN: 29AAPCA9132R1ZP<br>Phone: +91 836 000 0000</div>
       </div>
       <div style="text-align:right">
         <div style="font-size:12px;font-weight:700;color:#1a3a5c">Invoice No: ${invNum}</div>
-        <div style="font-size:11px;color:#555;margin-top:3px">Date: ${dateFormatted}</div>
-        <div style="font-size:11px;color:#555">Due Date: ${dueDate}</div>
+        <div style="font-size:11px;color:#555;margin-top:3px">Date: ${dateFmt}</div>
+        <div style="font-size:11px;color:#555">Due Date: ${dueFmt}</div>
         <div style="font-size:11px;color:#555">PO Ref: ${currentPONum}</div>
         <div style="font-size:11px;color:#555">Payment Terms: Net 30 Days</div>
       </div>
     </div>
     <div class="inv-grid">
-      <div class="inv-box">
-        <strong>Bill To / Ship To</strong><br>
-        Principal & Head of Institution<br>
-        JAIN AGM Ayurvedic Medical College & Hospital<br>
-        Varur, Dharwad Road, Hubli — 581207<br>
-        Karnataka, India
-      </div>
-      <div class="inv-box">
-        <strong>Supplier Details</strong><br>
-        Astanga Wellness Distributors<br>
-        Vidyanagar, Hubli — 580021<br>
-        GSTIN: 29AAPCA9132R1ZP<br>
-        State: Karnataka (Code 29)
-      </div>
+      <div class="inv-box"><strong>Bill To / Ship To</strong><br>Principal & Head of Institution<br>JAIN AGM Ayurvedic Medical College & Hospital<br>Varur, Dharwad Road, Hubli — 581207<br>Karnataka, India</div>
+      <div class="inv-box"><strong>Supplier</strong><br>Astanga Wellness Distributors<br>Vidyanagar, Hubli — 580021<br>GSTIN: 29AAPCA9132R1ZP<br>State: Karnataka (Code 29)</div>
     </div>
     <table>
       <thead><tr>
-        <th style="width:30px">#</th><th>Medicine / Product</th><th>Category</th>
-        <th style="width:80px">Pack Unit</th><th style="width:50px;text-align:right">Qty</th>
-        <th style="width:70px;text-align:right">Rate (₹)</th>
-        <th style="width:80px;text-align:right">Base Amt (₹)</th>
-        <th style="width:45px;text-align:center">GST</th>
-        <th style="width:75px;text-align:right">GST Amt (₹)</th>
-        <th style="width:80px;text-align:right">Total (₹)</th>
+        <th style="width:28px">#</th><th>Medicine</th><th>Category</th>
+        <th style="width:75px;text-align:center">Pack Unit</th>
+        <th style="width:48px;text-align:right">Qty</th>
+        <th style="width:68px;text-align:right">Rate (₹)</th>
+        <th style="width:78px;text-align:right">Base (₹)</th>
+        <th style="width:42px;text-align:center">GST</th>
+        <th style="width:72px;text-align:right">GST Amt</th>
+        <th style="width:78px;text-align:right">Total (₹)</th>
       </tr></thead>
       <tbody>${rows}</tbody>
     </table>
     <div class="inv-totals">
-      <table style="width:100%">
-        <tr><td>Subtotal (before GST)</td><td style="text-align:right">₹${subtotal.toFixed(2)}</td></tr>
-        <tr><td>Total GST</td><td style="text-align:right">₹${totalGST.toFixed(2)}</td></tr>
-        <tr class="grand"><td><b>Grand Total</b></td><td style="text-align:right"><b>₹${grandTotal.toFixed(2)}</b></td></tr>
-      </table>
+      <table><tr><td>Subtotal</td><td style="text-align:right">₹${subtotal.toFixed(2)}</td></tr>
+      <tr><td>Total GST</td><td style="text-align:right">₹${totalGST.toFixed(2)}</td></tr>
+      <tr class="grand"><td><b>Grand Total</b></td><td style="text-align:right"><b>₹${grand.toFixed(2)}</b></td></tr></table>
     </div>
     <div style="clear:both;font-size:11px;color:#333;background:#f8f9fa;border:1px solid #eee;border-radius:3px;padding:7px 10px;margin-bottom:10px">
-      <b>Amount in words:</b> ${toWords(grandTotal)}
+      <b>Amount in words:</b> ${toWords(grand)}
     </div>
     <div class="inv-footer">
-      <div>
-        <b>Terms & Conditions</b><br>
-        1. Payment due within 30 days of invoice date.<br>
-        2. Goods once sold will not be taken back except for quality issues.<br>
-        3. All disputes subject to Hubli jurisdiction.
-      </div>
-      <div style="text-align:right">
-        <div style="margin-bottom:40px">For <b>Astanga Wellness Distributors</b></div>
-        <div>Authorised Signatory</div>
-        <div class="inv-watermark">✓ Generated by JAIN AGM Pharmacy System</div>
-      </div>
+      <div><b>Terms & Conditions</b><br>1. Payment due within 30 days.<br>2. Goods once sold not returnable except for quality issues.<br>3. Disputes subject to Hubli jurisdiction.</div>
+      <div style="text-align:right"><div style="margin-bottom:36px">For <b>Astanga Wellness Distributors</b></div><div>Authorised Signatory</div></div>
     </div>
   </div>`;
 }
 
 function printInvoice(){window.print();}
-
 function exportInvoiceExcel(){
   if(!currentPOItems)return;
   const invNum=document.getElementById('inv-number').value;
   const invDate=document.getElementById('inv-date').value;
   const wb=XLSX.utils.book_new();
-  const hdr=[['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],
-    ['TAX INVOICE'],['Invoice No: '+invNum,'','','','Date: '+invDate],
+  const hdr=[['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],['TAX INVOICE'],
+    ['Invoice No: '+invNum,'','','','Date: '+invDate],
     ['Supplier: Astanga Wellness Distributors, Vidyanagar, Hubli'],
     ['GSTIN: 29AAPCA9132R1ZP','','','','PO Ref: '+currentPONum],[''],
-    ['#','Medicine','Category','Pack Unit','Qty','Rate/Pack (₹)','Base Amount (₹)','GST %','GST Amount (₹)','Total (₹)']
-  ];
-  let subtotal=0,totalGST=0;
+    ['#','Medicine','Category','Pack Unit','Qty','Rate (₹)','Base Amt (₹)','GST %','GST Amt (₹)','Total (₹)']];
+  let sub=0,tgst=0;
   currentPOItems.forEach((item,i)=>{
     const price=parseFloat(document.getElementById(`price-${i}`)?.value)||0;
     const gstPct=parseFloat(document.getElementById(`gst-${i}`)?.value)||12;
-    const base=price*item.orderQty;
-    const gstAmt=base*gstPct/100;
-    subtotal+=base;totalGST+=gstAmt;
+    const base=price*item.orderQty,gstAmt=base*gstPct/100;
+    sub+=base;tgst+=gstAmt;
     hdr.push([i+1,item.name,item.cat,item.unit,item.orderQty,price.toFixed(2),base.toFixed(2),gstPct+'%',gstAmt.toFixed(2),(base+gstAmt).toFixed(2)]);
   });
-  hdr.push(['','','','','','','Subtotal','','',subtotal.toFixed(2)]);
-  hdr.push(['','','','','','','Total GST','','',totalGST.toFixed(2)]);
-  hdr.push(['','','','','','','GRAND TOTAL','','',( subtotal+totalGST).toFixed(2)]);
-  hdr.push([''],['Payment Terms: Net 30 Days'],['This is a computer-generated invoice.']);
+  hdr.push(['','','','','','','Subtotal','','',sub.toFixed(2)]);
+  hdr.push(['','','','','','','Total GST','','',tgst.toFixed(2)]);
+  hdr.push(['','','','','','','GRAND TOTAL','','',( sub+tgst).toFixed(2)]);
+  hdr.push([''],['Payment Terms: Net 30 Days']);
   const ws=XLSX.utils.aoa_to_sheet(hdr);
   ws['!cols']=[{wch:4},{wch:30},{wch:18},{wch:12},{wch:8},{wch:12},{wch:16},{wch:8},{wch:14},{wch:14}];
   XLSX.utils.book_append_sheet(wb,ws,'Invoice');
   XLSX.writeFile(wb,`${invNum}.xlsx`);
 }
 
-function closeInvoice(){document.getElementById('inv-modal').style.display='none';}
+function closeModal(id){document.getElementById(id).style.display='none';}
 
 function exportExcel(){
   const wb=XLSX.utils.book_new();
   const cover=[['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],['Pharmacy Drug Stock Register — 2025'],
     ['Varur, Hubli, Karnataka'],['Generated: '+new Date().toLocaleDateString('en-IN')],[''],
-    ['All quantities in packing units. Churnas: 50g pkt | Ghritas/Lehas: 150g jar | Vati/Rasas: 20 pills'],
-    ['Tailas: 100ml btl (Anu/Bilwa/Kumkumadi: 10ml) | Guggulu: 20 tabs | Asava-Arishta/Kashayas: 200ml btl']];
+    ['All quantities in packing units.']];
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(cover),'Cover');
   const hdr=['#','Medicine','Category','Pack Unit','Jan 1 Opening'];
-  MONTHS.forEach(m=>{hdr.push(`${m} Opening`,`${m} Dispensed`,`${m} Closing`);});
+  MONTHS.forEach(m=>{hdr.push(`${m} Open`,`${m} Disp`,`${m} Close`);});
   hdr.push('Annual Total','Daily Rate');
   const rows=[hdr];
   medicines.forEach((med,i)=>{
@@ -800,7 +1001,7 @@ function exportExcel(){
 function exportPOExcel(){
   const bySupplier=getPOData();
   const wb=XLSX.utils.book_new();
-  const hdr=['PO Number','Supplier','Medicine','Category','Pack Unit','Current Stock','Days Left','Order Qty (2 months)'];
+  const hdr=['PO Number','Supplier','Medicine','Category','Pack Unit','Current Stock','Days Left','Order Qty'];
   const rows=[hdr];let poNum=1;
   Object.keys(bySupplier).sort().forEach(sup=>{
     bySupplier[sup].sort((a,b)=>a.daysLeft-b.daysLeft).forEach(item=>{
@@ -808,7 +1009,7 @@ function exportPOExcel(){
     });poNum++;
   });
   const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:22},{wch:34},{wch:32},{wch:18},{wch:12},{wch:14},{wch:10},{wch:20}];
+  ws['!cols']=[{wch:22},{wch:34},{wch:32},{wch:18},{wch:12},{wch:14},{wch:10},{wch:14}];
   XLSX.utils.book_append_sheet(wb,ws,'Purchase Orders');
   XLSX.writeFile(wb,'JAIN_AGM_Purchase_Orders_2025.xlsx');
 }
@@ -827,7 +1028,7 @@ function renderAnalytics(){
   const maxD=Math.max(...med.d,1);
   let bars='';
   MONTHS.forEach((mn,i)=>{
-    const w=Math.round((med.d[i]/maxD)*330);
+    const w=Math.round((med.d[i]/maxD)*320);
     bars+=`<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
       <div style="width:28px;font-size:11px;text-align:right;color:#555">${mn}</div>
       <div style="width:${w}px;min-width:2px;height:15px;background:#1a3a5c;border-radius:2px"></div>
@@ -835,16 +1036,16 @@ function renderAnalytics(){
   });
   const total=med.d.reduce((a,b)=>a+b,0);
   document.getElementById('analytics-content').innerHTML=`
-  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:15px;max-width:560px">
+  <div style="background:#fff;border:1px solid #ddd;border-radius:6px;padding:15px;max-width:540px">
     <h3 style="color:#1a3a5c;margin-bottom:2px;font-size:13px">${med.name}</h3>
-    <div style="font-size:11px;color:#666;margin-bottom:13px">${med.cat} | <span class="badge badge-blue">${sd.unit}</span></div>
+    <div style="font-size:11px;color:#666;margin-bottom:12px">${med.cat} | <span class="badge badge-blue">${sd.unit}</span></div>
     <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
-      <div class="stat-card"><div class="stat-num" style="font-size:17px">${total.toLocaleString()}</div><div class="stat-lbl">Annual packs</div></div>
+      <div class="stat-card"><div class="stat-num" style="font-size:17px">${total.toLocaleString()}</div><div class="stat-lbl">Annual</div></div>
       <div class="stat-card"><div class="stat-num" style="font-size:17px">${Math.round(total/12).toLocaleString()}</div><div class="stat-lbl">Monthly avg</div></div>
       <div class="stat-card"><div class="stat-num" style="font-size:17px">${sd.dailyRate.toFixed(1)}</div><div class="stat-lbl">Packs/day</div></div>
       <div class="stat-card"><div class="stat-num" style="font-size:17px">${sd.opening.toLocaleString()}</div><div class="stat-lbl">Jan 1 stock</div></div>
     </div>
-    <div style="font-size:12px;font-weight:700;margin-bottom:8px">Monthly Dispensing</div>${bars}
+    <div style="font-size:12px;font-weight:700;margin-bottom:7px">Monthly Dispensing</div>${bars}
   </div>`;
 }
 
@@ -854,6 +1055,7 @@ function showTab(t,el){
   document.getElementById('tab-'+t).classList.add('active');
   el.classList.add('active');
   if(t==='invoices')renderInvoiceList();
+  if(t==='indent')renderIndentPreview();
 }
 
 populateFilters();
