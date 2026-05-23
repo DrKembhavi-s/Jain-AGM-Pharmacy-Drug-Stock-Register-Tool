@@ -194,12 +194,26 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 
 <!-- INDENT -->
 <div id="tab-indent" class="panel">
-<div class="toolbar no-print">
-<button class="btn btn-purple btn-sm" onclick="openIndentEditor()">📝 Create / Edit Indent</button>
-<button class="btn btn-success btn-sm" onclick="exportIndentExcel()">⬇ Excel</button>
-<button class="btn btn-warning btn-sm" onclick="printIndent()">🖨 Print</button>
+<div class="subtabs">
+<div class="subtab active" onclick="showSubTab('indent','opd',this)">🏥 OPD Indent</div>
+<div class="subtab" onclick="showSubTab('indent','ipd',this)">🛏 IPD Indent</div>
 </div>
-<div id="indent-preview"></div>
+<div id="indent-opd" class="subpanel active">
+<div class="toolbar no-print">
+<button class="btn btn-purple btn-sm" onclick="openIndentEditor('OPD')">📝 Create / Edit OPD Indent</button>
+<button class="btn btn-success btn-sm" onclick="exportIndentExcel('OPD')">⬇ Excel</button>
+<button class="btn btn-warning btn-sm" onclick="printIndent('OPD')">🖨 Print</button>
+</div>
+<div id="indent-preview-OPD"></div>
+</div>
+<div id="indent-ipd" class="subpanel">
+<div class="toolbar no-print">
+<button class="btn btn-purple btn-sm" onclick="openIndentEditor('IPD')">📝 Create / Edit IPD Indent</button>
+<button class="btn btn-success btn-sm" onclick="exportIndentExcel('IPD')">⬇ Excel</button>
+<button class="btn btn-warning btn-sm" onclick="printIndent('IPD')">🖨 Print</button>
+</div>
+<div id="indent-preview-IPD"></div>
+</div>
 </div>
 
 <!-- MEDICINE LIST -->
@@ -301,7 +315,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <div id="indent-modal" class="modal-bg" style="display:none">
 <div class="modal-box" style="width:920px">
 <div class="modal-header no-print">
-<h3>📝 Dept. Indent — Assign Medicines to Departments</h3>
+<h3 id="indent-modal-title">📝 Dept. Indent</h3>
 <div style="display:flex;gap:6px">
 <button class="btn btn-success btn-sm no-print" onclick="saveIndent()">✅ Save & Preview</button>
 <button class="modal-close no-print" onclick="closeModal('indent-modal')">✕</button>
@@ -309,8 +323,10 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 </div>
 <div class="modal-body">
 <div style="display:flex;gap:9px;margin-bottom:9px;flex-wrap:wrap;align-items:flex-end" class="no-print">
-<div><label style="font-size:11px;display:block;margin-bottom:2px">Indent No</label><input type="text" id="ind-number" style="width:180px"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:2px">Indent No</label><input type="text" id="ind-number" style="width:200px"></div>
 <div><label style="font-size:11px;display:block;margin-bottom:2px">Date</label><input type="date" id="ind-date"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:2px">Type</label>
+<input type="text" id="ind-type-display" readonly style="width:70px;background:#e8f0fe;font-weight:700;color:#1a3a5c;text-align:center"></div>
 <div><label style="font-size:11px;display:block;margin-bottom:2px">Filter PO</label>
 <select id="ind-po-filter" onchange="buildIndentEditor()" style="width:160px"><option value="all">All POs</option></select></div>
 </div>
@@ -707,7 +723,10 @@ let openingStock={2025:{},2026:{}};
 let unitOverrides={};  // {medName: {type, number}}
 let poHistory=[];
 let currentPOItems=null,currentPONum='';
-let indentRows=[],indentSaved=false,indentRowCounter=0;
+let indentRows={OPD:[],IPD:[]};
+let indentSaved={OPD:false,IPD:false};
+let indentRowCounter=0;
+let currentIndentType='OPD';
 let editMode=false;
 
 // ── STORAGE ──
@@ -1207,8 +1226,9 @@ function exportInvoiceExcel(){
   XLSX.writeFile(wb,`${invNum}.xlsx`);
 }
 
-// ── INDENT (FIXED) ──
-function openIndentEditor(){
+// ── INDENT (OPD/IPD) ──
+function openIndentEditor(type){
+  currentIndentType=type;
   const yr=parseInt(document.getElementById('reg-year')?document.getElementById('reg-year').value:CY)||CY;
   const allItems=[];const byS=getAutoPOData();let n=1;
   Object.keys(byS).sort().forEach(sup=>{
@@ -1216,35 +1236,36 @@ function openIndentEditor(){
     byS[sup].forEach(item=>allItems.push({name:item.name,cat:item.cat,unitType:item.unitType,unitNum:item.unitNum,poRef:poId,poQty:item.orderQty}));n++;
   });
   poHistory.forEach(po=>po.items.forEach(item=>allItems.push({name:item.name,cat:item.cat,unitType:item.unitType||getUnitType(item.name,item.cat),unitNum:item.unitNum||getUnitNum(item.name,item.cat),poRef:po.id,poQty:item.orderQty})));
-  if(!allItems.length){alert('No POs found.');return;}
+  if(!allItems.length){alert('No POs found. Generate a PO first.');return;}
 
   const poSet=[...new Set(allItems.map(i=>i.poRef))];
   const ps=document.getElementById('ind-po-filter');
   ps.innerHTML='<option value="all">All POs</option>';
   poSet.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;ps.appendChild(o);});
 
-  // Always rebuild indent rows fresh from current PO items
+  // Rebuild rows fresh for this type
   indentRowCounter=0;
-  indentRows=allItems.map(item=>({
+  indentRows[type]=allItems.map(item=>({
     rowId:++indentRowCounter,
     medName:item.name,cat:item.cat,
     unitType:item.unitType,unitNum:item.unitNum,
     poRef:item.poRef,poQty:item.poQty,
-    dept:'', // blank — user selects
-    indentQty:item.poQty,remarks:''
+    dept:'',indentQty:item.poQty,remarks:''
   }));
 
   const t=new Date();
   document.getElementById('ind-date').value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
-  document.getElementById('ind-number').value=`IND-JAGM-${yr}-001`;
+  document.getElementById('ind-number').value=`IND-JAGM-${type}-${yr}-001`;
+  document.getElementById('ind-type-display').value=type;
+  document.getElementById('indent-modal-title').textContent=`📝 ${type} Dept. Indent — Assign Medicines to Departments`;
   buildIndentEditor();
   document.getElementById('indent-modal').style.display='flex';
 }
 
 function buildIndentEditor(){
+  const type=currentIndentType;
   const filter=document.getElementById('ind-po-filter').value;
-  const rows=filter==='all'?indentRows:indentRows.filter(r=>r.poRef===filter);
-  const deptOptions=DEPTS.map(d=>`<option value="${d}">${d}</option>`).join('');
+  const rows=(filter==='all'?indentRows[type]:indentRows[type].filter(r=>r.poRef===filter))||[];
   document.getElementById('indent-editor-body').innerHTML=rows.map(row=>`
     <tr id="irow-${row.rowId}">
       <td>${row.rowId}</td><td><b>${row.medName}</b></td>
@@ -1267,18 +1288,27 @@ function buildIndentEditor(){
     </tr>`).join('')||'<tr><td colspan="10" style="text-align:center;padding:12px;color:#666">No items.</td></tr>';
 }
 
-function updateIR(id,f,v){const r=indentRows.find(x=>x.rowId===id);if(r)r[f]=f==='indentQty'?parseInt(v)||0:v;}
+function updateIR(id,f,v){
+  const type=currentIndentType;
+  const r=indentRows[type].find(x=>x.rowId===id);
+  if(r)r[f]=f==='indentQty'?parseInt(v)||0:v;
+}
 function addDR(sid){
-  const s=indentRows.find(r=>r.rowId===sid);if(!s)return;
+  const type=currentIndentType;
+  const s=indentRows[type].find(r=>r.rowId===sid);if(!s)return;
   const nr={rowId:++indentRowCounter,medName:s.medName,cat:s.cat,unitType:s.unitType,unitNum:s.unitNum,poRef:s.poRef,poQty:s.poQty,dept:'',indentQty:0,remarks:''};
-  indentRows.splice(indentRows.findIndex(r=>r.rowId===sid)+1,0,nr);
+  indentRows[type].splice(indentRows[type].findIndex(r=>r.rowId===sid)+1,0,nr);
   buildIndentEditor();
 }
-function delDR(id){indentRows=indentRows.filter(r=>r.rowId!==id);buildIndentEditor();}
+function delDR(id){
+  const type=currentIndentType;
+  indentRows[type]=indentRows[type].filter(r=>r.rowId!==id);
+  buildIndentEditor();
+}
 
 function saveIndent(){
-  // Collect latest values from DOM
-  indentRows.forEach(row=>{
+  const type=currentIndentType;
+  indentRows[type].forEach(row=>{
     const sel=document.querySelector(`#irow-${row.rowId} select`);
     const qi=document.querySelector(`#irow-${row.rowId} input[type=number]`);
     const ri=document.querySelector(`#irow-${row.rowId} input[type=text]`);
@@ -1286,20 +1316,29 @@ function saveIndent(){
     if(qi)row.indentQty=parseInt(qi.value)||0;
     if(ri)row.remarks=ri.value;
   });
-  indentSaved=true;closeModal('indent-modal');renderIndentPreview();
+  indentSaved[type]=true;
+  closeModal('indent-modal');
+  renderIndentPreview(type);
 }
 
-function renderIndentPreview(){
-  const el=document.getElementById('indent-preview');
-  if(!indentSaved||!indentRows.length){
-    el.innerHTML=`<div style="padding:18px;background:#f8f9fa;border:1px solid #ddd;border-radius:5px;color:#666;text-align:center"><div style="font-size:22px;margin-bottom:6px">📝</div><div style="font-weight:600;margin-bottom:5px">No indent created yet</div><div style="font-size:12px">Click <b>Create / Edit Indent</b> to begin.</div></div>`;return;
+function renderIndentPreview(type){
+  const elId=`indent-preview-${type}`;
+  const el=document.getElementById(elId);
+  if(!el)return;
+  const rows=indentRows[type]||[];
+  if(!indentSaved[type]||!rows.length){
+    el.innerHTML=`<div style="padding:18px;background:#f8f9fa;border:1px solid #ddd;border-radius:5px;color:#666;text-align:center">
+      <div style="font-size:22px;margin-bottom:6px">${type==='OPD'?'🏥':'🛏'}</div>
+      <div style="font-weight:600;margin-bottom:5px">No ${type} indent created yet</div>
+      <div style="font-size:12px">Click <b>Create / Edit ${type} Indent</b> to begin.</div></div>`;
+    return;
   }
-  const indNum=document.getElementById('ind-number').value||'IND-JAGM-001';
+  const indNum=document.getElementById('ind-number').value||`IND-JAGM-${type}-001`;
   const indDate=document.getElementById('ind-date').value;
   const ds=indDate?new Date(indDate+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
   const deptSum={};
-  indentRows.forEach(r=>{const d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
-  const rows=indentRows.map((r,i)=>`<tr>
+  rows.forEach(r=>{const d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
+  const tableRows=rows.map((r,i)=>`<tr>
     <td style="text-align:center">${i+1}</td><td><b>${r.medName}</b></td>
     <td style="font-size:10px">${r.cat}</td>
     <td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 4px;border-radius:3px;font-size:10px">${r.unitType||'-'}</span></td>
@@ -1309,53 +1348,69 @@ function renderIndentPreview(){
     <td><span class="dept-tag">${r.dept||'<i>Unassigned</i>'}</span></td>
     <td style="text-align:center;font-weight:700">${r.indentQty.toLocaleString()}</td>
     <td style="color:#666;font-size:11px">${r.remarks||'—'}</td></tr>`).join('');
-  const sigs=DEPTS.map(d=>`<div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">${d}</div><div style="font-size:10px;color:#555">Head of Department</div></div>`).join('');
+  const sigs=DEPTS.map(d=>`<div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">${d}</div><div style="font-size:10px;color:#555">HOD — ${type}</div></div>`).join('');
+  const typeColor=type==='OPD'?'#1a3a5c':'#6b3fa0';
+  const typeBadge=`<span style="background:${type==='OPD'?'#cce5ff':'#e8d5ff'};color:${typeColor};padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700">${type}</span>`;
   el.innerHTML=`<div class="ind-doc">
-    <div style="text-align:center;border-bottom:2px solid #1a3a5c;padding-bottom:9px;margin-bottom:10px">
-      <h2 style="font-size:15px;color:#1a3a5c">JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h2>
+    <div style="text-align:center;border-bottom:2px solid ${typeColor};padding-bottom:9px;margin-bottom:10px">
+      <h2 style="font-size:15px;color:${typeColor}">JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h2>
       <div style="font-size:11px;color:#555">Varur, Hubli — 581207, Karnataka</div>
-      <div style="font-size:13px;font-weight:700;margin-top:5px;color:#1a3a5c">DEPARTMENT MEDICINE INDENT REGISTER</div>
+      <div style="font-size:13px;font-weight:700;margin-top:5px;color:${typeColor}">DEPARTMENT MEDICINE INDENT REGISTER — ${typeBadge}</div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px">
-      <div><b>Indent No:</b> ${indNum}</div><div><b>Date:</b> ${ds}</div><div><b>Items:</b> ${indentRows.length}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px">
+      <div><b>Indent No:</b> ${indNum}</div>
+      <div><b>Date:</b> ${ds}</div>
+      <div><b>Type:</b> ${typeBadge}</div>
+      <div><b>Items:</b> ${rows.length}</div>
     </div>
-    <div style="margin-bottom:9px;font-size:11px;color:#555"><b>PO Refs:</b> ${[...new Set(indentRows.map(r=>r.poRef))].join(', ')}</div>
+    <div style="margin-bottom:9px;font-size:11px;color:#555"><b>PO Refs:</b> ${[...new Set(rows.map(r=>r.poRef))].join(', ')}</div>
     <table><thead><tr>
       <th style="width:28px;text-align:center">#</th><th>Medicine</th><th>Category</th>
       <th style="text-align:center">Unit Type</th><th style="text-align:center">Number</th>
       <th style="text-align:center">PO Ref</th><th style="text-align:center">PO Qty</th>
       <th>Department</th><th style="text-align:center">Indent Qty</th><th>Remarks</th>
-    </tr></thead><tbody>${rows}</tbody></table>
+    </tr></thead><tbody>${tableRows}</tbody></table>
     <div style="margin-top:12px;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:5px">Dept-wise Summary</div>
+      <div style="font-size:12px;font-weight:700;color:${typeColor};margin-bottom:5px">Dept-wise Summary (${type})</div>
       <table style="width:auto;min-width:300px"><thead><tr><th>Department</th><th style="text-align:right">Total</th></tr></thead>
       <tbody>${Object.entries(deptSum).map(([d,q])=>`<tr><td><span class="dept-tag">${d}</span></td><td style="text-align:right;font-weight:700">${q.toLocaleString()}</td></tr>`).join('')}
       <tr style="background:#e8f0fe"><td><b>Grand Total</b></td><td style="text-align:right;font-weight:700">${Object.values(deptSum).reduce((a,b)=>a+b,0).toLocaleString()}</td></tr></tbody></table>
     </div>
-    <div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:7px">HOD Signatures</div>
+    <div style="font-size:12px;font-weight:700;color:${typeColor};margin-bottom:7px">HOD Signatures (${type})</div>
     <div class="sig-row">${sigs}</div>
     <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
-      <div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Medical Superintendent</div></div>
-      <div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Pharmacist In-charge</div></div>
+      <div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Medical Superintendent</div><div style="font-size:10px;color:#555">JAIN AGM AMC & H</div></div>
+      <div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Pharmacist In-charge</div><div style="font-size:10px;color:#555">Hospital Pharmacy</div></div>
     </div>
-    <div style="margin-top:10px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:7px">Generated by JAIN AGM Pharmacy Management System | ${ds}</div>
+    <div style="margin-top:10px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:7px">Generated by JAIN AGM Pharmacy Management System | ${ds} | ${type} Register</div>
   </div>`;
 }
 
-function printIndent(){if(!indentSaved||!indentRows.length){alert('Create and save indent first.');return;}window.print();}
-function exportIndentExcel(){
-  if(!indentSaved||!indentRows.length){alert('Create indent first.');return;}
-  const indNum=document.getElementById('ind-number').value||'IND-001';
+function printIndent(type){
+  if(!indentSaved[type]||!(indentRows[type]||[]).length){alert(`Create and save the ${type} indent first.`);return;}
+  window.print();
+}
+
+function exportIndentExcel(type){
+  if(!indentSaved[type]||!(indentRows[type]||[]).length){alert(`Create ${type} indent first.`);return;}
+  const rows=indentRows[type];
+  const indNum=document.getElementById('ind-number').value||`IND-JAGM-${type}-001`;
   const wb=XLSX.utils.book_new();
-  const hdr=[['JAIN AGM — Dept. Indent Register'],['Indent No: '+indNum],[],
-    ['#','Medicine','Category','Unit Type','Number','PO Ref','PO Qty','Department','Indent Qty','Remarks']];
-  indentRows.forEach((r,i)=>hdr.push([i+1,r.medName,r.cat,r.unitType||'',r.unitNum||'',r.poRef,r.poQty,r.dept||'Unassigned',r.indentQty,r.remarks||'']));
-  const deptSum={};indentRows.forEach(r=>{const d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
-  hdr.push([],[],['Department-wise Summary'],['Department','Total']);
+  const hdr=[
+    [`JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL`],
+    [`Department Medicine Indent Register — ${type}`],
+    ['Indent No: '+indNum],[],
+    ['#','Medicine','Category','Unit Type','Number','PO Ref','PO Qty','Department','Indent Qty','Remarks']
+  ];
+  rows.forEach((r,i)=>hdr.push([i+1,r.medName,r.cat,r.unitType||'',r.unitNum||'',r.poRef,r.poQty,r.dept||'Unassigned',r.indentQty,r.remarks||'']));
+  const deptSum={};rows.forEach(r=>{const d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
+  hdr.push([],[],['Department-wise Summary'],['Department','Total Packs']);
   Object.entries(deptSum).forEach(([d,q])=>hdr.push([d,q]));
   hdr.push(['Grand Total',Object.values(deptSum).reduce((a,b)=>a+b,0)]);
-  const ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,'Indent');
-  XLSX.writeFile(wb,`${indNum}_Indent.xlsx`);
+  const ws=XLSX.utils.aoa_to_sheet(hdr);
+  ws['!cols']=[{wch:4},{wch:30},{wch:16},{wch:10},{wch:8},{wch:20},{wch:10},{wch:28},{wch:12},{wch:20}];
+  XLSX.utils.book_append_sheet(wb,ws,`${type} Indent`);
+  XLSX.writeFile(wb,`${indNum}_${type}_Indent.xlsx`);
 }
 
 // ── MEDICINE LIST ──
