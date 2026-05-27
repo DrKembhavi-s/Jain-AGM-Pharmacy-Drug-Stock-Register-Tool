@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>JAIN AGM Pharmacy Drug Stock Register Tool</title>
+<title>JAIN AGM Pharmacy Drug Stock Register</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -11,11 +11,14 @@ body{font-family:Arial,sans-serif;font-size:13px;background:#f0f2f5;color:#222}
 header{background:#1a3a5c;color:#fff;padding:10px 16px}
 header h1{font-size:13px;font-weight:700}
 header p{font-size:11px;opacity:.75;margin-top:2px}
+.backup-bar{background:#2c5282;color:#fff;padding:5px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.backup-bar span{font-size:11px;opacity:.85}
+#backup-status{font-size:11px;color:#9ae6b4}
 .tabs{display:flex;background:#fff;border-bottom:2px solid #1a3a5c;padding:0 12px;overflow-x:auto}
 .tab{padding:8px 12px;cursor:pointer;font-size:12px;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
 .tab.active{border-bottom-color:#e67e00;font-weight:700;color:#1a3a5c}
 .tab:hover{background:#f5f7fa}
-.subtabs{display:flex;gap:0;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;overflow:hidden;width:fit-content}
+.subtabs{display:flex;margin-bottom:10px;border:1px solid #ddd;border-radius:4px;overflow:hidden;width:fit-content}
 .subtab{padding:6px 14px;cursor:pointer;font-size:12px;background:#f8f9fa;border-right:1px solid #ddd;white-space:nowrap}
 .subtab:last-child{border-right:none}
 .subtab.active{background:#1a3a5c;color:#fff;font-weight:700}
@@ -51,8 +54,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 .stat-lbl{font-size:11px;color:#666;margin-top:2px}
 .low-stock{background:#fff8f8}
 .po-card{background:#fff;border:1px solid #ddd;border-radius:5px;padding:12px;margin-bottom:10px}
-.po-title{font-size:13px;font-weight:700;color:#1a3a5c}
-.gen-box{background:#fff;border:1px solid #ddd;border-radius:5px;padding:16px;max-width:540px}
+.gen-box{background:#fff;border:1px solid #ddd;border-radius:5px;padding:14px;max-width:540px;margin-bottom:12px}
 .gen-box h3{color:#1a3a5c;margin-bottom:8px;font-size:13px}
 .gen-row{margin-bottom:8px;display:flex;align-items:center;gap:10px}
 .gen-row label{width:220px;font-size:12px}
@@ -82,10 +84,9 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 .inv-totals td{border:none!important;padding:2px 5px!important}
 .inv-totals .grand{font-weight:700;font-size:13px;color:#1a3a5c;border-top:1px solid #ccc!important}
 .inv-footer{clear:both;border-top:1px solid #ddd;padding-top:9px;margin-top:9px;font-size:11px;color:#555;display:flex;justify-content:space-between}
-.price-input{width:68px}
 .dept-tag{display:inline-block;padding:1px 5px;border-radius:8px;font-size:10px;font-weight:700;margin:1px;background:#e8d5ff;color:#5a0099}
 @media print{
-  .tabs,.toolbar,.no-print,header p,.subtabs{display:none!important}
+  .tabs,.toolbar,.no-print,header p,.subtabs,.backup-bar{display:none!important}
   .tbl-wrap{max-height:none;border:none}
   body{background:#fff}
   .modal-bg{position:static;background:none;padding:0}
@@ -97,8 +98,16 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <body>
 <header>
 <h1>🏥 JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL — PHARMACY MANAGEMENT SYSTEM</h1>
-<p>Stock Register | Purchase Orders | Invoices | Dept. Indent | FY <span id="fy-label"></span> | Varur, Hubli</p>
+<p>Stock Register | Purchase Orders | Invoices | Dept. Indent (OPD/IPD) | FY <span id="fy-label"></span> | Varur, Hubli</p>
 </header>
+
+<div class="backup-bar no-print">
+<span>💾 Data Backup:</span>
+<button class="btn btn-success btn-sm" onclick="exportAllData()">⬇ Export All Data</button>
+<label class="btn btn-warning btn-sm" style="cursor:pointer;margin:0">📂 Restore Backup<input type="file" accept=".json" onchange="importAllData(event)" style="display:none"></label>
+<span id="backup-status"></span>
+</div>
+
 <div class="tabs">
 <div class="tab active" onclick="showTab('register',this)">📋 Stock Register</div>
 <div class="tab" onclick="showTab('generator',this)">⚙️ Settings</div>
@@ -123,8 +132,8 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <button class="btn btn-warning btn-sm" onclick="window.print()">🖨 Print</button>
 </div>
 <div id="edit-hint" style="font-size:11px;color:#1a7a4a;margin-bottom:6px;display:none">
-  ✏️ Edit mode ON — <span style="background:#fffde7;border:1px dashed #f0a500;padding:1px 4px;border-radius:2px">yellow</span> = stock/dispensed &nbsp;
-  <span style="background:#f0fff4;border:1px dashed #1a7a4a;padding:1px 4px;border-radius:2px">green</span> = unit type &amp; number. Click any cell to edit.
+✏️ Edit ON — <span style="background:#fffde7;border:1px dashed #f0a500;padding:1px 4px;border-radius:2px">yellow</span>=stock/dispensed &nbsp;
+<span style="background:#f0fff4;border:1px dashed #1a7a4a;padding:1px 4px;border-radius:2px">green</span>=unit type/number
 </div>
 <div class="tbl-wrap" id="reg-table"></div>
 </div>
@@ -133,10 +142,12 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <div id="tab-generator" class="panel">
 <div class="gen-box">
 <h3>⚙️ Settings</h3>
-<div class="info-box">Actual dispensed data from hospital records (2025 full year, 2026 Jan–Apr).<br>Use Edit Mode in the register to update opening stock, dispensed quantities, unit type and number.</div>
+<div class="info-box">Actual dispensed data loaded from hospital records (2025 full year, 2026 Jan–Apr).<br>
+Bais Ayurveda Bhawan invoice (May 2026) and Kottakkal invoice (May 2026) pre-loaded.<br>
+Use Edit Mode in the register to update opening stock and dispensed quantities.</div>
 <div class="gen-row"><label>Min stock threshold (days)</label><input type="number" id="min-days" value="60" style="width:60px"></div>
 <div class="gen-row"><label>PO order period (months)</label><input type="number" id="po-months" value="2" style="width:60px"></div>
-<button class="btn btn-danger btn-sm" style="margin-top:6px" onclick="resetAllData()">🔄 Reset All Data</button>
+<button class="btn btn-danger btn-sm" style="margin-top:6px" onclick="resetAllData()">🔄 Reset to Default Data</button>
 <div id="gen-status" style="font-size:12px;color:#1a7a4a;margin-top:8px"></div>
 </div>
 </div>
@@ -176,8 +187,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 </div>
 <div class="tbl-wrap"><table>
 <thead><tr><th><input type="checkbox" id="chk-all" onchange="toggleAllManual(this)"></th>
-<th>#</th><th>Medicine</th><th>Category</th><th>Unit Type</th><th>Number</th>
-<th>Closing Stock</th><th>Daily Rate</th><th>Order Qty</th></tr></thead>
+<th>#</th><th>Medicine</th><th>Category</th><th>Unit Type</th><th>Number</th><th>Closing Stock</th><th>Daily Rate</th><th>Order Qty</th></tr></thead>
 <tbody id="manual-po-body"></tbody></table></div>
 </div>
 <div id="po-history" class="subpanel">
@@ -218,7 +228,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 
 <!-- MEDICINE LIST -->
 <div id="tab-medicines" class="panel">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:860px">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:860px">
 <div class="gen-box">
 <h3>➕ Add New Medicine</h3>
 <div class="gen-row"><label>Medicine Name</label><input type="text" id="new-med-name" style="width:190px" placeholder="e.g. Brahmi Churna"></div>
@@ -236,13 +246,13 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 </select></div>
 <div class="gen-row" id="new-cat-row" style="display:none"><label>New Category</label><input type="text" id="new-cat-name" style="width:190px"></div>
 <div class="gen-row"><label>Unit Type</label>
-<select id="new-med-unittype" style="width:190px">
+<select id="new-med-unittype" onchange="toggleNewUnitType()" style="width:190px">
 <option value="gm">gm</option><option value="ml">ml</option>
 <option value="Tablets">Tablets</option><option value="Capsules">Capsules</option>
 <option value="unit">unit</option><option value="Other">Other</option>
 </select></div>
-<div class="gen-row" id="new-unittype-other-row" style="display:none"><label>Custom Unit Type</label><input type="text" id="new-med-unittype-other" style="width:190px" placeholder="e.g. Drops"></div>
-<div class="gen-row"><label>Number (qty per pack/dispensing)</label><input type="number" id="new-med-number" value="1" min="1" style="width:80px"></div>
+<div class="gen-row" id="new-unittype-other-row" style="display:none"><label>Custom Unit Type</label><input type="text" id="new-med-unittype-other" style="width:190px"></div>
+<div class="gen-row"><label>Number (qty per pack)</label><input type="number" id="new-med-number" value="1" min="1" style="width:80px"></div>
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
 <button class="btn btn-success btn-sm" onclick="addMedicine()">➕ Add</button>
 <button class="btn btn-warning btn-sm" onclick="exportMedList()">⬇ Export JSON</button>
@@ -250,25 +260,22 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 </div>
 <div id="add-med-status" style="font-size:11px;margin-top:7px"></div>
 </div>
+<div>
 <div class="gen-box">
 <h3>📂 Import Dispensed Data (Excel)</h3>
-<div class="info-box" style="font-size:11px">Upload Excel with dispensed data. Sheet names should contain "2025" or "2026". Col 0 = Medicine name, Col 1–12 = Jan–Dec quantities.</div>
-<label class="btn btn-primary btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:8px">📂 Choose File
-<input type="file" accept=".xlsx,.xls" onchange="importExcelData(event)" style="display:none"></label>
+<div class="info-box" style="font-size:11px">Sheet names must contain "2025" or "2026". Col 0=Medicine name, Col 1–12=Jan–Dec quantities.</div>
+<label class="btn btn-primary btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:6px">📂 Choose File<input type="file" accept=".xlsx,.xls" onchange="importExcelData(event)" style="display:none"></label>
 <div id="import-status" style="font-size:11px;margin-top:4px"></div>
 </div>
-
-<div class="gen-box" style="margin-top:12px;border-color:#1a7a4a">
+<div class="gen-box" style="border-color:#1a7a4a">
 <h3 style="color:#1a7a4a">🧾 Import Supplier Invoice (JSON)</h3>
-<div class="info-box" style="font-size:11px;background:#f0fff4;border-color:#9ae6b4">
-  Upload a supplier invoice JSON file to automatically:<br>
-  • Add new medicines to the medicine list<br>
-  • Update opening stock for existing medicines<br>
-  Works with Bais, Kottakkal, and any invoice JSON in the standard format.
+<div class="info-box" style="background:#f0fff4;border-color:#9ae6b4;font-size:11px">
+Upload a supplier invoice JSON to add new medicines and update stock automatically.<br>
+Works with Bais, Kottakkal, and any invoice in standard format.
 </div>
-<label class="btn btn-success btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:8px">📂 Upload Invoice JSON
-<input type="file" accept=".json" onchange="importInvoiceJSON(event)" style="display:none"></label>
+<label class="btn btn-success btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:6px">📂 Upload Invoice JSON<input type="file" accept=".json" onchange="importInvoiceJSON(event)" style="display:none"></label>
 <div id="invoice-import-status" style="font-size:11px;margin-top:4px"></div>
+</div>
 </div>
 </div>
 <div style="margin-top:12px">
@@ -339,19 +346,17 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <div><label style="font-size:11px;display:block;margin-bottom:2px">Indent No</label><input type="text" id="ind-number" style="width:200px"></div>
 <div><label style="font-size:11px;display:block;margin-bottom:2px">Date</label><input type="date" id="ind-date"></div>
 <div><label style="font-size:11px;display:block;margin-bottom:2px">Type</label>
-<input type="text" id="ind-type-display" readonly style="width:70px;background:#e8f0fe;font-weight:700;color:#1a3a5c;text-align:center"></div>
+<input type="text" id="ind-type-display" readonly style="width:60px;background:#e8f0fe;font-weight:700;color:#1a3a5c;text-align:center"></div>
 <div><label style="font-size:11px;display:block;margin-bottom:2px">Filter PO</label>
 <select id="ind-po-filter" onchange="buildIndentEditor()" style="width:160px"><option value="all">All POs</option></select></div>
 </div>
 <div class="tbl-wrap" style="max-height:52vh">
-<table id="indent-editor-table">
-<thead><tr>
+<table><thead><tr>
 <th>#</th><th>Medicine</th><th>Category</th><th>Unit</th><th>PO Ref</th>
 <th>PO Qty</th><th>Department</th><th>Indent Qty</th><th>Remarks</th>
 <th class="no-print">Action</th>
 </tr></thead>
-<tbody id="indent-editor-body"></tbody>
-</table>
+<tbody id="indent-editor-body"></tbody></table>
 </div>
 </div>
 </div>
@@ -361,23 +366,14 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const CY=new Date().getFullYear();
 const DEPTS=['Kayachikitsa','Shalya Tantra','Shalakya Tantra','Panchakarma','Kaumara Bhritya','Prasuti Tantra & Stri Roga','Agada Tantra'];
-const UNIT_TYPES=['gm','ml','Tablets','Capsules','unit','Other'];
 const SUPPLIER_MAP={'CHURNAS':'SDM','KWATHA CHOORNAS':'SDM','GHRITAS':'AVN','LEHAS':'AVN','VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC','LINIMENTS':'ARC','GUGGULU':'IMI','ASAVA-ARISHTA':'VED','KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM','OINTMENTS':'ARC','MISCELLANEOUS':'OTHER'};
 const SUPPLIER_NAMES={'SDM':'SDM Pharmaceuticals, Udupi','AVN':'AVN Arogya Pvt Ltd, Coimbatore','SNA':'Shankar Narayan Ayurvedic, Pune','ARC':'Arco Lab, Bengaluru','IMI':'Impcops, Chennai','VED':'Veda Pharma, Mysuru','NAG':'Nagarjuna Ayurvedic, Thrissur','OTHER':'Other Suppliers'};
+const CAT_UNIT_TYPE={'CHURNAS':'gm','KWATHA CHOORNAS':'gm','GHRITAS':'gm','LEHAS':'gm','VATI/RASAS':'Tablets','TAILAS':'ml','EYE MEDICINES':'ml','LINIMENTS':'gm','GUGGULU':'Tablets','ASAVA-ARISHTA':'ml','KASHAYAS':'ml','SYRUP':'ml','EXTERNAL USE':'gm','OINTMENTS':'gm','MISCELLANEOUS':'unit'};
+const CAT_UNIT_NUM={'CHURNAS':25,'KWATHA CHOORNAS':25,'GHRITAS':150,'LEHAS':150,'VATI/RASAS':0,'TAILAS':100,'EYE MEDICINES':5,'LINIMENTS':30,'GUGGULU':0,'ASAVA-ARISHTA':200,'KASHAYAS':200,'SYRUP':200,'EXTERNAL USE':25,'OINTMENTS':25,'MISCELLANEOUS':1};
+const SMALL_PACK_TAILAS=['Anu Taila','Bilwa Taila','Kumkumadi Taila'];
 const DEFAULT_PRICES={'gm':0.5,'ml':0.8,'Tablets':2,'Capsules':3,'unit':50,'Other':10};
 
-// Default unit type and number per category
-const CAT_UNIT_TYPE={'CHURNAS':'gm','KWATHA CHOORNAS':'gm','GHRITAS':'gm','LEHAS':'gm',
-  'VATI/RASAS':'Tablets','TAILAS':'ml','EYE MEDICINES':'ml','LINIMENTS':'gm',
-  'GUGGULU':'Tablets','ASAVA-ARISHTA':'ml','KASHAYAS':'ml','SYRUP':'ml',
-  'EXTERNAL USE':'gm','OINTMENTS':'gm','MISCELLANEOUS':'unit'};
-const CAT_UNIT_NUM={'CHURNAS':25,'KWATHA CHOORNAS':25,'GHRITAS':150,'LEHAS':150,
-  'VATI/RASAS':0,'TAILAS':100,'EYE MEDICINES':5,'LINIMENTS':30,
-  'GUGGULU':0,'ASAVA-ARISHTA':200,'KASHAYAS':200,'SYRUP':200,
-  'EXTERNAL USE':25,'OINTMENTS':25,'MISCELLANEOUS':1};
-const SMALL_PACK_TAILAS=['Anu Taila','Bilwa Taila','Kumkumadi Taila'];
-
-// ═══ ACTUAL DISPENSED DATA ═══
+// ═══════════════════ DISPENSED DATA 2025 ═══════════════════
 const RAW_2025={
 'Ashwagandha Churna':[170,205,6357,100,1134,151,2259,5412,4884,3834,2915,5250],
 'Avipattikara Churna':[1755,9301,3952,522,1372,527,4393,5176,6390,8536,6366,4730],
@@ -554,6 +550,7 @@ const RAW_2025={
 'White Ointment':[35,3,1,22,23,0,63,3,26,0,0,0]
 };
 
+// ═══════════════════ DISPENSED DATA 2026 ═══════════════════
 const RAW_2026={
 'Ashwagandha Churna':[3652,9844,6357,11965,0,0,0,0,0,0,0,0],
 'Avipattikara Churna':[7815,9301,3952,4911,0,0,0,0,0,0,0,0],
@@ -618,20 +615,20 @@ const RAW_2026={
 'Pachaka Vati':[240,100,70,610,0,0,0,0,0,0,0,0],
 'Pathyadi Ghanavati':[0,50,145,0,0,0,0,0,0,0,0,0],
 'Pravala Panchamrtha':[0,0,90,51,0,0,0,0,0,0,0,0],
-'Punarnava Mandura':[3755,3500,2090,3055,0,0,0,0,0,0,0,0],
+'Punarnava Mandura':[3755,3500,2090,3055,1000,0,0,0,0,0,0,0],
 'Rajapravartini Vati':[650,990,561,660,0,0,0,0,0,0,0,0],
 'Rasayana Vati':[1010,1230,310,530,0,0,0,0,0,0,0,0],
-'Saptamrita Loha':[2000,2812,1051,1102,0,0,0,0,0,0,0,0],
+'Saptamrita Loha':[2000,2812,1051,1102,500,0,0,0,0,0,0,0],
 'Shaddharana Vati':[210,680,410,460,0,0,0,0,0,0,0,0],
 'Sudarshana Ghanavati':[310,1140,560,540,0,0,0,0,0,0,0,0],
-'Swasakutara Rasa':[590,790,480,361,0,0,0,0,0,0,0,0],
+'Swasakutara Rasa':[590,790,480,361,700,0,0,0,0,0,0,0],
 'Tribhuvana Keerti Rasa':[2490,2616,1161,2151,0,0,0,0,0,0,0,0],
 'Varunadi Kashaya Tab':[1703,1658,230,393,0,0,0,0,0,0,0,0],
 'Manasamitra Vati':[1040,1431,1101,842,0,0,0,0,0,0,0,0],
 'Amavatari Rasa':[1775,877,440,671,0,0,0,0,0,0,0,0],
-'Gandhravahastyadi Ks. Tab':[0,1,801,30,0,0,0,0,0,0,0,0],
-'Prasarinyadi Ks. Tab':[166,638,190,71,0,0,0,0,0,0,0,0],
-'Sahacharadi Ks. Tab':[42,50,209,367,0,0,0,0,0,0,0,0],
+'Gandhravahastyadi Ks. Tab':[0,1,801,30,20,0,0,0,0,0,0,0],
+'Prasarinyadi Ks. Tab':[166,638,190,71,200,0,0,0,0,0,0,0],
+'Sahacharadi Ks. Tab':[42,50,209,367,200,0,0,0,0,0,0,0],
 'Goutex Tab':[130,210,70,420,0,0,0,0,0,0,0,0],
 'Nirocil Tab':[20,430,190,20,0,0,0,0,0,0,0,0],
 'Pilocid Tab':[80,30,0,0,0,0,0,0,0,0,0,0],
@@ -655,133 +652,253 @@ const RAW_2026={
 'Narayana Taila':[280,1663,5,538,0,0,0,0,0,0,0,0],
 'Sandhilin Liniment':[0,0,0,0,0,0,0,0,0,0,0,0],
 'Rhumapar Liniment':[0,0,30,0,0,0,0,0,0,0,0,0],
-'Kaishora Guggulu':[5020,6005,2910,3862,0,0,0,0,0,0,0,0],
-'Kanchanara Guggulu':[7735,7515,3540,6071,0,0,0,0,0,0,0,0],
+'Kaishora Guggulu':[5020,6005,2910,3862,500,0,0,0,0,0,0,0],
+'Kanchanara Guggulu':[7735,7515,3540,6071,500,0,0,0,0,0,0,0],
 'Navaka Guggulu':[140,560,90,300,0,0,0,0,0,0,0,0],
 'Nimbadi Guggulu':[121,280,450,320,0,0,0,0,0,0,0,0],
-'Simhanada Guggulu':[1060,1240,1010,1340,0,0,0,0,0,0,0,0],
-'Trayodashanga Guggulu':[7380,5582,2971,4173,0,0,0,0,0,0,0,0],
+'Simhanada Guggulu':[1060,1240,1010,1340,500,0,0,0,0,0,0,0],
+'Trayodashanga Guggulu':[7380,5582,2971,4173,250,0,0,0,0,0,0,0],
 'Triphala Guggulu':[19312,18495,10024,15362,0,0,0,0,0,0,0,0],
 'Yogaraja Guggulu':[19521,16590,10377,743,0,0,0,0,0,0,0,0],
-'Abhaya Arishta':[1936,2013,408,219,0,0,0,0,0,0,0,0],
-'Amrita Arishta':[193,662,267,75,0,0,0,0,0,0,0,0],
-'Aragwada Arishta':[56,22,125,30,0,0,0,0,0,0,0,0],
+'Abhaya Arishta':[1936,2013,408,219,25,0,0,0,0,0,0,0],
+'Amrita Arishta':[193,662,267,75,25,0,0,0,0,0,0,0],
+'Aragwada Arishta':[56,22,125,30,25,0,0,0,0,0,0,0],
 'Arjuna Arishta':[31,6,43,26,0,0,0,0,0,0,0,0],
-'Ashoka Arishta':[839,704,306,359,0,0,0,0,0,0,0,0],
-'Aravindasava':[2,0,0,2,0,0,0,0,0,0,0,0],
+'Ashoka Arishta':[839,704,306,359,25,0,0,0,0,0,0,0],
+'Aravindasava':[2,0,0,2,25,0,0,0,0,0,0,0],
 'Ashwagandha Arishta':[217,427,608,79,0,0,0,0,0,0,0,0],
-'Chandana Asava':[121,21,108,87,0,0,0,0,0,0,0,0],
-'Dashamula Arishta':[3317,5198,842,792,0,0,0,0,0,0,0,0],
+'Chandana Asava':[121,21,108,87,25,0,0,0,0,0,0,0],
+'Dashamula Arishta':[3317,5198,842,792,25,0,0,0,0,0,0,0],
 'Kanaka Asava':[16,155,4,5,0,0,0,0,0,0,0,0],
-'Khadira Arishta':[521,3174,81,73,0,0,0,0,0,0,0,0],
-'Kumari Asava':[373,1920,215,0,0,0,0,0,0,0,0,0],
+'Khadira Arishta':[521,3174,81,73,25,0,0,0,0,0,0,0],
+'Kumari Asava':[373,1920,215,0,25,0,0,0,0,0,0,0],
 'Lodra Asava':[458,954,815,208,0,0,0,0,0,0,0,0],
 'Mustaka Arishta':[7,1,1,17,0,0,0,0,0,0,0,0],
 'Punarnava Asava':[1,35,32,47,0,0,0,0,0,0,0,0],
 'Rohitika Arishta':[14,7,1,1,0,0,0,0,0,0,0,0],
 'Saraswata Arishta':[534,1678,600,227,0,0,0,0,0,0,0,0],
-'Saribadasava':[20,2,2,0,0,0,0,0,0,0,0,0],
-'Usira Asava':[105,451,113,1,0,0,0,0,0,0,0,0],
+'Saribadasava':[20,2,2,0,25,0,0,0,0,0,0,0],
+'Usira Asava':[105,451,113,1,8,0,0,0,0,0,0,0],
 'Vasakasava':[16,155,1,14,0,0,0,0,0,0,0,0],
 'Amavatari Kashaya':[238,7,4,1,0,0,0,0,0,0,0,0],
-'Asthavarga Kashaya':[3,6,2,7,0,0,0,0,0,0,0,0],
+'Asthavarga Kashaya':[3,6,2,7,200,0,0,0,0,0,0,0],
 'Bharadi Kashaya':[1703,1658,230,393,0,0,0,0,0,0,0,0],
-'Katakhadiradi Kashaya':[1,1,0,3,0,0,0,0,0,0,0,0],
+'Katakhadiradi Kashaya':[1,1,0,3,20,0,0,0,0,0,0,0],
 'Kokilaksha Kashaya':[100,1,0,2,0,0,0,0,0,0,0,0],
 'Manjistadi Kashaya':[144,202,84,253,0,0,0,0,0,0,0,0],
 'Rasnadi Kashaya':[1325,671,889,291,0,0,0,0,0,0,0,0],
 'Varunadi Kashaya':[1703,0,0,0,0,0,0,0,0,0,0,0],
-'Amruttotara Kashaya':[215,611,4,3,0,0,0,0,0,0,0,0],
+'Amruttotara Kashaya':[215,611,4,3,200,0,0,0,0,0,0,0],
 'Madiphala Rasayana Syrup':[1754,837,254,40,0,0,0,0,0,0,0,0],
 'Syrup Nirocil':[56,1448,18,41,0,0,0,0,0,0,0,0],
 'Syrup Balachaturbhadra Rasa':[20,10,0,0,0,0,0,0,0,0,0,0],
 'Dashanga Agada Lepa Choorna':[252,471,392,310,0,0,0,0,0,0,0,0],
 'Avalagujadi Lepa':[72,1,50,70,0,0,0,0,0,0,0,0],
-'Pilocid Ointment':[36,4,3,0,0,0,0,0,0,0,0,0],
+'Pilocid Ointment':[36,4,3,0,20,0,0,0,0,0,0,0],
 'Psorakot Ointment':[2,0,0,0,0,0,0,0,0,0,0,0],
-'Rhukot Ointment':[2,0,1,0,0,0,0,0,0,0,0,0],
+'Rhukot Ointment':[2,0,1,0,15,0,0,0,0,0,0,0],
 'Trichoderma Ointment':[1,1,0,1,0,0,0,0,0,0,0,0],
 'Jatyadi Ghrita Ointment':[2,2,0,3,0,0,0,0,0,0,0,0],
-'Shatadhauta Ghrita Ointment':[126,16,43,460,0,0,0,0,0,0,0,0],
+'Shatadhauta Ghrita Ointment':[126,16,43,460,30,0,0,0,0,0,0,0],
 'Aparajita Dhupa Churna':[0,50,0,0,0,0,0,0,0,0,0,0],
 'Eladi Cream':[10,1,0,3,0,0,0,0,0,0,0,0],
 'Gandhaka Malahara':[77,100,5,150,0,0,0,0,0,0,0,0],
 'Gandakadya Malahara':[77,100,5,150,0,0,0,0,0,0,0,0],
 'Guduchi Satva':[106,425,372,531,0,0,0,0,0,0,0,0],
-'White Ointment':[0,0,1,0,0,0,0,0,0,0,0,0]
+'White Ointment':[0,0,1,0,0,0,0,0,0,0,0,0],
+'Mahatikta Ghrita':[40,66,0,12,20,0,0,0,0,0,0,0],
+'Agastya Haritaki Rasayana':[130,53,200,186,20,0,0,0,0,0,0,0],
+'Kushmanda Rasayana':[320,126,95,156,20,0,0,0,0,0,0,0],
+'Trivrith Leha':[0,0,0,30,20,0,0,0,0,0,0,0],
+'Dashamula Rasayanam':[43,45,0,21,20,0,0,0,0,0,0,0],
+'Shatavari Gulam':[614,100,104,1063,20,0,0,0,0,0,0,0],
+'Kacha Yapanam Kuzhampu':[0,0,0,0,5,0,0,0,0,0,0,0],
+'Netra Amritam':[0,0,0,0,5,0,0,0,0,0,0,0],
+'Krimikutara Rasa':[660,786,1720,883,200,0,0,0,0,0,0,0],
+'Dhanvantari Vati':[0,0,0,0,200,0,0,0,0,0,0,0],
+'Nishakatakadi Kasaya':[22,1,0,0,200,0,0,0,0,0,0,0]
 };
 
+// ═══════════════════ BASE MEDICINE LIST ═══════════════════
 const BASE_LIST=[
-['Ashwagandha Churna','CHURNAS'],['Avipattikara Churna','CHURNAS'],['Amalaki Churna','CHURNAS'],['Abhaya Choorna','CHURNAS'],['Balachaturabhadra Churna','CHURNAS'],['Haridra Choorna','CHURNAS'],['Hingwashtaka Choorna','CHURNAS'],['Manjistadi Churna','CHURNAS'],['Nishaamalaki Choorna','CHURNAS'],['Panchakola Choorna','CHURNAS'],['Sitopaladi Choorna','CHURNAS'],['Talisadi Choorna','CHURNAS'],['Trikatu Choorna','CHURNAS'],['Triphala Choorna','CHURNAS'],['Vaishwanara Choorna','CHURNAS'],['Vidanga Churna','CHURNAS'],['Yastimadhu Choorna','CHURNAS'],['Shuddha Gairika Churna','CHURNAS'],['Pushyanuga Churna','CHURNAS'],['Swadista Virechana Churna','CHURNAS'],['Shatavari Choorna','CHURNAS'],
-['Asanadi Kw. Churna','KWATHA CHOORNAS'],['Dashamoola Kw. Churna','KWATHA CHOORNAS'],['Manjisthadi Kw. Choorna','KWATHA CHOORNAS'],['Shadangadi Kwata. Choorna','KWATHA CHOORNAS'],['Triphala Kwata. Choorna','KWATHA CHOORNAS'],['Panchavalkala Kwatha Choorna','KWATHA CHOORNAS'],['Eranda Mula Kw. Churna','KWATHA CHOORNAS'],['Mustadi Kw. Churna','KWATHA CHOORNAS'],['Rasnasaptaka Kwatha Choorna','KWATHA CHOORNAS'],
-['Brahmi Ghrita','GHRITAS'],['Guggulu Tiktaka Ghrita','GHRITAS'],['Indukantha Ghrita','GHRITAS'],['Mahatikta Ghrita','GHRITAS'],['Phalasarpi Ghrita','GHRITAS'],['Shatavari Ghrita','GHRITAS'],['Sukumara Ghrita','GHRITAS'],['Triphala Ghrita','GHRITAS'],['Dadimadi Ghrita','GHRITAS'],['Shatadhouta Ghrita','GHRITAS'],['Ashwagandha Ghrita','GHRITAS'],
-['Agastya Haritaki Rasayana','LEHAS'],['Ashwagandha Rasayana','LEHAS'],['Dashamula Rasayanam','LEHAS'],['Kushmanda Rasayana','LEHAS'],['Manibhadra Leham','LEHAS'],['Shatavari Gulam','LEHAS'],['Sukumara Leha','LEHAS'],['Trivrith Leha','LEHAS'],['Haridra Khanda','LEHAS'],
-['Agni Tundi Vati','VATI/RASAS'],['Anuloma DS','VATI/RASAS'],['Arogyavardhini Vati','VATI/RASAS'],['Bilwadi Vati','VATI/RASAS'],['Bolabhadda Rasa','VATI/RASAS'],['Chandrakala Rasa','VATI/RASAS'],['Chitrakadi Vati','VATI/RASAS'],['Chandraprabha Vati','VATI/RASAS'],['Gandhaka Rasayana','VATI/RASAS'],['Kamaduga Rasa','VATI/RASAS'],['Krimikutara Rasa','VATI/RASAS'],['Laghusutashekara Rasa','VATI/RASAS'],['Lasunadi Vati','VATI/RASAS'],['Lavangadi Vati','VATI/RASAS'],['Nishakatakadi Kasaya','VATI/RASAS'],['Pachaka Vati','VATI/RASAS'],['Pathyadi Ghanavati','VATI/RASAS'],['Pravala Panchamrtha','VATI/RASAS'],['Punarnava Mandura','VATI/RASAS'],['Rajapravartini Vati','VATI/RASAS'],['Rasayana Vati','VATI/RASAS'],['Saptamrita Loha','VATI/RASAS'],['Shaddharana Vati','VATI/RASAS'],['Sudarshana Ghanavati','VATI/RASAS'],['Swasakutara Rasa','VATI/RASAS'],['Tapyadi Vati','VATI/RASAS'],['Tribhuvana Keerti Rasa','VATI/RASAS'],['Trishul Rasa','VATI/RASAS'],['Varunadi Kashaya Tab','VATI/RASAS'],['Vishatinduka Vati','VATI/RASAS'],['Manasamitra Vati','VATI/RASAS'],['Amavatari Rasa','VATI/RASAS'],['Kuberaksha Vati','VATI/RASAS'],['Gandhravahastyadi Ks. Tab','VATI/RASAS'],['Prasarinyadi Ks. Tab','VATI/RASAS'],['Sahacharadi Ks. Tab','VATI/RASAS'],['Goutex Tab','VATI/RASAS'],['Nirocil Tab','VATI/RASAS'],['Pilocid Tab','VATI/RASAS'],['Pilocid Cap','VATI/RASAS'],['Rhukot Tab','VATI/RASAS'],
-['Anu Taila','TAILAS'],['Bilwa Taila','TAILAS'],['Bhringraja Taila','TAILAS'],['Brihat Saindhavadi Taila','TAILAS'],['Dhanwantari Taila','TAILAS'],['Ghandarva Hastadi Taila','TAILAS'],['Jatyadi Taila','TAILAS'],['Karpsyadi Taila','TAILAS'],['Karanja Taila','TAILAS'],['Kottam Chukkadi Taila','TAILAS'],['Kshirabala Taila','TAILAS'],['Lakshadi Taila','TAILAS'],['Mahamashadi Taila','TAILAS'],['Mahanarayana Taila','TAILAS'],['Mahavishagarbha Taila','TAILAS'],['Murrchita Tila Taila','TAILAS'],['Murrivenna Taila','TAILAS'],['Pinda Taila','TAILAS'],['Prasaranyadi Taila','TAILAS'],['Sahacharadi Taila','TAILAS'],['Shadbindu Taila','TAILAS'],['Yastimadhu Taila','TAILAS'],['Narayana Taila','TAILAS'],
+['Ashwagandha Churna','CHURNAS'],['Avipattikara Churna','CHURNAS'],['Amalaki Churna','CHURNAS'],
+['Abhaya Choorna','CHURNAS'],['Balachaturabhadra Churna','CHURNAS'],['Haridra Choorna','CHURNAS'],
+['Hingwashtaka Choorna','CHURNAS'],['Manjistadi Churna','CHURNAS'],['Nishaamalaki Choorna','CHURNAS'],
+['Panchakola Choorna','CHURNAS'],['Sitopaladi Choorna','CHURNAS'],['Talisadi Choorna','CHURNAS'],
+['Trikatu Choorna','CHURNAS'],['Triphala Choorna','CHURNAS'],['Vaishwanara Choorna','CHURNAS'],
+['Vidanga Churna','CHURNAS'],['Yastimadhu Choorna','CHURNAS'],['Shuddha Gairika Churna','CHURNAS'],
+['Pushyanuga Churna','CHURNAS'],['Swadista Virechana Churna','CHURNAS'],['Shatavari Choorna','CHURNAS'],
+['Asanadi Kw. Churna','KWATHA CHOORNAS'],['Dashamoola Kw. Churna','KWATHA CHOORNAS'],
+['Manjisthadi Kw. Choorna','KWATHA CHOORNAS'],['Shadangadi Kwata. Choorna','KWATHA CHOORNAS'],
+['Triphala Kwata. Choorna','KWATHA CHOORNAS'],['Panchavalkala Kwatha Choorna','KWATHA CHOORNAS'],
+['Eranda Mula Kw. Churna','KWATHA CHOORNAS'],['Mustadi Kw. Churna','KWATHA CHOORNAS'],
+['Rasnasaptaka Kwatha Choorna','KWATHA CHOORNAS'],
+['Brahmi Ghrita','GHRITAS'],['Guggulu Tiktaka Ghrita','GHRITAS'],['Indukantha Ghrita','GHRITAS'],
+['Mahatikta Ghrita','GHRITAS'],['Phalasarpi Ghrita','GHRITAS'],['Shatavari Ghrita','GHRITAS'],
+['Sukumara Ghrita','GHRITAS'],['Triphala Ghrita','GHRITAS'],['Dadimadi Ghrita','GHRITAS'],
+['Shatadhouta Ghrita','GHRITAS'],['Ashwagandha Ghrita','GHRITAS'],
+['Agastya Haritaki Rasayana','LEHAS'],['Ashwagandha Rasayana','LEHAS'],['Dashamula Rasayanam','LEHAS'],
+['Kushmanda Rasayana','LEHAS'],['Manibhadra Leham','LEHAS'],['Shatavari Gulam','LEHAS'],
+['Sukumara Leha','LEHAS'],['Trivrith Leha','LEHAS'],['Haridra Khanda','LEHAS'],
+['Agni Tundi Vati','VATI/RASAS'],['Anuloma DS','VATI/RASAS'],['Arogyavardhini Vati','VATI/RASAS'],
+['Bilwadi Vati','VATI/RASAS'],['Bolabhadda Rasa','VATI/RASAS'],['Chandrakala Rasa','VATI/RASAS'],
+['Chitrakadi Vati','VATI/RASAS'],['Chandraprabha Vati','VATI/RASAS'],['Gandhaka Rasayana','VATI/RASAS'],
+['Kamaduga Rasa','VATI/RASAS'],['Krimikutara Rasa','VATI/RASAS'],['Laghusutashekara Rasa','VATI/RASAS'],
+['Lasunadi Vati','VATI/RASAS'],['Lavangadi Vati','VATI/RASAS'],['Nishakatakadi Kasaya','VATI/RASAS'],
+['Pachaka Vati','VATI/RASAS'],['Pathyadi Ghanavati','VATI/RASAS'],['Pravala Panchamrtha','VATI/RASAS'],
+['Punarnava Mandura','VATI/RASAS'],['Rajapravartini Vati','VATI/RASAS'],['Rasayana Vati','VATI/RASAS'],
+['Saptamrita Loha','VATI/RASAS'],['Shaddharana Vati','VATI/RASAS'],['Sudarshana Ghanavati','VATI/RASAS'],
+['Swasakutara Rasa','VATI/RASAS'],['Tapyadi Vati','VATI/RASAS'],['Tribhuvana Keerti Rasa','VATI/RASAS'],
+['Trishul Rasa','VATI/RASAS'],['Varunadi Kashaya Tab','VATI/RASAS'],['Vishatinduka Vati','VATI/RASAS'],
+['Manasamitra Vati','VATI/RASAS'],['Amavatari Rasa','VATI/RASAS'],['Kuberaksha Vati','VATI/RASAS'],
+['Gandhravahastyadi Ks. Tab','VATI/RASAS'],['Prasarinyadi Ks. Tab','VATI/RASAS'],
+['Sahacharadi Ks. Tab','VATI/RASAS'],['Goutex Tab','VATI/RASAS'],['Nirocil Tab','VATI/RASAS'],
+['Pilocid Tab','VATI/RASAS'],['Pilocid Cap','VATI/RASAS'],['Rhukot Tab','VATI/RASAS'],
+['Dhanvantari Vati','VATI/RASAS'],
+['Anu Taila','TAILAS'],['Bilwa Taila','TAILAS'],['Bhringraja Taila','TAILAS'],
+['Brihat Saindhavadi Taila','TAILAS'],['Dhanwantari Taila','TAILAS'],['Ghandarva Hastadi Taila','TAILAS'],
+['Jatyadi Taila','TAILAS'],['Karpsyadi Taila','TAILAS'],['Karanja Taila','TAILAS'],
+['Kottam Chukkadi Taila','TAILAS'],['Kshirabala Taila','TAILAS'],['Lakshadi Taila','TAILAS'],
+['Mahamashadi Taila','TAILAS'],['Mahanarayana Taila','TAILAS'],['Mahavishagarbha Taila','TAILAS'],
+['Murrchita Tila Taila','TAILAS'],['Murrivenna Taila','TAILAS'],['Pinda Taila','TAILAS'],
+['Prasaranyadi Taila','TAILAS'],['Sahacharadi Taila','TAILAS'],['Shadbindu Taila','TAILAS'],
+['Yastimadhu Taila','TAILAS'],['Narayana Taila','TAILAS'],
 ['Kacha Yapanam Kuzhampu','EYE MEDICINES'],['Netra Amritam','EYE MEDICINES'],
+['Elaneer Kuzhampu','EYE MEDICINES'],
 ['Sandhilin Liniment','LINIMENTS'],['Rhumapar Liniment','LINIMENTS'],
-['Kaishora Guggulu','GUGGULU'],['Kanchanara Guggulu','GUGGULU'],['Navaka Guggulu','GUGGULU'],['Nimbadi Guggulu','GUGGULU'],['Simhanada Guggulu','GUGGULU'],['Trayodashanga Guggulu','GUGGULU'],['Triphala Guggulu','GUGGULU'],['Yogaraja Guggulu','GUGGULU'],
-['Abhaya Arishta','ASAVA-ARISHTA'],['Amrita Arishta','ASAVA-ARISHTA'],['Aragwada Arishta','ASAVA-ARISHTA'],['Arjuna Arishta','ASAVA-ARISHTA'],['Ashoka Arishta','ASAVA-ARISHTA'],['Aravindasava','ASAVA-ARISHTA'],['Ashwagandha Arishta','ASAVA-ARISHTA'],['Chandana Asava','ASAVA-ARISHTA'],['Dashamula Arishta','ASAVA-ARISHTA'],['Kanaka Asava','ASAVA-ARISHTA'],['Khadira Arishta','ASAVA-ARISHTA'],['Kumari Asava','ASAVA-ARISHTA'],['Lodra Asava','ASAVA-ARISHTA'],['Mustaka Arishta','ASAVA-ARISHTA'],['Punarnava Asava','ASAVA-ARISHTA'],['Rohitika Arishta','ASAVA-ARISHTA'],['Saraswata Arishta','ASAVA-ARISHTA'],['Saribadasava','ASAVA-ARISHTA'],['Usira Asava','ASAVA-ARISHTA'],['Vasakasava','ASAVA-ARISHTA'],
-['Amavatari Kashaya','KASHAYAS'],['Asthavarga Kashaya','KASHAYAS'],['Bharadi Kashaya','KASHAYAS'],['Katakhadiradi Kashaya','KASHAYAS'],['Kokilaksha Kashaya','KASHAYAS'],['Manjistadi Kashaya','KASHAYAS'],['Rasnadi Kashaya','KASHAYAS'],['Varunadi Kashaya','KASHAYAS'],['Amruttotara Kashaya','KASHAYAS'],
+['Kaishora Guggulu','GUGGULU'],['Kanchanara Guggulu','GUGGULU'],['Navaka Guggulu','GUGGULU'],
+['Nimbadi Guggulu','GUGGULU'],['Simhanada Guggulu','GUGGULU'],['Trayodashanga Guggulu','GUGGULU'],
+['Triphala Guggulu','GUGGULU'],['Yogaraja Guggulu','GUGGULU'],
+['Amratadi Guggul','GUGGULU'],['Gokshuradi Guggul','GUGGULU'],['Kukutnakhi Guggul','GUGGULU'],
+['Rasnadi Guggul','GUGGULU'],['Swayambhu Guggul','GUGGULU'],
+['Abhaya Arishta','ASAVA-ARISHTA'],['Amrita Arishta','ASAVA-ARISHTA'],['Aragwada Arishta','ASAVA-ARISHTA'],
+['Arjuna Arishta','ASAVA-ARISHTA'],['Ashoka Arishta','ASAVA-ARISHTA'],['Aravindasava','ASAVA-ARISHTA'],
+['Ashwagandha Arishta','ASAVA-ARISHTA'],['Chandana Asava','ASAVA-ARISHTA'],
+['Dashamula Arishta','ASAVA-ARISHTA'],['Kanaka Asava','ASAVA-ARISHTA'],['Khadira Arishta','ASAVA-ARISHTA'],
+['Kumari Asava','ASAVA-ARISHTA'],['Lodra Asava','ASAVA-ARISHTA'],['Mustaka Arishta','ASAVA-ARISHTA'],
+['Punarnava Asava','ASAVA-ARISHTA'],['Rohitika Arishta','ASAVA-ARISHTA'],
+['Saraswata Arishta','ASAVA-ARISHTA'],['Saribadasava','ASAVA-ARISHTA'],['Usira Asava','ASAVA-ARISHTA'],
+['Vasakasava','ASAVA-ARISHTA'],
+['Amavatari Kashaya','KASHAYAS'],['Asthavarga Kashaya','KASHAYAS'],['Bharadi Kashaya','KASHAYAS'],
+['Katakhadiradi Kashaya','KASHAYAS'],['Kokilaksha Kashaya','KASHAYAS'],['Manjistadi Kashaya','KASHAYAS'],
+['Rasnadi Kashaya','KASHAYAS'],['Varunadi Kashaya','KASHAYAS'],['Amruttotara Kashaya','KASHAYAS'],
+['Prasaranyadi Kashayam','KASHAYAS'],['Sahacharadi Kashayam','KASHAYAS'],
+['Kandughna Mahakashay','KASHAYAS'],
 ['Madiphala Rasayana Syrup','SYRUP'],['Syrup Nirocil','SYRUP'],['Syrup Balachaturbhadra Rasa','SYRUP'],
-['Dashanga Agada Lepa Choorna','EXTERNAL USE'],['Kottam Chukkadi Lepa Choorna','EXTERNAL USE'],['Avalagujadi Lepa','EXTERNAL USE'],
-['Pilocid Ointment','OINTMENTS'],['Psorakot Ointment','OINTMENTS'],['Rhukot Ointment','OINTMENTS'],['Trichoderma Ointment','OINTMENTS'],['Jatyadi Ghrita Ointment','OINTMENTS'],['Shatadhauta Ghrita Ointment','OINTMENTS'],
-['Aparajita Dhupa Churna','MISCELLANEOUS'],['Eladi Cream','MISCELLANEOUS'],['Gandhaka Malahara','MISCELLANEOUS'],['Gandakadya Malahara','MISCELLANEOUS'],['Guduchi Satva','MISCELLANEOUS'],['White Ointment','MISCELLANEOUS']
+['Dashanga Agada Lepa Choorna','EXTERNAL USE'],['Kottam Chukkadi Lepa Choorna','EXTERNAL USE'],
+['Avalagujadi Lepa','EXTERNAL USE'],
+['Pilocid Ointment','OINTMENTS'],['Psorakot Ointment','OINTMENTS'],['Rhukot Ointment','OINTMENTS'],
+['Trichoderma Ointment','OINTMENTS'],['Jatyadi Ghrita Ointment','OINTMENTS'],
+['Shatadhauta Ghrita Ointment','OINTMENTS'],
+['Aparajita Dhupa Churna','MISCELLANEOUS'],['Eladi Cream','MISCELLANEOUS'],
+['Gandhaka Malahara','MISCELLANEOUS'],['Gandakadya Malahara','MISCELLANEOUS'],
+['Guduchi Satva','MISCELLANEOUS'],['White Ointment','MISCELLANEOUS'],
+// Bais invoice new medicines
+['Diabegone Forte','VATI/RASAS'],['Kuberaksha Bais','VATI/RASAS'],
+['Gomutra Ghan Vati','VATI/RASAS'],['Giloy Ghan Vati','VATI/RASAS'],['Kutaj Ghan Vati','VATI/RASAS'],
+['Mahashudarshan Ghan Vati','VATI/RASAS'],['Mahamanjisthadi Ghan Vati','VATI/RASAS'],
+['Maharasnadi Ghan Vati','VATI/RASAS'],['Nirgundi Ghan Vati','VATI/RASAS'],
+['Parijat Ghan Vati','VATI/RASAS'],['Rasna Saptak Ghan Vati','VATI/RASAS'],
+['Varunadi Ghan Vati Ashmari','VATI/RASAS'],['Lakshami Vilas Ras','VATI/RASAS'],
+['Shirshuladi Vajra Ras','VATI/RASAS'],['Sutshekhar Ras','VATI/RASAS'],
+['Aam Pachak Vati','VATI/RASAS'],['Kushthaghna Mahakashay Vati','VATI/RASAS'],
+['Dhatri Loh Vati','VATI/RASAS'],
+// Kottakkal new medicines
+['Rasnairandadi Kwatham','VATI/RASAS'],['Balaguluchyadi Kwatham','VATI/RASAS'],
+['Dhanvantaram Kwatham','VATI/RASAS'],['Indukantam Kwatham','VATI/RASAS'],
+['Aragvadhadi Kwatham','VATI/RASAS'],['Migrakot Tablet','VATI/RASAS'],['Ostikot Tablet','VATI/RASAS'],
+['Niruryadi Gulika','VATI/RASAS'],['Valiya Marma Gulika','VATI/RASAS'],
+['Hridayarnavarasam Gulika','VATI/RASAS'],['Vettumaran Gulika','VATI/RASAS'],
+['Prasaranyadi Kashayam','KASHAYAS'],['Sahacharadi Kashayam','KASHAYAS']
 ];
+
+// Pre-loaded opening stock for May 2026 from both invoices (month index 4)
+const INVOICE_STOCK_2026={
+// Bais invoice
+'Kaishora Guggulu':500,'Kanchanara Guggulu':500,'Simhanada Guggulu':500,
+'Trayodashanga Guggulu':250,'Punarnava Mandura':1000,'Swasakutara Rasa':500,
+'Saptamrita Loha':500,'Diabegone Forte':500,'Kuberaksha Bais':1000,
+'Gomutra Ghan Vati':500,'Giloy Ghan Vati':500,'Kutaj Ghan Vati':250,
+'Mahashudarshan Ghan Vati':500,'Mahamanjisthadi Ghan Vati':500,'Maharasnadi Ghan Vati':500,
+'Nirgundi Ghan Vati':500,'Parijat Ghan Vati':500,'Rasna Saptak Ghan Vati':500,
+'Varunadi Ghan Vati Ashmari':500,'Amratadi Guggul':500,'Gokshuradi Guggul':500,
+'Kukutnakhi Guggul':500,'Rasnadi Guggul':500,'Swayambhu Guggul':500,
+'Lakshami Vilas Ras':500,'Shirshuladi Vajra Ras':500,'Sutshekhar Ras':500,
+'Aam Pachak Vati':1000,'Kandughna Mahakashay':500,'Kushthaghna Mahakashay Vati':500,
+'Dhatri Loh Vati':1000,
+// Kottakkal invoice
+'Abhaya Arishta':25,'Amrita Arishta':25,'Ashoka Arishta':25,'Aragwada Arishta':25,
+'Usira Asava':8,'Kumari Asava':25,'Khadira Arishta':25,'Chandana Asava':25,
+'Dashamula Arishta':25,'Saribadasava':25,'Aravindasava':25,
+'Pilocid Ointment':20,'Rhukot Ointment':15,'Mahatikta Ghrita':20,
+'Shatadhauta Ghrita Ointment':30,'Katakhadiradi Kashaya':20,
+'Gandhravahastyadi Ks. Tab':20,'Rasnasaptaka Kwatha Choorna':20,
+'Asthavarga Kashaya':200,'Prasarinyadi Ks. Tab':200,'Sahacharadi Ks. Tab':200,
+'Amruttotara Kashaya':200,'Nishakatakadi Kasaya':200,
+'Agastya Haritaki Rasayana':20,'Kushmanda Rasayana':20,'Trivrith Leha':20,
+'Dashamula Rasayanam':20,'Shatavari Gulam':20,'Haridra Khanda':20,
+'Kacha Yapanam Kuzhampu':5,'Netra Amritam':5,'Elaneer Kuzhampu':5,
+'Krimikutara Rasa':200,'Dhanvantari Vati':200,'Bilwadi Vati':200,'Swasakutara Rasa':200,
+'Prasaranyadi Kashayam':20,'Sahacharadi Kashayam':20,
+'Rasnairandadi Kwatham':200,'Balaguluchyadi Kwatham':200,'Dhanvantaram Kwatham':200,
+'Indukantam Kwatham':200,'Aragvadhadi Kwatham':200,'Migrakot Tablet':200,'Ostikot Tablet':200,
+'Niruryadi Gulika':200,'Valiya Marma Gulika':200,'Hridayarnavarasam Gulika':200,'Vettumaran Gulika':200
+};
 
 // ── STATE ──
 let customMedicines=[];
 let dispensed={2025:{},2026:{}};
 let openingStock={2025:{},2026:{}};
-let unitOverrides={};  // {medName: {type, number}}
+let unitOverrides={};
 let poHistory=[];
 let currentPOItems=null,currentPONum='';
 let indentRows={OPD:[],IPD:[]};
 let indentSaved={OPD:false,IPD:false};
 let indentRowCounter=0;
 let currentIndentType='OPD';
-let editMode=false;
+let editMode2=false;
 
 // ── STORAGE ──
 function sv(k,v){try{localStorage.setItem('jagm_'+k,JSON.stringify(v));}catch(e){}}
 function ld(k,d){try{const x=localStorage.getItem('jagm_'+k);return x?JSON.parse(x):d;}catch(e){return d;}}
 function loadAll(){
-  customMedicines=ld('custom',[]);poHistory=ld('pohistory',[]);
+  customMedicines=ld('custom',[]);
+  poHistory=ld('pohistory',[]);
   unitOverrides=ld('units',{});
   const d25=ld('disp2025',null);if(d25)dispensed[2025]=d25;
   const d26=ld('disp2026',null);if(d26)dispensed[2026]=d26;
-  openingStock[2025]=ld('open2025',{});openingStock[2026]=ld('open2026',{});
+  openingStock[2025]=ld('open2025',{});
+  openingStock[2026]=ld('open2026',{});
 }
 
 // ── HELPERS ──
 function getAllMeds(){
-  return[...BASE_LIST.map(([n,c])=>({name:n,cat:c,custom:false})),...customMedicines.map(m=>({...m,custom:true}))];
+  return BASE_LIST.map(function(x){return{name:x[0],cat:x[1],custom:false};}).concat(
+    customMedicines.map(function(m){return Object.assign({},m,{custom:true});})
+  );
 }
-function getCategories(){return[...new Set(getAllMeds().map(m=>m.cat))];}
+function getCategories(){return Array.from(new Set(getAllMeds().map(function(m){return m.cat;})));}
 
 function getDefaultUnitType(name,cat){
-  if(SMALL_PACK_TAILAS.includes(name))return'ml';
+  if(SMALL_PACK_TAILAS.indexOf(name)>=0)return 'ml';
   return CAT_UNIT_TYPE[cat]||'unit';
 }
 function getDefaultUnitNum(name,cat){
-  if(SMALL_PACK_TAILAS.includes(name))return 10;
-  if(cat==='VATI/RASAS'||cat==='GUGGULU')return 0; // dynamic = dispensed count
+  if(SMALL_PACK_TAILAS.indexOf(name)>=0)return 10;
+  if(cat==='VATI/RASAS'||cat==='GUGGULU')return 0;
   return CAT_UNIT_NUM[cat]||1;
 }
 function getUnitType(name,cat){
   if(unitOverrides[name]&&unitOverrides[name].type!==undefined)return unitOverrides[name].type;
-  const cm=customMedicines.find(m=>m.name===name);
+  var cm=customMedicines.filter(function(m){return m.name===name;})[0];
   if(cm&&cm.unitType)return cm.unitType;
   return getDefaultUnitType(name,cat);
 }
 function getUnitNum(name,cat,yr,m){
-  // Custom medicines always use their manually entered fixed number
-  const cm=customMedicines.find(x=>x.name===name);
+  var cm=customMedicines.filter(function(x){return x.name===name;})[0];
   if(cm&&cm.unitNum!==undefined&&cm.unitNum>0)return cm.unitNum;
-  // Unit overrides (set via Edit Mode) take priority for base medicines
   if(unitOverrides[name]&&unitOverrides[name].number!==undefined)return unitOverrides[name].number;
-  // For BASE Vati/Rasas & Guggulu only: dynamic = actual dispensed count
-  if((cat==='VATI/RASAS'||cat==='GUGGULU')){
+  if((cat==='VATI/RASAS'||cat==='GUGGULU')&&!cm){
     if(m!==undefined&&yr!==undefined)return getDisp(yr,name,m);
     return 0;
   }
@@ -796,16 +913,22 @@ function setUnitOverride(name,type,number){
 
 function getDisp(yr,name,m){
   if(dispensed[yr]&&dispensed[yr][name]&&dispensed[yr][name][m]!==undefined)return dispensed[yr][name][m];
-  const raw=yr===2025?RAW_2025:RAW_2026;
+  var raw=yr===2025?RAW_2025:RAW_2026;
   return(raw[name]&&raw[name][m]!==undefined)?raw[name][m]:0;
 }
 function setDisp(yr,name,m,val){
   if(!dispensed[yr])dispensed[yr]={};
-  if(!dispensed[yr][name])dispensed[yr][name]=new Array(12).fill(null);
+  if(!dispensed[yr][name])dispensed[yr][name]=new Array(12).fill(0);
   dispensed[yr][name][m]=val;sv('disp'+yr,dispensed[yr]);
 }
 function getOpening(yr,name,m){
-  if(openingStock[yr]&&openingStock[yr][name]&&openingStock[yr][name][m]!==undefined)return openingStock[yr][name][m];
+  if(openingStock[yr]&&openingStock[yr][name]&&openingStock[yr][name][m]!==undefined)
+    return openingStock[yr][name][m];
+  // Apply invoice stock for May 2026
+  if(yr===2026&&m===4&&INVOICE_STOCK_2026[name]!==undefined){
+    var prevClose=getClosing(2026,name,3);
+    return prevClose+INVOICE_STOCK_2026[name];
+  }
   if(m===0)return 0;
   return getClosing(yr,name,m-1);
 }
@@ -815,873 +938,746 @@ function setOpening(yr,name,m,val){
   openingStock[yr][name][m]=val;sv('open'+yr,openingStock[yr]);
 }
 function getClosing(yr,name,m){return Math.max(0,getOpening(yr,name,m)-getDisp(yr,name,m));}
-function getDailyRate(yr,name){let s=0,c=0;for(let m=0;m<12;m++){const v=getDisp(yr,name,m);if(v>0){s+=v;c++;}}return c?s/(c*30):0;}
-function getLastClose(yr,name){let last=yr===2026?3:11;return getClosing(yr,name,last);}
+function getDailyRate(yr,name){var s=0,c=0;for(var m=0;m<12;m++){var v=getDisp(yr,name,m);if(v>0){s+=v;c++;}}return c?s/(c*30):0;}
+function getLastClose(yr,name){var last=yr===2026?4:11;return getClosing(yr,name,last);}
+
+// ── BACKUP & RESTORE ──
+function exportAllData(){
+  var keys=['custom','open2025','open2026','disp2025','disp2026','units','pohistory'];
+  var backup={version:1,exported:new Date().toISOString(),data:{}};
+  keys.forEach(function(k){try{var v=localStorage.getItem('jagm_'+k);if(v)backup.data[k]=JSON.parse(v);}catch(e){}});
+  var blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
+  var a=document.createElement('a');
+  var dateStr=new Date().toISOString().slice(0,10);
+  a.href=URL.createObjectURL(blob);
+  a.download='JAGM_Pharmacy_Backup_'+dateStr+'.json';
+  a.click();
+  document.getElementById('backup-status').textContent='✅ Saved: JAGM_Pharmacy_Backup_'+dateStr+'.json';
+  setTimeout(function(){document.getElementById('backup-status').textContent='';},5000);
+}
+function importAllData(e){
+  var f=e.target.files[0];if(!f)return;
+  if(!confirm('Restore from backup? This replaces all current data.'))return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var backup=JSON.parse(ev.target.result);
+      if(!backup.data)throw new Error('Invalid backup file');
+      var keys=['custom','open2025','open2026','disp2025','disp2026','units','pohistory'];
+      var restored=0;
+      keys.forEach(function(k){if(backup.data[k]!==undefined){try{localStorage.setItem('jagm_'+k,JSON.stringify(backup.data[k]));restored++;}catch(err){}}});
+      loadAll();populateFilters();renderRegister();renderMedList();
+      document.getElementById('backup-status').textContent='✅ Restored '+restored+' data sets';
+      setTimeout(function(){document.getElementById('backup-status').textContent='';},5000);
+    }catch(err){alert('Restore failed: '+err.message);}
+  };
+  reader.readAsText(f);e.target.value='';
+}
 
 // ── EDIT MODE ──
-let editMode2=false;
 function toggleEditMode(){
   editMode2=!editMode2;
   document.getElementById('edit-mode-label').textContent=editMode2?'ON':'OFF';
   document.getElementById('edit-hint').style.display=editMode2?'block':'none';
   renderRegister();
 }
-
 function cellEdit(el){
-  const yr=parseInt(el.dataset.yr),name=el.dataset.med,m=parseInt(el.dataset.m),field=el.dataset.field;
-  const val=parseInt(el.textContent.replace(/,/g,''))||0;
+  var yr=parseInt(el.dataset.yr),name=el.dataset.med,m=parseInt(el.dataset.m),field=el.dataset.field;
+  var val=parseInt(el.textContent.replace(/,/g,''))||0;
   if(field==='open')setOpening(yr,name,m,val);
   else if(field==='disp')setDisp(yr,name,m,val);
   el.textContent=val.toLocaleString();
   renderStats();
 }
-function unitTypeEdit(el){
-  const name=el.dataset.med,cat=el.dataset.cat,val=el.textContent.trim();
-  setUnitOverride(name,val,undefined);
-}
+function unitTypeEdit(el){setUnitOverride(el.dataset.med,el.textContent.trim(),undefined);}
 function unitNumEdit(el){
-  const name=el.dataset.med,cat=el.dataset.cat,yr=parseInt(el.dataset.yr),m=el.dataset.m!==undefined?parseInt(el.dataset.m):undefined;
-  const val=parseInt(el.textContent.replace(/,/g,''))||0;
-  // For dynamic cats don't override from Number col (it's read-only / shows disp count)
+  var name=el.dataset.med,cat=el.dataset.cat,val=parseInt(el.textContent.replace(/,/g,''))||0;
   if(cat==='VATI/RASAS'||cat==='GUGGULU'){el.textContent=val;return;}
   setUnitOverride(name,undefined,val);
 }
 
 // ── STATS ──
 function renderStats(){
-  const yr=parseInt(document.getElementById('reg-year').value)||CY;
-  const minDays=parseInt(document.getElementById('min-days').value)||60;
-  let low=0,watch=0,total=0,meds=getAllMeds().length;
-  getAllMeds().forEach(med=>{
-    const dr=getDailyRate(yr,med.name);if(dr===0)return;
-    const cl=getLastClose(yr,med.name),dl=cl/dr;
-    let s=0;for(let m=0;m<12;m++)s+=getDisp(yr,med.name,m);total+=s;
+  var yr=parseInt(document.getElementById('reg-year').value)||CY;
+  var minDays=parseInt(document.getElementById('min-days').value)||60;
+  var low=0,watch=0,total=0;
+  getAllMeds().forEach(function(med){
+    var dr=getDailyRate(yr,med.name);if(dr===0)return;
+    var cl=getLastClose(yr,med.name),dl=cl/dr;
+    for(var m=0;m<12;m++)total+=getDisp(yr,med.name,m);
     if(dl<minDays)low++;else if(dl<minDays*2)watch++;
   });
-  document.getElementById('reg-stats').innerHTML=`
-    <div class="stat-card"><div class="stat-num">${meds}</div><div class="stat-lbl">Medicines</div></div>
-    <div class="stat-card"><div class="stat-num">${getCategories().length}</div><div class="stat-lbl">Categories</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:#a00">${low}</div><div class="stat-lbl">Low Stock</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:#856404">${watch}</div><div class="stat-lbl">Watch List</div></div>
-    <div class="stat-card"><div class="stat-num">${total.toLocaleString()}</div><div class="stat-lbl">Total Dispensed ${yr}</div></div>
-    <div class="stat-card"><div class="stat-num" style="color:${editMode2?'#e67e00':'#888'}">${editMode2?'ON':'OFF'}</div><div class="stat-lbl">Edit Mode</div></div>`;
+  document.getElementById('reg-stats').innerHTML=
+    '<div class="stat-card"><div class="stat-num">'+getAllMeds().length+'</div><div class="stat-lbl">Medicines</div></div>'+
+    '<div class="stat-card"><div class="stat-num">'+getCategories().length+'</div><div class="stat-lbl">Categories</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:#a00">'+low+'</div><div class="stat-lbl">Low Stock</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:#856404">'+watch+'</div><div class="stat-lbl">Watch List</div></div>'+
+    '<div class="stat-card"><div class="stat-num">'+total.toLocaleString()+'</div><div class="stat-lbl">Total Dispensed '+yr+'</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="color:'+(editMode2?'#e67e00':'#888')+'">'+(editMode2?'ON':'OFF')+'</div><div class="stat-lbl">Edit Mode</div></div>';
 }
 
 // ── REGISTER ──
 function renderRegister(){
   renderStats();
-  const yr=parseInt(document.getElementById('reg-year').value)||CY;
-  const selMonth=document.getElementById('reg-month').value;
-  const selCat=document.getElementById('reg-cat').value;
-  const search=document.getElementById('reg-search').value.toLowerCase();
-  const lowOnly=document.getElementById('show-lowstock').checked;
-  const minDays=parseInt(document.getElementById('min-days').value)||60;
-  const isDynCat=(cat)=>cat==='VATI/RASAS'||cat==='GUGGULU';
-
-  let html='<table><thead>';
+  var yr=parseInt(document.getElementById('reg-year').value)||CY;
+  var selMonth=document.getElementById('reg-month').value;
+  var selCat=document.getElementById('reg-cat').value;
+  var search=document.getElementById('reg-search').value.toLowerCase();
+  var lowOnly=document.getElementById('show-lowstock').checked;
+  var minDays=parseInt(document.getElementById('min-days').value)||60;
+  function isDynCat(cat){return(cat==='VATI/RASAS'||cat==='GUGGULU');}
+  var html='<table><thead>';
   if(selMonth==='all'){
-    html+=`<tr><th rowspan="2">#</th><th rowspan="2">Medicine</th><th rowspan="2">Cat</th><th rowspan="2">Unit Type</th>`;
-    MONTHS.forEach(m=>html+=`<th colspan="4">${m}</th>`);
-    html+=`<th rowspan="2">Total</th><th rowspan="2">Status</th></tr><tr>`;
-    MONTHS.forEach(()=>html+=`<th class="sub">Open</th><th class="sub">Disp</th><th class="sub">Number</th><th class="sub">Close</th>`);
-    html+=`</tr>`;
+    html+='<tr><th rowspan="2">#</th><th rowspan="2">Medicine</th><th rowspan="2">Cat</th><th rowspan="2">Unit Type</th>';
+    MONTHS.forEach(function(m){html+='<th colspan="4">'+m+'</th>';});
+    html+='<th rowspan="2">Total</th><th rowspan="2">Status</th></tr><tr>';
+    MONTHS.forEach(function(){html+='<th class="sub">Open</th><th class="sub">Disp</th><th class="sub">Num</th><th class="sub">Close</th>';});
+    html+='</tr>';
   } else {
-    html+=`<tr><th>#</th><th>Medicine</th><th>Cat</th><th>Unit Type</th><th>Opening</th><th>Dispensed</th><th>Number</th><th>Closing</th><th>Daily Rate</th><th>Days Left</th><th>Status</th></tr>`;
+    html='<table><thead><tr><th>#</th><th>Medicine</th><th>Cat</th><th>Unit Type</th><th>Opening</th><th>Dispensed</th><th>Number</th><th>Closing</th><th>Daily Rate</th><th>Days Left</th><th>Status</th></tr>';
   }
   html+='</thead><tbody>';
-
-  let n=0,lastCat='';
-  getAllMeds().forEach(med=>{
+  var n=0,lastCat='';
+  getAllMeds().forEach(function(med){
     if(selCat!=='all'&&med.cat!==selCat)return;
-    if(search&&!med.name.toLowerCase().includes(search))return;
-    const dr=getDailyRate(yr,med.name);
-    const lastCl=getLastClose(yr,med.name);
-    const dl=dr>0?Math.round(lastCl/dr):999;
-    const st=dl<minDays?'low':dl<minDays*2?'watch':'ok';
+    if(search&&med.name.toLowerCase().indexOf(search)<0)return;
+    var dr=getDailyRate(yr,med.name);
+    var lastCl=getLastClose(yr,med.name);
+    var dl=dr>0?Math.round(lastCl/dr):999;
+    var st=dl<minDays?'low':dl<minDays*2?'watch':'ok';
     if(lowOnly&&st!=='low')return;
     n++;
     if(med.cat!==lastCat&&selMonth==='all'){
-      const cols=4+12*4+2;
-      html+=`<tr class="cat-row"><td colspan="${cols}">▸ ${med.cat}</td></tr>`;lastCat=med.cat;
+      html+='<tr class="cat-row"><td colspan="'+(4+12*4+2)+'">▸ '+med.cat+'</td></tr>';lastCat=med.cat;
     }
-    const ut=getUnitType(med.name,med.cat);
-    const isDyn=isDynCat(med.cat)&&!med.custom;
-
-    // Unit Type cell — editable if editMode2
-    const utCell=editMode2
-      ?`<span class="unit-edit" contenteditable="true" data-med="${med.name}" data-cat="${med.cat}" onblur="unitTypeEdit(this)">${ut}</span>`
-      :`<span class="badge badge-blue">${ut}</span>`;
-
-    html+=`<tr${st==='low'?' class="low-stock"':''}><td>${n}</td><td><b>${med.name}</b>${med.custom?'<span class="badge badge-teal" style="font-size:9px;margin-left:3px">C</span>':''}</td><td style="color:#666;font-size:10px">${med.cat}</td><td>${utCell}</td>`;
-
+    var ut=getUnitType(med.name,med.cat);
+    var isDyn=isDynCat(med.cat)&&!med.custom;
+    var utCell=editMode2?'<span class="unit-edit" contenteditable="true" data-med="'+med.name+'" data-cat="'+med.cat+'" onblur="unitTypeEdit(this)">'+ut+'</span>':'<span class="badge badge-blue">'+ut+'</span>';
+    html+='<tr'+(st==='low'?' class="low-stock"':'')+'><td>'+n+'</td><td><b>'+med.name+'</b>'+(med.custom?'<span class="badge badge-teal" style="font-size:9px;margin-left:2px">C</span>':'')+'</td><td style="color:#666;font-size:10px">'+med.cat+'</td><td>'+utCell+'</td>';
     if(selMonth==='all'){
-      let total=0;
-      MONTHS.forEach((_,m)=>{
-        const op=getOpening(yr,med.name,m);
-        const disp=getDisp(yr,med.name,m);
-        const num=isDyn?disp:getUnitNum(med.name,med.cat);
-        const cl=getClosing(yr,med.name,m);
+      var total=0;
+      for(var m2=0;m2<12;m2++){
+        var op=getOpening(yr,med.name,m2);
+        var disp=getDisp(yr,med.name,m2);
+        var num=isDyn?disp:getUnitNum(med.name,med.cat);
+        var cl=getClosing(yr,med.name,m2);
         total+=disp;
         if(editMode2){
-          html+=`<td><span class="editable" contenteditable="true" data-yr="${yr}" data-med="${med.name}" data-m="${m}" data-field="open" onblur="cellEdit(this)">${op}</span></td>`;
-          html+=`<td><span class="editable" contenteditable="true" data-yr="${yr}" data-med="${med.name}" data-m="${m}" data-field="disp" onblur="cellEdit(this)">${disp}</span></td>`;
-          // Number: dynamic cats show disp (read only), fixed cats editable
-          if(isDyn){
-            html+=`<td style="color:#888">${num.toLocaleString()}</td>`;
-          } else {
-            html+=`<td><span class="unit-edit" contenteditable="true" data-med="${med.name}" data-cat="${med.cat}" data-yr="${yr}" data-m="${m}" onblur="unitNumEdit(this)">${num}</span></td>`;
-          }
-          html+=`<td>${cl.toLocaleString()}</td>`;
+          html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+m2+'" data-field="open" onblur="cellEdit(this)">'+op+'</span></td>';
+          html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+m2+'" data-field="disp" onblur="cellEdit(this)">'+disp+'</span></td>';
+          html+=isDyn?'<td style="color:#888">'+num+'</td>':'<td><span class="unit-edit" contenteditable="true" data-med="'+med.name+'" data-cat="'+med.cat+'" onblur="unitNumEdit(this)">'+num+'</span></td>';
+          html+='<td>'+cl.toLocaleString()+'</td>';
         } else {
-          html+=`<td>${op.toLocaleString()}</td><td>${disp.toLocaleString()}</td><td>${num?num.toLocaleString():'-'}</td><td>${cl.toLocaleString()}</td>`;
+          html+='<td>'+op.toLocaleString()+'</td><td>'+disp.toLocaleString()+'</td><td>'+(num||'-')+'</td><td>'+cl.toLocaleString()+'</td>';
         }
-      });
-      const bg=st==='low'?'badge-red':st==='watch'?'badge-amber':'badge-green';
-      html+=`<td><b>${total.toLocaleString()}</b></td><td><span class="badge ${bg}">${st.toUpperCase()}</span></td>`;
-    } else {
-      const m=parseInt(selMonth);
-      const op=getOpening(yr,med.name,m);
-      const disp=getDisp(yr,med.name,m);
-      const num=isDyn?disp:getUnitNum(med.name,med.cat);
-      const cl=getClosing(yr,med.name,m);
-      const dlm=dr>0?Math.round(cl/dr):'-';
-      const bg=typeof dlm==='number'&&dlm<minDays?'badge-red':typeof dlm==='number'&&dlm<minDays*2?'badge-amber':'badge-green';
-      const lb=typeof dlm==='number'&&dlm<minDays?'LOW':typeof dlm==='number'&&dlm<minDays*2?'WATCH':'OK';
-      if(editMode2){
-        html+=`<td><span class="editable" contenteditable="true" data-yr="${yr}" data-med="${med.name}" data-m="${m}" data-field="open" onblur="cellEdit(this)">${op}</span></td>`;
-        html+=`<td><span class="editable" contenteditable="true" data-yr="${yr}" data-med="${med.name}" data-m="${m}" data-field="disp" onblur="cellEdit(this)">${disp}</span></td>`;
-        if(isDyn){html+=`<td style="color:#888">${num.toLocaleString()}</td>`;}
-        else{html+=`<td><span class="unit-edit" contenteditable="true" data-med="${med.name}" data-cat="${med.cat}" onblur="unitNumEdit(this)">${num}</span></td>`;}
-        html+=`<td>${cl.toLocaleString()}</td>`;
-      } else {
-        html+=`<td>${op.toLocaleString()}</td><td>${disp.toLocaleString()}</td><td>${num?num.toLocaleString():'-'}</td><td>${cl.toLocaleString()}</td>`;
       }
-      html+=`<td>${dr>0?dr.toFixed(1):0}/day</td><td>${dlm}</td><td><span class="badge ${bg}">${lb}</span></td>`;
+      var bg=st==='low'?'badge-red':st==='watch'?'badge-amber':'badge-green';
+      html+='<td><b>'+total.toLocaleString()+'</b></td><td><span class="badge '+bg+'">'+st.toUpperCase()+'</span></td>';
+    } else {
+      var mi=parseInt(selMonth);
+      var op2=getOpening(yr,med.name,mi);
+      var disp2=getDisp(yr,med.name,mi);
+      var num2=isDyn?disp2:getUnitNum(med.name,med.cat);
+      var cl2=getClosing(yr,med.name,mi);
+      var dlm=dr>0?Math.round(cl2/dr):'-';
+      var bg2=typeof dlm==='number'&&dlm<minDays?'badge-red':typeof dlm==='number'&&dlm<minDays*2?'badge-amber':'badge-green';
+      var lb=typeof dlm==='number'&&dlm<minDays?'LOW':typeof dlm==='number'&&dlm<minDays*2?'WATCH':'OK';
+      if(editMode2){
+        html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+mi+'" data-field="open" onblur="cellEdit(this)">'+op2+'</span></td>';
+        html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+mi+'" data-field="disp" onblur="cellEdit(this)">'+disp2+'</span></td>';
+        html+=isDyn?'<td style="color:#888">'+num2+'</td>':'<td><span class="unit-edit" contenteditable="true" data-med="'+med.name+'" data-cat="'+med.cat+'" onblur="unitNumEdit(this)">'+num2+'</span></td>';
+        html+='<td>'+cl2.toLocaleString()+'</td>';
+      } else {
+        html+='<td>'+op2.toLocaleString()+'</td><td>'+disp2.toLocaleString()+'</td><td>'+(num2||'-')+'</td><td>'+cl2.toLocaleString()+'</td>';
+      }
+      html+='<td>'+(dr>0?dr.toFixed(1):0)+'/day</td><td>'+dlm+'</td><td><span class="badge '+bg2+'">'+lb+'</span></td>';
     }
-    html+=`</tr>`;
+    html+='</tr>';
   });
-  if(n===0)html+=`<tr><td colspan="20" style="text-align:center;padding:14px;color:#666">No records found.</td></tr>`;
+  if(n===0)html+='<tr><td colspan="20" style="text-align:center;padding:14px;color:#666">No records found.</td></tr>';
   html+='</tbody></table>';
   document.getElementById('reg-table').innerHTML=html;
 }
 
 // ── AUTO PO ──
 function getAutoPOData(){
-  const yr=parseInt(document.getElementById('reg-year')?document.getElementById('reg-year').value:CY)||CY;
-  const minDays=parseInt(document.getElementById('min-days').value)||60;
-  const poMos=parseInt(document.getElementById('po-months').value)||2;
-  const bySupplier={};
-  getAllMeds().forEach(med=>{
-    const dr=getDailyRate(yr,med.name);if(dr===0)return;
-    const lastCl=getLastClose(yr,med.name),daysLeft=lastCl/dr;
+  var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
+  var minDays=parseInt(document.getElementById('min-days').value)||60;
+  var poMos=parseInt(document.getElementById('po-months').value)||2;
+  var bySupplier={};
+  getAllMeds().forEach(function(med){
+    var dr=getDailyRate(yr,med.name);if(dr===0)return;
+    var lastCl=getLastClose(yr,med.name),daysLeft=lastCl/dr;
     if(daysLeft>minDays)return;
-    const sup=SUPPLIER_MAP[med.cat]||'OTHER';
+    var sup=SUPPLIER_MAP[med.cat]||'OTHER';
     if(!bySupplier[sup])bySupplier[sup]=[];
-    const ut=getUnitType(med.name,med.cat);
-    const un=getUnitNum(med.name,med.cat);
-    bySupplier[sup].push({name:med.name,cat:med.cat,unitType:ut,unitNum:un,
-      currentStock:Math.round(lastCl),dailyRate:dr,
-      daysLeft:Math.round(daysLeft),orderQty:Math.round(dr*30*poMos)});
+    bySupplier[sup].push({name:med.name,cat:med.cat,unitType:getUnitType(med.name,med.cat),unitNum:getUnitNum(med.name,med.cat),currentStock:Math.round(lastCl),dailyRate:dr,daysLeft:Math.round(daysLeft),orderQty:Math.round(dr*30*poMos)});
   });
   return bySupplier;
 }
 
 function renderAutoPO(){
-  const bySupplier=getAutoPOData();
-  const yr=parseInt(document.getElementById('reg-year')?document.getElementById('reg-year').value:CY)||CY;
-  const dateStr=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  const supFilter=document.getElementById('po-supplier').value;
-  let html='',poNum=1;
-  Object.keys(bySupplier).sort().filter(s=>supFilter==='all'||s===supFilter).forEach(sup=>{
-    const items=bySupplier[sup];
-    const poId=`PO-JAGM-${yr}-${String(poNum).padStart(3,'0')}`;
-    html+=`<div class="po-card">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-      <div><div class="po-title">${poId} <span class="badge badge-blue">AUTO</span></div>
-      <div style="font-size:11px;color:#333;margin-top:2px">To: <b>${SUPPLIER_NAMES[sup]||sup}</b> | ${dateStr}</div>
-      <div style="font-size:11px;color:#555">From: Pharmacy, JAIN AGM AMC & H, Varur, Hubli</div></div>
-      <div style="display:flex;gap:5px;align-items:center">
-        <span class="badge badge-red">${items.length} items</span>
-        <button class="btn btn-info btn-sm no-print" onclick="openInvoice('${sup}','${poId}')">🧾 Invoice</button>
-      </div>
-    </div>
-    <table style="width:100%"><thead><tr>
-      <th style="background:#2c5282">#</th><th style="background:#2c5282">Medicine</th>
-      <th style="background:#2c5282">Category</th><th style="background:#2c5282">Unit Type</th>
-      <th style="background:#2c5282">Number</th><th style="background:#2c5282">Current Stock</th>
-      <th style="background:#2c5282">Days Left</th><th style="background:#2c5282">Order Qty</th>
-    </tr></thead><tbody>`;
-    items.sort((a,b)=>a.daysLeft-b.daysLeft).forEach((item,i)=>{
-      html+=`<tr${item.daysLeft<15?' style="background:#fff0f0"':''}><td>${i+1}</td><td><b>${item.name}</b></td>
-        <td style="color:#555;font-size:10px">${item.cat}</td>
-        <td><span class="badge badge-blue">${item.unitType}</span></td>
-        <td>${item.unitNum||'-'}</td>
-        <td>${item.currentStock.toLocaleString()}</td>
-        <td><span class="badge ${item.daysLeft<15?'badge-red':'badge-amber'}">${item.daysLeft}d</span></td>
-        <td><b>${item.orderQty.toLocaleString()}</b></td></tr>`;
+  var bySupplier=getAutoPOData();
+  var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
+  var dateStr=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var supFilter=document.getElementById('po-supplier').value;
+  var html='',poNum=1;
+  var keys=Object.keys(bySupplier).sort().filter(function(s){return supFilter==='all'||s===supFilter;});
+  keys.forEach(function(sup){
+    var items=bySupplier[sup];
+    var poId='PO-JAGM-'+yr+'-'+String(poNum).padStart(3,'0');
+    html+='<div class="po-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><div>'+
+      '<div style="font-size:13px;font-weight:700;color:#1a3a5c">'+poId+' <span class="badge badge-blue">AUTO</span></div>'+
+      '<div style="font-size:11px;color:#333;margin-top:2px">To: <b>'+(SUPPLIER_NAMES[sup]||sup)+'</b> | '+dateStr+'</div>'+
+      '<div style="font-size:11px;color:#555">From: Pharmacy, JAIN AGM AMC & H, Varur, Hubli</div></div>'+
+      '<div style="display:flex;gap:5px;align-items:center"><span class="badge badge-red">'+items.length+' items</span>'+
+      '<button class="btn btn-info btn-sm no-print" onclick="openInvoice(\''+sup+'\',\''+poId+'\')">🧾 Invoice</button></div></div>'+
+      '<table style="width:100%"><thead><tr>'+
+      '<th style="background:#2c5282">#</th><th style="background:#2c5282">Medicine</th>'+
+      '<th style="background:#2c5282">Category</th><th style="background:#2c5282">Unit Type</th>'+
+      '<th style="background:#2c5282">Number</th><th style="background:#2c5282">Current Stock</th>'+
+      '<th style="background:#2c5282">Days Left</th><th style="background:#2c5282">Order Qty</th>'+
+      '</tr></thead><tbody>';
+    items.sort(function(a,b){return a.daysLeft-b.daysLeft;}).forEach(function(item,i){
+      html+='<tr'+(item.daysLeft<15?' style="background:#fff0f0"':'')+'>'+
+        '<td>'+(i+1)+'</td><td><b>'+item.name+'</b></td><td style="color:#555;font-size:10px">'+item.cat+'</td>'+
+        '<td><span class="badge badge-blue">'+item.unitType+'</span></td><td>'+(item.unitNum||'-')+'</td>'+
+        '<td>'+item.currentStock.toLocaleString()+'</td>'+
+        '<td><span class="badge '+(item.daysLeft<15?'badge-red':'badge-amber')+'">'+item.daysLeft+'d</span></td>'+
+        '<td><b>'+item.orderQty.toLocaleString()+'</b></td></tr>';
     });
-    html+=`</tbody></table><div style="font-size:11px;color:#555;margin-top:6px;text-align:right">Authorised by: _________________________ Principal, JAIN AGM AMC & H</div></div>`;
+    html+='</tbody></table><div style="font-size:11px;color:#555;margin-top:6px;text-align:right">Authorised by: _________________________ Principal, JAIN AGM AMC & H</div></div>';
     poNum++;
   });
-  if(!html)html=`<div style="padding:14px;background:#f0fff4;border:1px solid #9ae6b4;border-radius:5px;color:#1a7a4a;font-weight:600">✅ All medicines adequately stocked.</div>`;
+  if(!html)html='<div style="padding:14px;background:#f0fff4;border:1px solid #9ae6b4;border-radius:5px;color:#1a7a4a;font-weight:600">✅ All medicines adequately stocked.</div>';
   document.getElementById('auto-po-content').innerHTML=html;
 }
 
 // ── MANUAL PO ──
 function renderManualPOTable(){
-  const yr=parseInt(document.getElementById('manual-po-year').value)||CY;
-  const catF=document.getElementById('manual-cat-filter').value;
-  const search=document.getElementById('manual-search').value.toLowerCase();
-  let html='',n=0;
-  getAllMeds().forEach(med=>{
+  var yr=parseInt(document.getElementById('manual-po-year').value)||CY;
+  var catF=document.getElementById('manual-cat-filter').value;
+  var search=document.getElementById('manual-search').value.toLowerCase();
+  var html='',n=0;
+  getAllMeds().forEach(function(med){
     if(catF!=='all'&&med.cat!==catF)return;
-    if(search&&!med.name.toLowerCase().includes(search))return;
-    const cl=getLastClose(yr,med.name);
-    const dr=getDailyRate(yr,med.name);
-    const ut=getUnitType(med.name,med.cat);
-    const un=getUnitNum(med.name,med.cat);
+    if(search&&med.name.toLowerCase().indexOf(search)<0)return;
+    var cl=getLastClose(yr,med.name),dr=getDailyRate(yr,med.name);
     n++;
-    html+=`<tr><td style="text-align:center"><input type="checkbox" class="mpo-chk" data-name="${med.name}" data-cat="${med.cat}"></td>
-      <td>${n}</td><td><b>${med.name}</b></td><td style="color:#555;font-size:10px">${med.cat}</td>
-      <td><span class="badge badge-blue">${ut}</span></td>
-      <td>${un||'-'}</td>
-      <td>${Math.round(cl).toLocaleString()}</td><td>${dr>0?dr.toFixed(1):0}/day</td>
-      <td><input type="number" min="0" value="${Math.max(0,Math.round(dr*60))}" style="width:75px" id="mpo-qty-${med.name.replace(/\W/g,'_')}"></td></tr>`;
+    html+='<tr><td style="text-align:center"><input type="checkbox" class="mpo-chk" data-name="'+med.name+'" data-cat="'+med.cat+'"></td>'+
+      '<td>'+n+'</td><td><b>'+med.name+'</b></td><td style="color:#555;font-size:10px">'+med.cat+'</td>'+
+      '<td><span class="badge badge-blue">'+getUnitType(med.name,med.cat)+'</span></td>'+
+      '<td>'+(getUnitNum(med.name,med.cat)||'-')+'</td>'+
+      '<td>'+Math.round(cl).toLocaleString()+'</td><td>'+(dr>0?dr.toFixed(1):0)+'/day</td>'+
+      '<td><input type="number" min="0" value="'+Math.max(0,Math.round(dr*60))+'" style="width:75px" id="mpo-qty-'+med.name.replace(/\W/g,'_')+'"></td></tr>';
   });
   document.getElementById('manual-po-body').innerHTML=html||'<tr><td colspan="9" style="text-align:center;padding:12px;color:#666">No medicines.</td></tr>';
 }
-
-function toggleAllManual(cb){document.querySelectorAll('.mpo-chk').forEach(c=>c.checked=cb.checked);}
-function selectAllManual(){document.querySelectorAll('.mpo-chk').forEach(c=>c.checked=true);}
-function clearAllManual(){document.querySelectorAll('.mpo-chk').forEach(c=>c.checked=false);document.getElementById('chk-all').checked=false;}
-
+function toggleAllManual(cb){document.querySelectorAll('.mpo-chk').forEach(function(c){c.checked=cb.checked;});}
+function selectAllManual(){document.querySelectorAll('.mpo-chk').forEach(function(c){c.checked=true;});}
+function clearAllManual(){document.querySelectorAll('.mpo-chk').forEach(function(c){c.checked=false;});document.getElementById('chk-all').checked=false;}
 function generateManualPO(){
-  const selMonth=parseInt(document.getElementById('manual-po-month').value);
-  const selYear=parseInt(document.getElementById('manual-po-year').value);
-  const checked=[...document.querySelectorAll('.mpo-chk:checked')];
+  var selMonth=parseInt(document.getElementById('manual-po-month').value);
+  var selYear=parseInt(document.getElementById('manual-po-year').value);
+  var checked=Array.from(document.querySelectorAll('.mpo-chk:checked'));
   if(!checked.length){alert('Select at least one medicine.');return;}
-  const items=[];
-  checked.forEach(cb=>{
-    const name=cb.dataset.name,cat=cb.dataset.cat;
-    const qty=parseInt(document.getElementById('mpo-qty-'+name.replace(/\W/g,'_'))?.value)||0;
+  var items=[];
+  checked.forEach(function(cb){
+    var name=cb.dataset.name,cat=cb.dataset.cat;
+    var qty=parseInt((document.getElementById('mpo-qty-'+name.replace(/\W/g,'_'))||{value:0}).value)||0;
     if(qty<=0)return;
-    items.push({name,cat,unitType:getUnitType(name,cat),unitNum:getUnitNum(name,cat),orderQty:qty,dailyRate:getDailyRate(selYear,name),currentStock:Math.round(getLastClose(selYear,name))});
+    items.push({name:name,cat:cat,unitType:getUnitType(name,cat),unitNum:getUnitNum(name,cat),orderQty:qty,dailyRate:getDailyRate(selYear,name),currentStock:Math.round(getLastClose(selYear,name))});
   });
   if(!items.length){alert('Enter quantities > 0.');return;}
-  const poNum=poHistory.length+1;
-  const poId=`PO-JAGM-${selYear}-M${String(poNum).padStart(3,'0')}`;
-  const dateStr=new Date(selYear,selMonth,15).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  const po={id:poId,type:'manual',month:selMonth,year:selYear,date:dateStr,items};
-  items.forEach(item=>{const cur=getOpening(selYear,item.name,selMonth);setOpening(selYear,item.name,selMonth,cur+item.orderQty);});
+  var poNum=poHistory.length+1;
+  var poId='PO-JAGM-'+selYear+'-M'+String(poNum).padStart(3,'0');
+  var dateStr=new Date(selYear,selMonth,15).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var po={id:poId,type:'manual',month:selMonth,year:selYear,date:dateStr,items:items};
+  items.forEach(function(item){var cur=getOpening(selYear,item.name,selMonth);setOpening(selYear,item.name,selMonth,cur+item.orderQty);});
   poHistory.push(po);sv('pohistory',poHistory);
   renderPOHistory();renderInvoiceList();renderRegister();clearAllManual();
-  alert(`✅ PO ${poId} generated. Stock updated from ${MONTHS[selMonth]} ${selYear}.`);
+  alert('✅ PO '+poId+' generated. Stock updated from '+MONTHS[selMonth]+' '+selYear+'.');
 }
-
 function renderPOHistory(){
-  const el=document.getElementById('po-history-content');
+  var el=document.getElementById('po-history-content');
   if(!poHistory.length){el.innerHTML='<div style="padding:14px;color:#666">No manual POs recorded.</div>';return;}
-  el.innerHTML=[...poHistory].reverse().map(po=>`
-    <div class="po-card" style="border-color:#9ae6b4">
-      <div style="display:flex;justify-content:space-between;margin-bottom:5px">
-        <div><b>${po.id}</b> <span class="badge badge-green">MANUAL</span></div>
-        <div style="display:flex;gap:5px">
-          <button class="btn btn-info btn-sm" onclick="openInvoiceFromPO('${po.id}')">🧾 Invoice</button>
-          <button class="btn btn-danger btn-sm" onclick="deletePO('${po.id}')">🗑</button>
-        </div>
-      </div>
-      <div style="font-size:11px;color:#555">${po.date} | ${po.items.length} items | ${MONTHS[po.month]} ${po.year}</div>
-      <div style="margin-top:4px">${po.items.slice(0,4).map(i=>`<span class="badge badge-blue" style="margin:1px">${i.name}(${i.orderQty})</span>`).join('')}${po.items.length>4?` +${po.items.length-4} more`:''}</div>
-    </div>`).join('');
+  el.innerHTML=poHistory.slice().reverse().map(function(po){
+    return '<div class="po-card" style="border-color:#9ae6b4"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><div><b>'+po.id+'</b> <span class="badge badge-green">MANUAL</span></div>'+
+      '<div style="display:flex;gap:5px"><button class="btn btn-info btn-sm" onclick="openInvoiceFromPO(\''+po.id+'\')">🧾 Invoice</button>'+
+      '<button class="btn btn-danger btn-sm" onclick="deletePO(\''+po.id+'\')">🗑</button></div></div>'+
+      '<div style="font-size:11px;color:#555">'+po.date+' | '+po.items.length+' items | '+MONTHS[po.month]+' '+po.year+'</div>'+
+      '<div style="margin-top:4px">'+po.items.slice(0,4).map(function(i){return '<span class="badge badge-blue" style="margin:1px">'+i.name+'('+i.orderQty+')</span>';}).join('')+(po.items.length>4?' +'+(po.items.length-4)+' more':'')+'</div></div>';
+  }).join('');
 }
-
-function deletePO(id){if(!confirm('Remove PO?'))return;poHistory=poHistory.filter(p=>p.id!==id);sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();}
+function deletePO(id){if(!confirm('Remove PO?'))return;poHistory=poHistory.filter(function(p){return p.id!==id;});sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();}
 function clearPOHistory(){if(!confirm('Clear all?'))return;poHistory=[];sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();}
 function exportAutoPOExcel(){
-  const bySupplier=getAutoPOData();
-  const yr=parseInt(document.getElementById('reg-year').value)||CY;
-  const wb=XLSX.utils.book_new();
-  const hdr=['PO','Supplier','Medicine','Category','Unit Type','Number','Stock','Days Left','Order Qty'];
-  const rows=[hdr];let n=1;
-  Object.keys(bySupplier).sort().forEach(sup=>{
-    bySupplier[sup].sort((a,b)=>a.daysLeft-b.daysLeft).forEach(item=>rows.push([`PO-JAGM-${yr}-${String(n).padStart(3,'0')}`,SUPPLIER_NAMES[sup]||sup,item.name,item.cat,item.unitType,item.unitNum||'-',item.currentStock,item.daysLeft,item.orderQty]));n++;
+  var bySupplier=getAutoPOData();
+  var yr=parseInt(document.getElementById('reg-year').value)||CY;
+  var wb=XLSX.utils.book_new();
+  var rows=[['PO','Supplier','Medicine','Category','Unit Type','Number','Stock','Days Left','Order Qty']];
+  var n=1;
+  Object.keys(bySupplier).sort().forEach(function(sup){
+    bySupplier[sup].sort(function(a,b){return a.daysLeft-b.daysLeft;}).forEach(function(item){
+      rows.push(['PO-JAGM-'+yr+'-'+String(n).padStart(3,'0'),SUPPLIER_NAMES[sup]||sup,item.name,item.cat,item.unitType,item.unitNum||'-',item.currentStock,item.daysLeft,item.orderQty]);
+    });n++;
   });
-  const ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'Auto PO');
-  XLSX.writeFile(wb,`Auto_PO_${yr}.xlsx`);
+  var ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'Auto PO');
+  XLSX.writeFile(wb,'Auto_PO_'+yr+'.xlsx');
 }
 function exportPOHistoryExcel(){
-  const wb=XLSX.utils.book_new();
-  const rows=[['PO','Type','Date','Month','Year','Medicine','Category','Unit Type','Number','Qty']];
-  poHistory.forEach(po=>po.items.forEach(item=>rows.push([po.id,po.type,po.date,MONTHS[po.month],po.year,item.name,item.cat,item.unitType||'',item.unitNum||'',item.orderQty])));
-  const ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'PO History');
+  var wb=XLSX.utils.book_new();
+  var rows=[['PO','Type','Date','Month','Year','Medicine','Category','Unit Type','Number','Qty']];
+  poHistory.forEach(function(po){po.items.forEach(function(item){rows.push([po.id,po.type,po.date,MONTHS[po.month],po.year,item.name,item.cat,item.unitType||'',item.unitNum||'',item.orderQty]);});});
+  var ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'PO History');
   XLSX.writeFile(wb,'PO_History.xlsx');
 }
 
 // ── INVOICE ──
 function renderInvoiceList(){
-  const yr=parseInt(document.getElementById('reg-year')?document.getElementById('reg-year').value:CY)||CY;
-  const bySupplier=getAutoPOData();
-  let html='<div style="font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Auto PO Invoices</div>';
-  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin-bottom:14px">';
-  let n=1;
-  Object.keys(bySupplier).sort().forEach(sup=>{
-    const poId=`PO-JAGM-${yr}-${String(n).padStart(3,'0')}`;
-    html+=`<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:11px">
-      <div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:2px">🧾 ${poId.replace('PO-','INV-')}</div>
-      <div style="font-size:11px;margin-bottom:7px">${bySupplier[sup].length} items | ${SUPPLIER_NAMES[sup]||sup}</div>
-      <button class="btn btn-primary btn-sm" style="width:100%" onclick="openInvoice('${sup}','${poId}')">Open →</button>
-    </div>`;n++;
+  var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
+  var bySupplier=getAutoPOData();
+  var html='<div style="font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Auto PO Invoices</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin-bottom:14px">';
+  var n=1;
+  Object.keys(bySupplier).sort().forEach(function(sup){
+    var poId='PO-JAGM-'+yr+'-'+String(n).padStart(3,'0');
+    html+='<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:11px">'+
+      '<div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:2px">🧾 '+poId.replace('PO-','INV-')+'</div>'+
+      '<div style="font-size:11px;margin-bottom:7px">'+bySupplier[sup].length+' items | '+(SUPPLIER_NAMES[sup]||sup)+'</div>'+
+      '<button class="btn btn-primary btn-sm" style="width:100%" onclick="openInvoice(\''+sup+'\',\''+poId+'\')">Open →</button></div>';
+    n++;
   });
   html+='</div>';
   if(poHistory.length){
-    html+='<div style="font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Manual PO Invoices</div>';
-    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px">';
-    poHistory.forEach(po=>{html+=`<div style="background:#fff;border:1px solid #c3e6cb;border-radius:5px;padding:11px">
-      <div style="font-size:12px;font-weight:700;color:#1a7a4a;margin-bottom:2px">🧾 ${po.id.replace('PO-','INV-')} <span class="badge badge-green" style="font-size:9px">MANUAL</span></div>
-      <div style="font-size:11px;margin-bottom:7px">${po.date} | ${po.items.length} items</div>
-      <button class="btn btn-success btn-sm" style="width:100%" onclick="openInvoiceFromPO('${po.id}')">Open →</button></div>`;});
+    html+='<div style="font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Manual PO Invoices</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px">';
+    poHistory.forEach(function(po){
+      html+='<div style="background:#fff;border:1px solid #c3e6cb;border-radius:5px;padding:11px">'+
+        '<div style="font-size:12px;font-weight:700;color:#1a7a4a;margin-bottom:2px">🧾 '+po.id.replace('PO-','INV-')+' <span class="badge badge-green" style="font-size:9px">MANUAL</span></div>'+
+        '<div style="font-size:11px;margin-bottom:7px">'+po.date+' | '+po.items.length+' items</div>'+
+        '<button class="btn btn-success btn-sm" style="width:100%" onclick="openInvoiceFromPO(\''+po.id+'\')">Open →</button></div>';
+    });
     html+='</div>';
   }
   document.getElementById('inv-po-list').innerHTML=html;
 }
-
 function openInvoice(sup,poId){currentPOItems=getAutoPOData()[sup]||[];currentPONum=poId;_openInvModal(poId);}
-function openInvoiceFromPO(poId){const po=poHistory.find(p=>p.id===poId);if(!po)return;currentPOItems=po.items;currentPONum=po.id;_openInvModal(po.id);}
+function openInvoiceFromPO(poId){var po=poHistory.filter(function(p){return p.id===poId;})[0];if(!po)return;currentPOItems=po.items;currentPONum=po.id;_openInvModal(po.id);}
 function _openInvModal(poId){
   document.getElementById('inv-number').value=poId.replace('PO-','INV-');
-  const t=new Date();document.getElementById('inv-date').value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
+  var t=new Date();document.getElementById('inv-date').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
   document.getElementById('inv-modal-title').textContent='Invoice — '+poId.replace('PO-','INV-');
-  let pb='';
-  currentPOItems.forEach((item,i)=>{
-    const ut=item.unitType||getUnitType(item.name,item.cat);
-    const un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat);
-    const dp=DEFAULT_PRICES[ut]||50;
-    pb+=`<tr><td>${i+1}</td><td><b>${item.name}</b></td>
-      <td><span class="badge badge-blue">${ut}</span></td>
-      <td>${un||'-'}</td>
-      <td>${item.orderQty.toLocaleString()}</td>
-      <td><input type="number" class="price-input" id="price-${i}" value="${dp}" min="0.01" step="0.01" oninput="buildInvoiceDoc()"></td>
-      <td><select id="gst-${i}" onchange="buildInvoiceDoc()"><option value="5">5%</option><option value="12" selected>12%</option></select></td></tr>`;
+  var pb='';
+  currentPOItems.forEach(function(item,i){
+    var ut=item.unitType||getUnitType(item.name,item.cat);
+    var un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat);
+    var dp=DEFAULT_PRICES[ut]||50;
+    pb+='<tr><td>'+(i+1)+'</td><td><b>'+item.name+'</b></td><td><span class="badge badge-blue">'+ut+'</span></td><td>'+(un||'-')+'</td><td>'+item.orderQty.toLocaleString()+'</td>'+
+      '<td><input type="number" class="price-input" id="price-'+i+'" value="'+dp+'" min="0.01" step="0.01" oninput="buildInvoiceDoc()"></td>'+
+      '<td><select id="gst-'+i+'" onchange="buildInvoiceDoc()"><option value="5">5%</option><option value="12" selected>12%</option></select></td></tr>';
   });
   document.getElementById('inv-price-body').innerHTML=pb;
   buildInvoiceDoc();document.getElementById('inv-modal').style.display='flex';
 }
-function applyDefaultGST(){const g=document.getElementById('inv-gst-default').value;currentPOItems.forEach((_,i)=>{const e=document.getElementById(`gst-${i}`);if(e)e.value=g;});buildInvoiceDoc();}
+function applyDefaultGST(){var g=document.getElementById('inv-gst-default').value;currentPOItems.forEach(function(_,i){var e=document.getElementById('gst-'+i);if(e)e.value=g;});buildInvoiceDoc();}
 function buildInvoiceDoc(){
-  const invNum=document.getElementById('inv-number').value;
-  const invDate=document.getElementById('inv-date').value;
-  const df=invDate?new Date(invDate+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
-  const due=invDate?new Date(new Date(invDate+'T00:00:00').getTime()+30*86400000).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
-  let rows='',sub=0,gstT=0;
-  currentPOItems.forEach((item,i)=>{
-    const p=parseFloat(document.getElementById(`price-${i}`)?.value)||0;
-    const g=parseFloat(document.getElementById(`gst-${i}`)?.value)||12;
-    const ut=item.unitType||getUnitType(item.name,item.cat);
-    const un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat);
-    const b=p*item.orderQty,ga=b*g/100;sub+=b;gstT+=ga;
-    rows+=`<tr><td>${i+1}</td><td>${item.name}</td><td style="color:#555;font-size:10px">${item.cat}</td>
-      <td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 5px;border-radius:3px;font-size:10px">${ut}</span></td>
-      <td style="text-align:center">${un||'-'}</td>
-      <td style="text-align:right">${item.orderQty.toLocaleString()}</td>
-      <td style="text-align:right">₹${p.toFixed(2)}</td><td style="text-align:right">₹${b.toFixed(2)}</td>
-      <td style="text-align:center">${g}%</td><td style="text-align:right">₹${ga.toFixed(2)}</td>
-      <td style="text-align:right"><b>₹${(b+ga).toFixed(2)}</b></td></tr>`;
+  var invNum=document.getElementById('inv-number').value;
+  var invDate=document.getElementById('inv-date').value;
+  var df=invDate?new Date(invDate+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
+  var due=invDate?new Date(new Date(invDate+'T00:00:00').getTime()+30*86400000).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
+  var rows='',sub=0,gstT=0;
+  currentPOItems.forEach(function(item,i){
+    var p=parseFloat((document.getElementById('price-'+i)||{value:0}).value)||0;
+    var g=parseFloat((document.getElementById('gst-'+i)||{value:12}).value)||12;
+    var ut=item.unitType||getUnitType(item.name,item.cat);
+    var un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat);
+    var b=p*item.orderQty,ga=b*g/100;sub+=b;gstT+=ga;
+    rows+='<tr><td>'+(i+1)+'</td><td>'+item.name+'</td><td style="color:#555;font-size:10px">'+item.cat+'</td>'+
+      '<td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 5px;border-radius:3px;font-size:10px">'+ut+'</span></td>'+
+      '<td style="text-align:center">'+(un||'-')+'</td>'+
+      '<td style="text-align:right">'+item.orderQty.toLocaleString()+'</td>'+
+      '<td style="text-align:right">₹'+p.toFixed(2)+'</td><td style="text-align:right">₹'+b.toFixed(2)+'</td>'+
+      '<td style="text-align:center">'+g+'%</td><td style="text-align:right">₹'+ga.toFixed(2)+'</td>'+
+      '<td style="text-align:right"><b>₹'+(b+ga).toFixed(2)+'</b></td></tr>';
   });
-  const grand=sub+gstT;
-  function tw(n){const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];function cv(x){if(x===0)return'';if(x<20)return a[x]+' ';if(x<100)return b[Math.floor(x/10)]+' '+(x%10?a[x%10]+' ':'');if(x<1000)return a[Math.floor(x/100)]+' Hundred '+(x%100?cv(x%100):'');if(x<100000)return cv(Math.floor(x/1000))+'Thousand '+cv(x%1000);if(x<10000000)return cv(Math.floor(x/100000))+'Lakh '+cv(x%100000);return cv(Math.floor(x/10000000))+'Crore '+cv(x%10000000);}return(cv(Math.round(n))||'Zero')+' Rupees Only';}
-  document.getElementById('inv-doc-wrap').innerHTML=`<div class="inv-doc">
-    <div style="display:flex;justify-content:space-between;border-bottom:2px solid #1a3a5c;padding-bottom:10px;margin-bottom:10px">
-      <div><div style="font-size:16px;font-weight:700;color:#1a3a5c">TAX INVOICE</div>
-      <div style="font-size:12px;font-weight:700;margin-top:2px">Astanga Wellness Distributors</div>
-      <div style="font-size:11px;color:#555;line-height:1.8">Vidyanagar, Hubli — 580021<br>GSTIN: 29AAPCA9132R1ZP</div></div>
-      <div style="text-align:right;font-size:11px"><div style="font-weight:700;font-size:12px;color:#1a3a5c">Invoice: ${invNum}</div>
-      <div>Date: ${df}</div><div>Due: ${due}</div><div>PO Ref: ${currentPONum}</div><div>Terms: Net 30 Days</div></div>
-    </div>
-    <div class="inv-grid">
-      <div class="inv-box"><strong>Bill To</strong><br>Principal, JAIN AGM AMC & H<br>Varur, Hubli — 581207, Karnataka</div>
-      <div class="inv-box"><strong>Supplier</strong><br>Astanga Wellness Distributors<br>Vidyanagar, Hubli — 580021<br>GSTIN: 29AAPCA9132R1ZP | KA (29)</div>
-    </div>
-    <table><thead><tr><th>#</th><th>Medicine</th><th>Category</th>
-      <th style="text-align:center">Unit Type</th><th style="text-align:center">Number</th>
-      <th style="text-align:right">Qty</th><th style="text-align:right">Rate(₹)</th>
-      <th style="text-align:right">Base(₹)</th><th style="text-align:center">GST</th>
-      <th style="text-align:right">GST Amt</th><th style="text-align:right">Total(₹)</th></tr></thead>
-    <tbody>${rows}</tbody></table>
-    <div class="inv-totals"><table>
-      <tr><td>Subtotal</td><td style="text-align:right">₹${sub.toFixed(2)}</td></tr>
-      <tr><td>GST</td><td style="text-align:right">₹${gstT.toFixed(2)}</td></tr>
-      <tr class="grand"><td><b>Grand Total</b></td><td style="text-align:right"><b>₹${grand.toFixed(2)}</b></td></tr>
-    </table></div>
-    <div style="clear:both;font-size:11px;background:#f8f9fa;border:1px solid #eee;border-radius:3px;padding:6px 9px;margin-bottom:9px"><b>In words:</b> ${tw(grand)}</div>
-    <div class="inv-footer">
-      <div><b>Terms</b><br>1. Payment within 30 days.<br>2. Disputes subject to Hubli jurisdiction.</div>
-      <div style="text-align:right"><div style="margin-bottom:32px">For <b>Astanga Wellness Distributors</b></div><div>Authorised Signatory</div></div>
-    </div>
-  </div>`;
+  var grand=sub+gstT;
+  function tw(n){
+    var a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    var b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    function cv(x){if(x===0)return'';if(x<20)return a[x]+' ';if(x<100)return b[Math.floor(x/10)]+' '+(x%10?a[x%10]+' ':'');if(x<1000)return a[Math.floor(x/100)]+' Hundred '+(x%100?cv(x%100):'');if(x<100000)return cv(Math.floor(x/1000))+'Thousand '+cv(x%1000);if(x<10000000)return cv(Math.floor(x/100000))+'Lakh '+cv(x%100000);return cv(Math.floor(x/10000000))+'Crore '+cv(x%10000000);}
+    return(cv(Math.round(n))||'Zero')+' Rupees Only';
+  }
+  document.getElementById('inv-doc-wrap').innerHTML='<div class="inv-doc">'+
+    '<div style="display:flex;justify-content:space-between;border-bottom:2px solid #1a3a5c;padding-bottom:10px;margin-bottom:10px">'+
+    '<div><div style="font-size:16px;font-weight:700;color:#1a3a5c">TAX INVOICE</div>'+
+    '<div style="font-size:12px;font-weight:700;margin-top:2px">Astanga Wellness Distributors</div>'+
+    '<div style="font-size:11px;color:#555;line-height:1.8">Vidyanagar, Hubli — 580021<br>GSTIN: 29AAPCA9132R1ZP</div></div>'+
+    '<div style="text-align:right;font-size:11px"><div style="font-weight:700;font-size:12px;color:#1a3a5c">Invoice: '+invNum+'</div>'+
+    '<div>Date: '+df+'</div><div>Due: '+due+'</div><div>PO Ref: '+currentPONum+'</div><div>Terms: Net 30 Days</div></div></div>'+
+    '<div class="inv-grid">'+
+    '<div class="inv-box"><strong>Bill To</strong><br>Principal, JAIN AGM AMC & H<br>Varur, Hubli — 581207, Karnataka</div>'+
+    '<div class="inv-box"><strong>Supplier</strong><br>Astanga Wellness Distributors<br>Vidyanagar, Hubli — 580021<br>GSTIN: 29AAPCA9132R1ZP | KA (29)</div></div>'+
+    '<table><thead><tr><th>#</th><th>Medicine</th><th>Category</th><th style="text-align:center">Unit</th><th style="text-align:center">Num</th>'+
+    '<th style="text-align:right">Qty</th><th style="text-align:right">Rate(₹)</th><th style="text-align:right">Base(₹)</th>'+
+    '<th style="text-align:center">GST</th><th style="text-align:right">GST Amt</th><th style="text-align:right">Total(₹)</th></tr></thead>'+
+    '<tbody>'+rows+'</tbody></table>'+
+    '<div class="inv-totals"><table>'+
+    '<tr><td>Subtotal</td><td style="text-align:right">₹'+sub.toFixed(2)+'</td></tr>'+
+    '<tr><td>GST</td><td style="text-align:right">₹'+gstT.toFixed(2)+'</td></tr>'+
+    '<tr class="grand"><td><b>Grand Total</b></td><td style="text-align:right"><b>₹'+grand.toFixed(2)+'</b></td></tr>'+
+    '</table></div>'+
+    '<div style="clear:both;font-size:11px;background:#f8f9fa;border:1px solid #eee;border-radius:3px;padding:6px 9px;margin-bottom:9px"><b>In words:</b> '+tw(grand)+'</div>'+
+    '<div class="inv-footer"><div><b>Terms</b><br>1. Payment within 30 days.<br>2. Disputes subject to Hubli jurisdiction.</div>'+
+    '<div style="text-align:right"><div style="margin-bottom:32px">For <b>Astanga Wellness Distributors</b></div><div>Authorised Signatory</div></div></div></div>';
 }
 function printInvoice(){window.print();}
 function exportInvoiceExcel(){
   if(!currentPOItems)return;
-  const invNum=document.getElementById('inv-number').value;
-  const invDate=document.getElementById('inv-date').value;
-  const wb=XLSX.utils.book_new();
-  const hdr=[['JAIN AGM — TAX INVOICE'],['Invoice: '+invNum,'','Date: '+invDate],['PO Ref: '+currentPONum],[],
+  var invNum=document.getElementById('inv-number').value;
+  var invDate=document.getElementById('inv-date').value;
+  var wb=XLSX.utils.book_new();
+  var hdr=[['JAIN AGM — TAX INVOICE'],['Invoice: '+invNum,'','Date: '+invDate],['PO Ref: '+currentPONum],[],
     ['#','Medicine','Category','Unit Type','Number','Qty','Rate(₹)','Base(₹)','GST%','GST Amt','Total(₹)']];
-  let s=0,g=0;
-  currentPOItems.forEach((item,i)=>{
-    const p=parseFloat(document.getElementById(`price-${i}`)?.value)||0;
-    const gp=parseFloat(document.getElementById(`gst-${i}`)?.value)||12;
-    const ut=item.unitType||getUnitType(item.name,item.cat);
-    const un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat);
-    const b=p*item.orderQty,ga=b*gp/100;s+=b;g+=ga;
-    hdr.push([i+1,item.name,item.cat,ut,un||'-',item.orderQty,p.toFixed(2),b.toFixed(2),gp+'%',ga.toFixed(2),(b+ga).toFixed(2)]);
+  var s=0,g=0;
+  currentPOItems.forEach(function(item,i){
+    var p=parseFloat((document.getElementById('price-'+i)||{value:0}).value)||0;
+    var gp=parseFloat((document.getElementById('gst-'+i)||{value:12}).value)||12;
+    var b=p*item.orderQty,ga=b*gp/100;s+=b;g+=ga;
+    hdr.push([i+1,item.name,item.cat,item.unitType||'',item.unitNum||'-',item.orderQty,p.toFixed(2),b.toFixed(2),gp+'%',ga.toFixed(2),(b+ga).toFixed(2)]);
   });
   hdr.push(['','','','','','','','Subtotal','','',s.toFixed(2)],['','','','','','','','GST','','',g.toFixed(2)],['','','','','','','','GRAND TOTAL','','', (s+g).toFixed(2)]);
-  const ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,'Invoice');
-  XLSX.writeFile(wb,`${invNum}.xlsx`);
+  var ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,'Invoice');
+  XLSX.writeFile(wb,invNum+'.xlsx');
 }
 
-// ── INDENT (OPD/IPD) ──
+// ── INDENT ──
 function openIndentEditor(type){
   currentIndentType=type;
-  const yr=parseInt(document.getElementById('reg-year')?document.getElementById('reg-year').value:CY)||CY;
-  const allItems=[];const byS=getAutoPOData();let n=1;
-  Object.keys(byS).sort().forEach(sup=>{
-    const poId=`PO-JAGM-${yr}-${String(n).padStart(3,'0')}`;
-    byS[sup].forEach(item=>allItems.push({name:item.name,cat:item.cat,unitType:item.unitType,unitNum:item.unitNum,poRef:poId,poQty:item.orderQty}));n++;
+  var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
+  var allItems=[];var byS=getAutoPOData();var n=1;
+  Object.keys(byS).sort().forEach(function(sup){
+    var poId='PO-JAGM-'+yr+'-'+String(n).padStart(3,'0');
+    byS[sup].forEach(function(item){allItems.push({name:item.name,cat:item.cat,unitType:item.unitType,unitNum:item.unitNum,poRef:poId,poQty:item.orderQty});});n++;
   });
-  poHistory.forEach(po=>po.items.forEach(item=>allItems.push({name:item.name,cat:item.cat,unitType:item.unitType||getUnitType(item.name,item.cat),unitNum:item.unitNum||getUnitNum(item.name,item.cat),poRef:po.id,poQty:item.orderQty})));
-  if(!allItems.length){alert('No POs found. Generate a PO first.');return;}
-
-  const poSet=[...new Set(allItems.map(i=>i.poRef))];
-  const ps=document.getElementById('ind-po-filter');
+  poHistory.forEach(function(po){po.items.forEach(function(item){allItems.push({name:item.name,cat:item.cat,unitType:item.unitType||getUnitType(item.name,item.cat),unitNum:item.unitNum||getUnitNum(item.name,item.cat),poRef:po.id,poQty:item.orderQty});});});
+  if(!allItems.length){alert('No POs found.');return;}
+  var poSet=Array.from(new Set(allItems.map(function(i){return i.poRef;})));
+  var ps=document.getElementById('ind-po-filter');
   ps.innerHTML='<option value="all">All POs</option>';
-  poSet.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;ps.appendChild(o);});
-
-  // Rebuild rows fresh for this type
+  poSet.forEach(function(p){var o=document.createElement('option');o.value=p;o.textContent=p;ps.appendChild(o);});
   indentRowCounter=0;
-  indentRows[type]=allItems.map(item=>({
-    rowId:++indentRowCounter,
-    medName:item.name,cat:item.cat,
-    unitType:item.unitType,unitNum:item.unitNum,
-    poRef:item.poRef,poQty:item.poQty,
-    dept:'',indentQty:item.poQty,remarks:''
-  }));
-
-  const t=new Date();
-  document.getElementById('ind-date').value=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
-  document.getElementById('ind-number').value=`IND-JAGM-${type}-${yr}-001`;
+  indentRows[type]=allItems.map(function(item){return{rowId:++indentRowCounter,medName:item.name,cat:item.cat,unitType:item.unitType,unitNum:item.unitNum,poRef:item.poRef,poQty:item.poQty,dept:'',indentQty:item.poQty,remarks:''};});
+  var t=new Date();
+  document.getElementById('ind-date').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  document.getElementById('ind-number').value='IND-JAGM-'+type+'-'+yr+'-001';
   document.getElementById('ind-type-display').value=type;
-  document.getElementById('indent-modal-title').textContent=`📝 ${type} Dept. Indent — Assign Medicines to Departments`;
+  document.getElementById('indent-modal-title').textContent='📝 '+type+' Dept. Indent — Assign Medicines to Departments';
   buildIndentEditor();
   document.getElementById('indent-modal').style.display='flex';
 }
-
 function buildIndentEditor(){
-  const type=currentIndentType;
-  const filter=document.getElementById('ind-po-filter').value;
-  const rows=(filter==='all'?indentRows[type]:indentRows[type].filter(r=>r.poRef===filter))||[];
-  document.getElementById('indent-editor-body').innerHTML=rows.map(row=>`
-    <tr id="irow-${row.rowId}">
-      <td>${row.rowId}</td><td><b>${row.medName}</b></td>
-      <td style="font-size:10px;color:#555">${row.cat}</td>
-      <td><span class="badge badge-blue">${row.unitType||'-'}</span></td>
-      <td><span class="badge badge-amber" style="font-size:10px">${row.poRef}</span></td>
-      <td>${row.poQty.toLocaleString()}</td>
-      <td>
-        <select style="font-size:11px;width:175px" onchange="updateIR(${row.rowId},'dept',this.value)">
-          <option value="">-- Select Dept --</option>
-          ${DEPTS.map(d=>`<option value="${d}"${d===row.dept?' selected':''}>${d}</option>`).join('')}
-        </select>
-      </td>
-      <td><input type="number" style="width:65px;font-size:11px" value="${row.indentQty}" min="0" onchange="updateIR(${row.rowId},'indentQty',this.value)"></td>
-      <td><input type="text" style="width:100px;font-size:11px" value="${row.remarks}" placeholder="Optional" onchange="updateIR(${row.rowId},'remarks',this.value)"></td>
-      <td class="no-print">
-        <button class="btn btn-info btn-sm" onclick="addDR(${row.rowId})">+Dept</button>
-        <button class="btn btn-danger btn-sm" onclick="delDR(${row.rowId})">✕</button>
-      </td>
-    </tr>`).join('')||'<tr><td colspan="10" style="text-align:center;padding:12px;color:#666">No items.</td></tr>';
+  var type=currentIndentType;
+  var filter=document.getElementById('ind-po-filter').value;
+  var rows=(filter==='all'?indentRows[type]:indentRows[type].filter(function(r){return r.poRef===filter;}))||[];
+  document.getElementById('indent-editor-body').innerHTML=rows.map(function(row){
+    return '<tr id="irow-'+row.rowId+'">'+
+      '<td>'+row.rowId+'</td><td><b>'+row.medName+'</b></td>'+
+      '<td style="font-size:10px;color:#555">'+row.cat+'</td>'+
+      '<td><span class="badge badge-blue">'+(row.unitType||'-')+'</span></td>'+
+      '<td><span class="badge badge-amber" style="font-size:10px">'+row.poRef+'</span></td>'+
+      '<td>'+row.poQty.toLocaleString()+'</td>'+
+      '<td><select style="font-size:11px;width:175px" onchange="updateIR('+row.rowId+',\'dept\',this.value)">'+
+      '<option value="">-- Select Dept --</option>'+
+      DEPTS.map(function(d){return '<option value="'+d+'"'+(d===row.dept?' selected':'')+'>'+d+'</option>';}).join('')+
+      '</select></td>'+
+      '<td><input type="number" style="width:65px;font-size:11px" value="'+row.indentQty+'" min="0" onchange="updateIR('+row.rowId+',\'indentQty\',this.value)"></td>'+
+      '<td><input type="text" style="width:100px;font-size:11px" value="'+row.remarks+'" placeholder="Optional" onchange="updateIR('+row.rowId+',\'remarks\',this.value)"></td>'+
+      '<td class="no-print"><button class="btn btn-info btn-sm" onclick="addDR('+row.rowId+')">+Dept</button> '+
+      '<button class="btn btn-danger btn-sm" onclick="delDR('+row.rowId+')">✕</button></td></tr>';
+  }).join('')||'<tr><td colspan="10" style="text-align:center;padding:12px;color:#666">No items.</td></tr>';
 }
-
-function updateIR(id,f,v){
-  const type=currentIndentType;
-  const r=indentRows[type].find(x=>x.rowId===id);
-  if(r)r[f]=f==='indentQty'?parseInt(v)||0:v;
-}
-function addDR(sid){
-  const type=currentIndentType;
-  const s=indentRows[type].find(r=>r.rowId===sid);if(!s)return;
-  const nr={rowId:++indentRowCounter,medName:s.medName,cat:s.cat,unitType:s.unitType,unitNum:s.unitNum,poRef:s.poRef,poQty:s.poQty,dept:'',indentQty:0,remarks:''};
-  indentRows[type].splice(indentRows[type].findIndex(r=>r.rowId===sid)+1,0,nr);
-  buildIndentEditor();
-}
-function delDR(id){
-  const type=currentIndentType;
-  indentRows[type]=indentRows[type].filter(r=>r.rowId!==id);
-  buildIndentEditor();
-}
-
+function updateIR(id,f,v){var type=currentIndentType;var r=indentRows[type].filter(function(x){return x.rowId===id;})[0];if(r)r[f]=f==='indentQty'?parseInt(v)||0:v;}
+function addDR(sid){var type=currentIndentType;var s=indentRows[type].filter(function(r){return r.rowId===sid;})[0];if(!s)return;var nr={rowId:++indentRowCounter,medName:s.medName,cat:s.cat,unitType:s.unitType,unitNum:s.unitNum,poRef:s.poRef,poQty:s.poQty,dept:'',indentQty:0,remarks:''};indentRows[type].splice(indentRows[type].findIndex(function(r){return r.rowId===sid;})+1,0,nr);buildIndentEditor();}
+function delDR(id){var type=currentIndentType;indentRows[type]=indentRows[type].filter(function(r){return r.rowId!==id;});buildIndentEditor();}
 function saveIndent(){
-  const type=currentIndentType;
-  indentRows[type].forEach(row=>{
-    const sel=document.querySelector(`#irow-${row.rowId} select`);
-    const qi=document.querySelector(`#irow-${row.rowId} input[type=number]`);
-    const ri=document.querySelector(`#irow-${row.rowId} input[type=text]`);
-    if(sel)row.dept=sel.value;
-    if(qi)row.indentQty=parseInt(qi.value)||0;
-    if(ri)row.remarks=ri.value;
+  var type=currentIndentType;
+  indentRows[type].forEach(function(row){
+    var sel=document.querySelector('#irow-'+row.rowId+' select');
+    var qi=document.querySelector('#irow-'+row.rowId+' input[type=number]');
+    var ri=document.querySelector('#irow-'+row.rowId+' input[type=text]');
+    if(sel)row.dept=sel.value;if(qi)row.indentQty=parseInt(qi.value)||0;if(ri)row.remarks=ri.value;
   });
-  indentSaved[type]=true;
-  closeModal('indent-modal');
-  renderIndentPreview(type);
+  indentSaved[type]=true;closeModal('indent-modal');renderIndentPreview(type);
 }
-
 function renderIndentPreview(type){
-  const elId=`indent-preview-${type}`;
-  const el=document.getElementById(elId);
-  if(!el)return;
-  const rows=indentRows[type]||[];
+  var el=document.getElementById('indent-preview-'+type);if(!el)return;
+  var rows=indentRows[type]||[];
   if(!indentSaved[type]||!rows.length){
-    el.innerHTML=`<div style="padding:18px;background:#f8f9fa;border:1px solid #ddd;border-radius:5px;color:#666;text-align:center">
-      <div style="font-size:22px;margin-bottom:6px">${type==='OPD'?'🏥':'🛏'}</div>
-      <div style="font-weight:600;margin-bottom:5px">No ${type} indent created yet</div>
-      <div style="font-size:12px">Click <b>Create / Edit ${type} Indent</b> to begin.</div></div>`;
-    return;
+    el.innerHTML='<div style="padding:18px;background:#f8f9fa;border:1px solid #ddd;border-radius:5px;color:#666;text-align:center">'+
+      '<div style="font-size:22px;margin-bottom:6px">'+(type==='OPD'?'🏥':'🛏')+'</div>'+
+      '<div style="font-weight:600;margin-bottom:5px">No '+type+' indent created yet</div>'+
+      '<div style="font-size:12px">Click <b>Create / Edit '+type+' Indent</b> to begin.</div></div>';return;
   }
-  const indNum=document.getElementById('ind-number').value||`IND-JAGM-${type}-001`;
-  const indDate=document.getElementById('ind-date').value;
-  const ds=indDate?new Date(indDate+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
-  const deptSum={};
-  rows.forEach(r=>{const d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
-  const tableRows=rows.map((r,i)=>`<tr>
-    <td style="text-align:center">${i+1}</td><td><b>${r.medName}</b></td>
-    <td style="font-size:10px">${r.cat}</td>
-    <td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 4px;border-radius:3px;font-size:10px">${r.unitType||'-'}</span></td>
-    <td style="text-align:center">${r.unitNum||'-'}</td>
-    <td style="text-align:center"><span style="background:#fff3cd;color:#856404;padding:1px 4px;border-radius:3px;font-size:10px">${r.poRef}</span></td>
-    <td style="text-align:center">${r.poQty.toLocaleString()}</td>
-    <td><span class="dept-tag">${r.dept||'<i>Unassigned</i>'}</span></td>
-    <td style="text-align:center;font-weight:700">${r.indentQty.toLocaleString()}</td>
-    <td style="color:#666;font-size:11px">${r.remarks||'—'}</td></tr>`).join('');
-  const sigs=DEPTS.map(d=>`<div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">${d}</div><div style="font-size:10px;color:#555">HOD — ${type}</div></div>`).join('');
-  const typeColor=type==='OPD'?'#1a3a5c':'#6b3fa0';
-  const typeBadge=`<span style="background:${type==='OPD'?'#cce5ff':'#e8d5ff'};color:${typeColor};padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700">${type}</span>`;
-  el.innerHTML=`<div class="ind-doc">
-    <div style="text-align:center;border-bottom:2px solid ${typeColor};padding-bottom:9px;margin-bottom:10px">
-      <h2 style="font-size:15px;color:${typeColor}">JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h2>
-      <div style="font-size:11px;color:#555">Varur, Hubli — 581207, Karnataka</div>
-      <div style="font-size:13px;font-weight:700;margin-top:5px;color:${typeColor}">DEPARTMENT MEDICINE INDENT REGISTER — ${typeBadge}</div>
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px">
-      <div><b>Indent No:</b> ${indNum}</div>
-      <div><b>Date:</b> ${ds}</div>
-      <div><b>Type:</b> ${typeBadge}</div>
-      <div><b>Items:</b> ${rows.length}</div>
-    </div>
-    <div style="margin-bottom:9px;font-size:11px;color:#555"><b>PO Refs:</b> ${[...new Set(rows.map(r=>r.poRef))].join(', ')}</div>
-    <table><thead><tr>
-      <th style="width:28px;text-align:center">#</th><th>Medicine</th><th>Category</th>
-      <th style="text-align:center">Unit Type</th><th style="text-align:center">Number</th>
-      <th style="text-align:center">PO Ref</th><th style="text-align:center">PO Qty</th>
-      <th>Department</th><th style="text-align:center">Indent Qty</th><th>Remarks</th>
-    </tr></thead><tbody>${tableRows}</tbody></table>
-    <div style="margin-top:12px;margin-bottom:12px">
-      <div style="font-size:12px;font-weight:700;color:${typeColor};margin-bottom:5px">Dept-wise Summary (${type})</div>
-      <table style="width:auto;min-width:300px"><thead><tr><th>Department</th><th style="text-align:right">Total</th></tr></thead>
-      <tbody>${Object.entries(deptSum).map(([d,q])=>`<tr><td><span class="dept-tag">${d}</span></td><td style="text-align:right;font-weight:700">${q.toLocaleString()}</td></tr>`).join('')}
-      <tr style="background:#e8f0fe"><td><b>Grand Total</b></td><td style="text-align:right;font-weight:700">${Object.values(deptSum).reduce((a,b)=>a+b,0).toLocaleString()}</td></tr></tbody></table>
-    </div>
-    <div style="font-size:12px;font-weight:700;color:${typeColor};margin-bottom:7px">HOD Signatures (${type})</div>
-    <div class="sig-row">${sigs}</div>
-    <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px">
-      <div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Medical Superintendent</div><div style="font-size:10px;color:#555">JAIN AGM AMC & H</div></div>
-      <div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Pharmacist In-charge</div><div style="font-size:10px;color:#555">Hospital Pharmacy</div></div>
-    </div>
-    <div style="margin-top:10px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:7px">Generated by JAIN AGM Pharmacy Management System | ${ds} | ${type} Register</div>
-  </div>`;
+  var indNum=document.getElementById('ind-number').value||'IND-JAGM-'+type+'-001';
+  var indDate=document.getElementById('ind-date').value;
+  var ds=indDate?new Date(indDate+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'});
+  var deptSum={};rows.forEach(function(r){var d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
+  var tableRows=rows.map(function(r,i){return '<tr>'+
+    '<td style="text-align:center">'+(i+1)+'</td><td><b>'+r.medName+'</b></td><td style="font-size:10px">'+r.cat+'</td>'+
+    '<td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 4px;border-radius:3px;font-size:10px">'+(r.unitType||'-')+'</span></td>'+
+    '<td style="text-align:center">'+(r.unitNum||'-')+'</td>'+
+    '<td style="text-align:center"><span style="background:#fff3cd;color:#856404;padding:1px 4px;border-radius:3px;font-size:10px">'+r.poRef+'</span></td>'+
+    '<td style="text-align:center">'+r.poQty.toLocaleString()+'</td>'+
+    '<td><span class="dept-tag">'+(r.dept||'Unassigned')+'</span></td>'+
+    '<td style="text-align:center;font-weight:700">'+r.indentQty.toLocaleString()+'</td>'+
+    '<td style="color:#666;font-size:11px">'+(r.remarks||'—')+'</td></tr>';}).join('');
+  var typeColor=type==='OPD'?'#1a3a5c':'#6b3fa0';
+  var typeBadge='<span style="background:'+(type==='OPD'?'#cce5ff':'#e8d5ff')+';color:'+typeColor+';padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700">'+type+'</span>';
+  var sigs=DEPTS.map(function(d){return '<div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">'+d+'</div><div style="font-size:10px;color:#555">HOD — '+type+'</div></div>';}).join('');
+  el.innerHTML='<div class="ind-doc">'+
+    '<div style="text-align:center;border-bottom:2px solid '+typeColor+';padding-bottom:9px;margin-bottom:10px">'+
+    '<h2 style="font-size:15px;color:'+typeColor+'">JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h2>'+
+    '<div style="font-size:11px;color:#555">Varur, Hubli — 581207, Karnataka</div>'+
+    '<div style="font-size:13px;font-weight:700;margin-top:5px;color:'+typeColor+'">DEPARTMENT MEDICINE INDENT REGISTER — '+typeBadge+'</div></div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px">'+
+    '<div><b>Indent No:</b> '+indNum+'</div><div><b>Date:</b> '+ds+'</div><div><b>Type:</b> '+typeBadge+'</div><div><b>Items:</b> '+rows.length+'</div></div>'+
+    '<div style="margin-bottom:9px;font-size:11px;color:#555"><b>PO Refs:</b> '+Array.from(new Set(rows.map(function(r){return r.poRef;}))).join(', ')+'</div>'+
+    '<table><thead><tr>'+
+    '<th style="width:28px;text-align:center">#</th><th>Medicine</th><th>Category</th>'+
+    '<th style="text-align:center">Unit Type</th><th style="text-align:center">Number</th>'+
+    '<th style="text-align:center">PO Ref</th><th style="text-align:center">PO Qty</th>'+
+    '<th>Department</th><th style="text-align:center">Indent Qty</th><th>Remarks</th>'+
+    '</tr></thead><tbody>'+tableRows+'</tbody></table>'+
+    '<div style="margin-top:12px;margin-bottom:12px">'+
+    '<div style="font-size:12px;font-weight:700;color:'+typeColor+';margin-bottom:5px">Dept-wise Summary ('+type+')</div>'+
+    '<table style="width:auto;min-width:300px"><thead><tr><th>Department</th><th style="text-align:right">Total</th></tr></thead>'+
+    '<tbody>'+Object.entries(deptSum).map(function(e){return '<tr><td><span class="dept-tag">'+e[0]+'</span></td><td style="text-align:right;font-weight:700">'+e[1].toLocaleString()+'</td></tr>';}).join('')+
+    '<tr style="background:#e8f0fe"><td><b>Grand Total</b></td><td style="text-align:right;font-weight:700">'+Object.values(deptSum).reduce(function(a,b){return a+b;},0).toLocaleString()+'</td></tr>'+
+    '</tbody></table></div>'+
+    '<div style="font-size:12px;font-weight:700;color:'+typeColor+';margin-bottom:7px">HOD Signatures ('+type+')</div>'+
+    '<div class="sig-row">'+sigs+'</div>'+
+    '<div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:18px">'+
+    '<div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Medical Superintendent</div><div style="font-size:10px;color:#555">JAIN AGM AMC & H</div></div>'+
+    '<div class="sig-box" style="border-top:1px solid #555;padding-top:6px;text-align:center;font-size:11px"><div style="margin-bottom:28px"></div><div style="font-weight:700">Pharmacist In-charge</div><div style="font-size:10px;color:#555">Hospital Pharmacy</div></div></div>'+
+    '<div style="margin-top:10px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:7px">Generated by JAIN AGM Pharmacy Management System | '+ds+' | '+type+' Register</div></div>';
 }
-
-function printIndent(type){
-  if(!indentSaved[type]||!(indentRows[type]||[]).length){alert(`Create and save the ${type} indent first.`);return;}
-  window.print();
-}
-
+function printIndent(type){if(!indentSaved[type]||!(indentRows[type]||[]).length){alert('Create and save the '+type+' indent first.');return;}window.print();}
 function exportIndentExcel(type){
-  if(!indentSaved[type]||!(indentRows[type]||[]).length){alert(`Create ${type} indent first.`);return;}
-  const rows=indentRows[type];
-  const indNum=document.getElementById('ind-number').value||`IND-JAGM-${type}-001`;
-  const wb=XLSX.utils.book_new();
-  const hdr=[
-    [`JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL`],
-    [`Department Medicine Indent Register — ${type}`],
-    ['Indent No: '+indNum],[],
-    ['#','Medicine','Category','Unit Type','Number','PO Ref','PO Qty','Department','Indent Qty','Remarks']
-  ];
-  rows.forEach((r,i)=>hdr.push([i+1,r.medName,r.cat,r.unitType||'',r.unitNum||'',r.poRef,r.poQty,r.dept||'Unassigned',r.indentQty,r.remarks||'']));
-  const deptSum={};rows.forEach(r=>{const d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
+  if(!indentSaved[type]||!(indentRows[type]||[]).length){alert('Create '+type+' indent first.');return;}
+  var rows=indentRows[type];
+  var indNum=document.getElementById('ind-number').value||'IND-JAGM-'+type+'-001';
+  var wb=XLSX.utils.book_new();
+  var hdr=[['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],['Department Medicine Indent Register — '+type],['Indent No: '+indNum],[],
+    ['#','Medicine','Category','Unit Type','Number','PO Ref','PO Qty','Department','Indent Qty','Remarks']];
+  rows.forEach(function(r,i){hdr.push([i+1,r.medName,r.cat,r.unitType||'',r.unitNum||'',r.poRef,r.poQty,r.dept||'Unassigned',r.indentQty,r.remarks||'']);});
+  var deptSum={};rows.forEach(function(r){var d=r.dept||'Unassigned';if(!deptSum[d])deptSum[d]=0;deptSum[d]+=r.indentQty;});
   hdr.push([],[],['Department-wise Summary'],['Department','Total Packs']);
-  Object.entries(deptSum).forEach(([d,q])=>hdr.push([d,q]));
-  hdr.push(['Grand Total',Object.values(deptSum).reduce((a,b)=>a+b,0)]);
-  const ws=XLSX.utils.aoa_to_sheet(hdr);
+  Object.entries(deptSum).forEach(function(e){hdr.push([e[0],e[1]]);});
+  hdr.push(['Grand Total',Object.values(deptSum).reduce(function(a,b){return a+b;},0)]);
+  var ws=XLSX.utils.aoa_to_sheet(hdr);
   ws['!cols']=[{wch:4},{wch:30},{wch:16},{wch:10},{wch:8},{wch:20},{wch:10},{wch:28},{wch:12},{wch:20}];
-  XLSX.utils.book_append_sheet(wb,ws,`${type} Indent`);
-  XLSX.writeFile(wb,`${indNum}_${type}_Indent.xlsx`);
+  XLSX.utils.book_append_sheet(wb,ws,type+' Indent');
+  XLSX.writeFile(wb,indNum+'_'+type+'_Indent.xlsx');
 }
 
 // ── MEDICINE LIST ──
 function toggleNewCat(){document.getElementById('new-cat-row').style.display=document.getElementById('new-med-cat').value==='__new__'?'flex':'none';}
-function toggleNewUnitType(){
-  const v=document.getElementById('new-med-unittype').value;
-  document.getElementById('new-unittype-other-row').style.display=v==='Other'?'flex':'none';
-}
-
+function toggleNewUnitType(){document.getElementById('new-unittype-other-row').style.display=document.getElementById('new-med-unittype').value==='Other'?'flex':'none';}
 function addMedicine(){
-  const name=document.getElementById('new-med-name').value.trim();
-  let cat=document.getElementById('new-med-cat').value;
-  let ut=document.getElementById('new-med-unittype').value;
+  var name=document.getElementById('new-med-name').value.trim();
+  var cat=document.getElementById('new-med-cat').value;
+  var ut=document.getElementById('new-med-unittype').value;
   if(ut==='Other')ut=document.getElementById('new-med-unittype-other').value.trim()||'unit';
-  const num=parseInt(document.getElementById('new-med-number').value)||1;
-  const st=document.getElementById('add-med-status');
+  var num=parseInt(document.getElementById('new-med-number').value)||1;
+  var st=document.getElementById('add-med-status');
   if(!name){st.textContent='❌ Name required';st.style.color='#a00';return;}
   if(!cat||cat==='__new__'){cat=document.getElementById('new-cat-name').value.trim();if(!cat){st.textContent='❌ Category required';st.style.color='#a00';return;}}
-  if(getAllMeds().some(m=>m.name.toLowerCase()===name.toLowerCase())){st.textContent='❌ Already exists';st.style.color='#a00';return;}
-  customMedicines.push({cat,name,unitType:ut,unitNum:num,custom:true});sv('custom',customMedicines);
-  st.textContent=`✅ "${name}" added.`;st.style.color='#1a7a4a';
+  if(getAllMeds().some(function(m){return m.name.toLowerCase()===name.toLowerCase();})){st.textContent='❌ Already exists';st.style.color='#a00';return;}
+  customMedicines.push({cat:cat,name:name,unitType:ut,unitNum:num,custom:true});sv('custom',customMedicines);
+  st.textContent='✅ "'+name+'" added.';st.style.color='#1a7a4a';
   document.getElementById('new-med-name').value='';
   populateFilters();renderMedList();renderRegister();
 }
-
-document.addEventListener('DOMContentLoaded',()=>{
-  const el=document.getElementById('new-med-unittype');
-  if(el)el.addEventListener('change',toggleNewUnitType);
-});
-
 function removeMedicine(name){
-  if(!confirm(`Remove "${name}"?`))return;
-  customMedicines=customMedicines.filter(m=>m.name!==name);sv('custom',customMedicines);
+  if(!confirm('Remove "'+name+'"?'))return;
+  customMedicines=customMedicines.filter(function(m){return m.name!==name;});sv('custom',customMedicines);
   populateFilters();renderMedList();renderRegister();
 }
 function exportMedList(){
-  const blob=new Blob([JSON.stringify(customMedicines,null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JAGM_Custom_Meds.json';a.click();
+  var blob=new Blob([JSON.stringify(customMedicines,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JAGM_Custom_Meds.json';a.click();
 }
 function importMedList(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=ev=>{try{const imp=JSON.parse(ev.target.result);let n=0;imp.forEach(m=>{if(m.name&&m.cat&&!customMedicines.some(x=>x.name===m.name)){customMedicines.push({...m,custom:true});n++;}});sv('custom',customMedicines);populateFilters();renderMedList();renderRegister();document.getElementById('add-med-status').textContent=`✅ Imported ${n} medicines.`;document.getElementById('add-med-status').style.color='#1a7a4a';}catch(err){alert('Invalid JSON.');}};
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{var imp=JSON.parse(ev.target.result);var n=0;imp.forEach(function(m){if(m.name&&m.cat&&!customMedicines.some(function(x){return x.name===m.name;})){customMedicines.push(Object.assign({},m,{custom:true}));n++;}});sv('custom',customMedicines);populateFilters();renderMedList();renderRegister();document.getElementById('add-med-status').textContent='✅ Imported '+n+' medicines.';document.getElementById('add-med-status').style.color='#1a7a4a';}
+    catch(err){alert('Invalid JSON.');}
+  };
   r.readAsText(f);e.target.value='';
 }
-
 function importExcelData(e){
-  const f=e.target.files[0];if(!f)return;
-  const st=document.getElementById('import-status');st.textContent='⏳ Reading...';st.style.color='#1a3a5c';
-  const reader=new FileReader();
-  reader.onload=ev=>{
+  var f=e.target.files[0];if(!f)return;
+  var st=document.getElementById('import-status');st.textContent='⏳ Reading...';st.style.color='#1a3a5c';
+  var reader=new FileReader();
+  reader.onload=function(ev){
     try{
-      const wb=XLSX.read(ev.target.result,{type:'array'});let imported=0;
-      wb.SheetNames.forEach(sn=>{
-        const yr=sn.includes('2025')?2025:sn.includes('2026')?2026:null;if(!yr)return;
-        const ws=wb.Sheets[sn];const data=XLSX.utils.sheet_to_json(ws,{header:1,defval:0});
-        data.slice(1).forEach(row=>{
-          const rawName=String(row[0]||'').trim();if(!rawName)return;
-          const match=getAllMeds().find(m=>m.name.toLowerCase()===rawName.toLowerCase());
-          const medName=match?match.name:rawName;
+      var wb=XLSX.read(ev.target.result,{type:'array'});var imported=0;
+      wb.SheetNames.forEach(function(sn){
+        var yr=sn.indexOf('2025')>=0?2025:sn.indexOf('2026')>=0?2026:null;if(!yr)return;
+        var ws=wb.Sheets[sn];var data=XLSX.utils.sheet_to_json(ws,{header:1,defval:0});
+        data.slice(1).forEach(function(row){
+          var rawName=String(row[0]||'').trim();if(!rawName)return;
+          var match=getAllMeds().filter(function(m){return m.name.toLowerCase()===rawName.toLowerCase();})[0];
+          var medName=match?match.name:rawName;
           if(!dispensed[yr])dispensed[yr]={};
           dispensed[yr][medName]=[];
-          for(let m=0;m<12;m++)dispensed[yr][medName][m]=parseInt(row[m+1])||0;
+          for(var m=0;m<12;m++)dispensed[yr][medName][m]=parseInt(row[m+1])||0;
           imported++;
         });sv('disp'+yr,dispensed[yr]);
       });
-      st.textContent=`✅ Imported ${imported} medicines.`;st.style.color='#1a7a4a';renderRegister();
+      st.textContent='✅ Imported '+imported+' medicines.';st.style.color='#1a7a4a';renderRegister();
     }catch(err){st.textContent='❌ Error: '+err.message;st.style.color='#a00';}
   };
   reader.readAsArrayBuffer(f);e.target.value='';
 }
-
+function importInvoiceJSON(e){
+  var f=e.target.files[0];if(!f)return;
+  var st=document.getElementById('invoice-import-status');
+  st.textContent='⏳ Reading invoice...';st.style.color='#1a3a5c';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var inv=JSON.parse(ev.target.result);
+      if(!inv.items||!Array.isArray(inv.items))throw new Error('Invalid format');
+      var yr=parseInt(inv.year)||CY;
+      var month=parseInt(inv.month);
+      if(isNaN(month)||month<0||month>11)throw new Error('Invalid month (must be 0-11)');
+      var updated=0,added=0,skipped=0,log=[];
+      inv.items.forEach(function(item){
+        var name=item.name,qty=parseInt(item.qty)||0;
+        if(!name||qty<=0){skipped++;return;}
+        if(!openingStock[yr])openingStock[yr]={};
+        if(!openingStock[yr][name])openingStock[yr][name]={};
+        if(item.base){
+          openingStock[yr][name][month]=(openingStock[yr][name][month]||0)+qty;
+          sv('open'+yr,openingStock[yr]);
+          log.push('✅ '+name+' +'+qty);updated++;
+        } else {
+          var exists=getAllMeds().some(function(m){return m.name.toLowerCase()===name.toLowerCase();});
+          if(!exists){customMedicines.push({cat:item.cat||'MISCELLANEOUS',name:name,unitType:item.unitType||'unit',unitNum:item.unitNum||1,custom:true});sv('custom',customMedicines);log.push('➕ '+name);added++;}
+          else{log.push('🔄 '+name+' +'+qty);updated++;}
+          openingStock[yr][name][month]=(openingStock[yr][name][month]||0)+qty;
+          sv('open'+yr,openingStock[yr]);
+          if(!dispensed[yr])dispensed[yr]={};
+          if(!dispensed[yr][name])dispensed[yr][name]=new Array(12).fill(0);
+          sv('disp'+yr,dispensed[yr]);
+        }
+      });
+      populateFilters();renderRegister();renderMedList();
+      var summary='Invoice: '+(inv.supplier||'Unknown')+'\n'+'Date: '+(inv.date||'')+' | '+(MONTHS[month]||'')+' '+yr+'\nNew medicines added: '+added+'\nStock updated: '+updated+(skipped?'\nSkipped: '+skipped:'')+'\n\nReload page (F5) to confirm all changes.';
+      st.innerHTML='<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:8px;line-height:1.9;white-space:pre-line;font-size:11px">'+summary+'</div>';
+    }catch(err){st.textContent='❌ Error: '+err.message;st.style.color='#a00';}
+  };
+  reader.readAsText(f);e.target.value='';
+}
 function renderMedList(){
-  const s=document.getElementById('med-list-search').value.toLowerCase();
-  const cf=document.getElementById('med-list-cat').value;
-  const meds=getAllMeds().filter(m=>(cf==='all'||m.cat===cf)&&(!s||m.name.toLowerCase().includes(s)));
+  var s=document.getElementById('med-list-search').value.toLowerCase();
+  var cf=document.getElementById('med-list-cat').value;
+  var meds=getAllMeds().filter(function(m){return(cf==='all'||m.cat===cf)&&(!s||m.name.toLowerCase().indexOf(s)>=0);});
   document.getElementById('med-count').textContent=getAllMeds().length;
-  let n=0;
-  document.getElementById('med-list-body').innerHTML=meds.map(m=>{
+  var n=0;
+  document.getElementById('med-list-body').innerHTML=meds.map(function(m){
     n++;
-    const ut=getUnitType(m.name,m.cat);
-    const un=getUnitNum(m.name,m.cat);
-    return`<tr><td>${n}</td><td><b>${m.name}</b></td><td>${m.cat}</td>
-      <td><span class="badge badge-blue">${ut}</span></td>
-      <td>${m.custom?(m.unitNum||'—'):(((m.cat==='VATI/RASAS'||m.cat==='GUGGULU'))?'(dynamic)':getUnitNum(m.name,m.cat))}</td>
-      <td>${m.custom?'<span class="badge badge-teal">CUSTOM</span>':'<span class="badge" style="background:#eee;color:#333">BASE</span>'}</td>
-      <td class="no-print">${m.custom?`<button class="btn btn-danger btn-sm" onclick="removeMedicine('${m.name.replace(/'/g,"\\'")}')">Remove</button>`:'-'}</td></tr>`;
+    var ut=getUnitType(m.name,m.cat);
+    var un=m.custom&&m.unitNum?m.unitNum:((m.cat==='VATI/RASAS'||m.cat==='GUGGULU')&&!m.custom?'(dynamic)':getUnitNum(m.name,m.cat));
+    return '<tr><td>'+n+'</td><td><b>'+m.name+'</b></td><td>'+m.cat+'</td>'+
+      '<td><span class="badge badge-blue">'+ut+'</span></td><td>'+(un||'-')+'</td>'+
+      '<td>'+(m.custom?'<span class="badge badge-teal">CUSTOM</span>':'<span class="badge" style="background:#eee;color:#333">BASE</span>')+'</td>'+
+      '<td class="no-print">'+(m.custom?'<button class="btn btn-danger btn-sm" onclick="removeMedicine(\''+m.name.replace(/'/g,"\\'")+'\')">Remove</button>':'-')+'</td></tr>';
   }).join('')||'<tr><td colspan="7" style="text-align:center;padding:10px;color:#666">No medicines found.</td></tr>';
 }
 
 // ── ANALYTICS ──
 function populateAnalyticsSelect(){
-  const sel=document.getElementById('an-med');
+  var sel=document.getElementById('an-med');
   sel.innerHTML='<option value="">-- Select medicine --</option>';
-  getAllMeds().forEach(m=>{const o=document.createElement('option');o.value=m.name;o.textContent=`${m.name} (${m.cat})`;sel.appendChild(o);});
+  getAllMeds().forEach(function(m){var o=document.createElement('option');o.value=m.name;o.textContent=m.name+' ('+m.cat+')';sel.appendChild(o);});
 }
 function renderAnalytics(){
-  const name=document.getElementById('an-med').value;
-  const yr=parseInt(document.getElementById('an-year').value)||CY;
+  var name=document.getElementById('an-med').value;
+  var yr=parseInt(document.getElementById('an-year').value)||CY;
   if(!name){document.getElementById('analytics-content').innerHTML='';return;}
-  const med=getAllMeds().find(m=>m.name===name);if(!med)return;
-  const data=MONTHS.map((_,m)=>getDisp(yr,name,m));
-  const maxD=Math.max(...data,1),total=data.reduce((a,b)=>a+b,0);
-  const ut=getUnitType(name,med.cat);
-  const bars=MONTHS.map((mn,i)=>`<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div style="width:26px;font-size:11px;text-align:right;color:#555">${mn}</div><div style="width:${Math.round(data[i]/maxD*300)}px;min-width:2px;height:14px;background:#1a3a5c;border-radius:2px"></div><div style="font-size:11px">${data[i].toLocaleString()} ${ut}</div></div>`).join('');
-  const dr=getDailyRate(yr,name);
-  document.getElementById('analytics-content').innerHTML=`
-  <div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:14px;max-width:520px">
-    <h3 style="color:#1a3a5c;margin-bottom:2px;font-size:13px">${name}</h3>
-    <div style="font-size:11px;color:#666;margin-bottom:11px">${med.cat} | Unit: <span class="badge badge-blue">${ut}</span> | ${yr}</div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px">
-      <div class="stat-card"><div class="stat-num" style="font-size:16px">${total.toLocaleString()}</div><div class="stat-lbl">Annual</div></div>
-      <div class="stat-card"><div class="stat-num" style="font-size:16px">${Math.round(total/12).toLocaleString()}</div><div class="stat-lbl">Monthly avg</div></div>
-      <div class="stat-card"><div class="stat-num" style="font-size:16px">${dr.toFixed(1)}</div><div class="stat-lbl">Per day</div></div>
-      <div class="stat-card"><div class="stat-num" style="font-size:16px">${getLastClose(yr,name).toLocaleString()}</div><div class="stat-lbl">Closing</div></div>
-    </div>
-    <div style="font-size:12px;font-weight:700;margin-bottom:6px">Monthly Dispensed (${ut})</div>${bars}
-  </div>`;
+  var med=getAllMeds().filter(function(m){return m.name===name;})[0];if(!med)return;
+  var data=MONTHS.map(function(_,m){return getDisp(yr,name,m);});
+  var maxD=Math.max.apply(null,data.concat([1]));
+  var total=data.reduce(function(a,b){return a+b;},0);
+  var ut=getUnitType(name,med.cat);
+  var bars=MONTHS.map(function(mn,i){return '<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div style="width:26px;font-size:11px;text-align:right;color:#555">'+mn+'</div><div style="width:'+Math.round(data[i]/maxD*300)+'px;min-width:2px;height:14px;background:#1a3a5c;border-radius:2px"></div><div style="font-size:11px">'+data[i].toLocaleString()+' '+ut+'</div></div>';}).join('');
+  var dr=getDailyRate(yr,name);
+  document.getElementById('analytics-content').innerHTML='<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:14px;max-width:520px">'+
+    '<h3 style="color:#1a3a5c;margin-bottom:2px;font-size:13px">'+name+'</h3>'+
+    '<div style="font-size:11px;color:#666;margin-bottom:11px">'+med.cat+' | <span class="badge badge-blue">'+ut+'</span> | '+yr+'</div>'+
+    '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px">'+
+    '<div class="stat-card"><div class="stat-num" style="font-size:16px">'+total.toLocaleString()+'</div><div class="stat-lbl">Annual</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="font-size:16px">'+Math.round(total/12).toLocaleString()+'</div><div class="stat-lbl">Monthly avg</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="font-size:16px">'+dr.toFixed(1)+'</div><div class="stat-lbl">Per day</div></div>'+
+    '<div class="stat-card"><div class="stat-num" style="font-size:16px">'+getLastClose(yr,name).toLocaleString()+'</div><div class="stat-lbl">Closing</div></div></div>'+
+    '<div style="font-size:12px;font-weight:700;margin-bottom:6px">Monthly Dispensed ('+ut+')</div>'+bars+'</div>';
 }
 
 // ── EXCEL EXPORT ──
 function exportExcel(){
-  const yr=parseInt(document.getElementById('reg-year').value)||CY;
-  const wb=XLSX.utils.book_new();
-  const hdr=['#','Medicine','Category','Unit Type'];
-  MONTHS.forEach(m=>{hdr.push(`${m} Open`,`${m} Disp`,`${m} Number`,`${m} Close`);});
+  var yr=parseInt(document.getElementById('reg-year').value)||CY;
+  var wb=XLSX.utils.book_new();
+  var hdr=['#','Medicine','Category','Unit Type'];
+  MONTHS.forEach(function(m){hdr.push(m+' Open',m+' Disp',m+' Number',m+' Close');});
   hdr.push('Annual Total','Daily Rate');
-  const rows=[hdr];
-  getAllMeds().forEach((med,i)=>{
-    const ut=getUnitType(med.name,med.cat);
-    const row=[i+1,med.name,med.cat,ut];
-    let t=0;
-    MONTHS.forEach((_,m)=>{
-      const op=getOpening(yr,med.name,m);
-      const disp=getDisp(yr,med.name,m);
-      const num=getUnitNum(med.name,med.cat,yr,m);
-      const cl=getClosing(yr,med.name,m);
+  var rows=[hdr];
+  getAllMeds().forEach(function(med,i){
+    var ut=getUnitType(med.name,med.cat);
+    var row=[i+1,med.name,med.cat,ut];
+    var t=0;
+    for(var m=0;m<12;m++){
+      var op=getOpening(yr,med.name,m);
+      var disp=getDisp(yr,med.name,m);
+      var num=getUnitNum(med.name,med.cat,yr,m);
+      var cl=getClosing(yr,med.name,m);
       row.push(op,disp,num||0,cl);t+=disp;
-    });
+    }
     row.push(t,getDailyRate(yr,med.name).toFixed(2));rows.push(row);
   });
-  const ws=XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols']=[{wch:4},{wch:30},{wch:16},{wch:10},...Array(48).fill({wch:8}),{wch:11},{wch:9}];
-  XLSX.utils.book_append_sheet(wb,ws,`Stock ${yr}`);
-  XLSX.writeFile(wb,`JAIN_AGM_Stock_${yr}.xlsx`);
+  var ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:4},{wch:30},{wch:16},{wch:10}].concat(new Array(48).fill({wch:8})).concat([{wch:11},{wch:9}]);
+  XLSX.utils.book_append_sheet(wb,ws,'Stock '+yr);
+  XLSX.writeFile(wb,'JAIN_AGM_Stock_'+yr+'.xlsx');
 }
 
-// ── INVOICE JSON IMPORT ──
-function importInvoiceJSON(e){
-  const f=e.target.files[0];if(!f)return;
-  const st=document.getElementById('invoice-import-status');
-  st.textContent='⏳ Reading invoice...';st.style.color='#1a3a5c';
-  const reader=new FileReader();
-  reader.onload=ev=>{
-    try{
-      const inv=JSON.parse(ev.target.result);
-      if(!inv.items||!Array.isArray(inv.items))throw new Error('Invalid format — missing items array');
-      const yr=parseInt(inv.year)||CY;
-      const month=parseInt(inv.month); // 0-based
-      if(isNaN(month)||month<0||month>11)throw new Error('Invalid month in JSON (must be 0–11)');
-
-      let updated=0,added=0,skipped=0;
-      const log=[];
-
-      inv.items.forEach(item=>{
-        const name=item.name;
-        const qty=parseInt(item.qty)||0;
-        if(!name||qty<=0){skipped++;return;}
-
-        if(item.base){
-          // Update opening stock for existing base/custom medicine
-          if(!openingStock[yr])openingStock[yr]={};
-          if(!openingStock[yr][name])openingStock[yr][name]={};
-          const cur=openingStock[yr][name][month]||0;
-          openingStock[yr][name][month]=cur+qty;
-          sv('open'+yr,openingStock[yr]);
-          log.push(`✅ Stock updated: ${name} +${qty} (${MONTHS[month]} ${yr})`);
-          updated++;
-        } else {
-          // Add as custom medicine if not already in list
-          const exists=getAllMeds().some(m=>m.name.toLowerCase()===name.toLowerCase());
-          if(!exists){
-            customMedicines.push({
-              cat:item.cat||'MISCELLANEOUS',
-              name:name,
-              unitType:item.unitType||'unit',
-              unitNum:item.unitNum||1,
-              custom:true
-            });
-            sv('custom',customMedicines);
-            log.push(`➕ New medicine added: ${name} (${item.cat})`);
-            added++;
-          }
-          // Set opening stock regardless of whether it was new or existing custom
-          if(!openingStock[yr])openingStock[yr]={};
-          if(!openingStock[yr][name])openingStock[yr][name]={};
-          const cur=openingStock[yr][name][month]||0;
-          openingStock[yr][name][month]=cur+qty;
-          sv('open'+yr,openingStock[yr]);
-          // Ensure dispensed array exists
-          if(!dispensed[yr])dispensed[yr]={};
-          if(!dispensed[yr][name])dispensed[yr][name]=new Array(12).fill(0);
-          sv('disp'+yr,dispensed[yr]);
-          if(exists){log.push(`🔄 Stock updated (existing custom): ${name} +${qty}`);updated++;}
-        }
-      });
-
-      // Refresh UI
-      populateFilters();renderRegister();renderMedList();
-
-      const summary=`✅ Invoice imported: ${inv.supplier||'Unknown supplier'}\n`+
-        `📅 ${inv.date||''} | ${MONTHS[month]} ${yr}\n`+
-        `➕ New medicines added: ${added}\n`+
-        `✅ Stock updated: ${updated}\n`+
-        (skipped?`⚠️ Skipped: ${skipped}\n`:'')+
-        `\nReload the page (F5) to see all changes.`;
-
-      st.innerHTML=`<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:8px;line-height:1.8;white-space:pre-line">${summary}</div>`;
-      st.style.color='#1a7a4a';
-      console.log('Invoice Import Log:\n'+log.join('\n'));
-
-    }catch(err){
-      st.textContent='❌ Error: '+err.message;st.style.color='#a00';
-      console.error('Invoice import failed:',err);
-    }
-  };
-  reader.readAsText(f);e.target.value='';
-}
-
-
-  if(!confirm('Reset all manually edited data?'))return;
+function resetAllData(){
+  if(!confirm('Reset all manually edited data to default?'))return;
   dispensed={2025:{},2026:{}};openingStock={2025:{},2026:{}};unitOverrides={};
-  ['disp2025','disp2026','open2025','open2026','units'].forEach(k=>{try{localStorage.removeItem('jagm_'+k);}catch(e){}});
-  renderRegister();alert('✅ Data reset.');
+  ['disp2025','disp2026','open2025','open2026','units'].forEach(function(k){try{localStorage.removeItem('jagm_'+k);}catch(e){}});
+  renderRegister();alert('✅ Data reset to default hospital records.');
 }
 
 // ── NAV ──
 function populateFilters(){
   document.getElementById('fy-label').textContent=CY;
-  const ms=document.getElementById('reg-month');
+  var ms=document.getElementById('reg-month');
   ms.innerHTML='<option value="all">All Months</option>';
-  MONTHS.forEach((mn,i)=>{const o=document.createElement('option');o.value=i;o.textContent=mn;ms.appendChild(o);});
-  ['reg-cat','manual-cat-filter','med-list-cat'].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
+  MONTHS.forEach(function(mn,i){var o=document.createElement('option');o.value=i;o.textContent=mn;ms.appendChild(o);});
+  ['reg-cat','manual-cat-filter','med-list-cat'].forEach(function(id){
+    var el=document.getElementById(id);if(!el)return;
     el.innerHTML='<option value="all">All Categories</option>';
-    getCategories().forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;el.appendChild(o);});
+    getCategories().forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;el.appendChild(o);});
   });
-  const msel=document.getElementById('manual-po-month');
-  if(msel){msel.innerHTML='';MONTHS.forEach((mn,i)=>{const o=document.createElement('option');o.value=i;o.textContent=mn;if(i===new Date().getMonth())o.selected=true;msel.appendChild(o);});}
-  const ysel=document.getElementById('manual-po-year');
-  if(ysel){ysel.innerHTML='';[CY-1,CY,CY+1].forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;if(y===CY)o.selected=true;ysel.appendChild(o);});}
+  var msel=document.getElementById('manual-po-month');
+  if(msel){msel.innerHTML='';MONTHS.forEach(function(mn,i){var o=document.createElement('option');o.value=i;o.textContent=mn;if(i===new Date().getMonth())o.selected=true;msel.appendChild(o);});}
+  var ysel=document.getElementById('manual-po-year');
+  if(ysel){ysel.innerHTML='';[CY-1,CY,CY+1].forEach(function(y){var o=document.createElement('option');o.value=y;o.textContent=y;if(y===CY)o.selected=true;ysel.appendChild(o);});}
 }
-
 function showTab(t,el){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById('tab-'+t).classList.add('active');el.classList.add('active');
   if(t==='invoices')renderInvoiceList();
   if(t==='indent'){renderIndentPreview('OPD');renderIndentPreview('IPD');}
@@ -1691,9 +1687,9 @@ function showTab(t,el){
   if(t==='register')renderRegister();
 }
 function showSubTab(tabId,sub,el){
-  document.querySelectorAll(`#tab-${tabId} .subpanel`).forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll(`#tab-${tabId} .subtab`).forEach(t=>t.classList.remove('active'));
-  document.getElementById(`${tabId}-${sub}`).classList.add('active');el.classList.add('active');
+  document.querySelectorAll('#tab-'+tabId+' .subpanel').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('#tab-'+tabId+' .subtab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById(tabId+'-'+sub).classList.add('active');el.classList.add('active');
   if(sub==='manual')renderManualPOTable();
   if(sub==='history')renderPOHistory();
   if(sub==='auto')renderAutoPO();
