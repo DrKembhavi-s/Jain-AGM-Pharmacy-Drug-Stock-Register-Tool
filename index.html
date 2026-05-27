@@ -257,6 +257,19 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <input type="file" accept=".xlsx,.xls" onchange="importExcelData(event)" style="display:none"></label>
 <div id="import-status" style="font-size:11px;margin-top:4px"></div>
 </div>
+
+<div class="gen-box" style="margin-top:12px;border-color:#1a7a4a">
+<h3 style="color:#1a7a4a">🧾 Import Supplier Invoice (JSON)</h3>
+<div class="info-box" style="font-size:11px;background:#f0fff4;border-color:#9ae6b4">
+  Upload a supplier invoice JSON file to automatically:<br>
+  • Add new medicines to the medicine list<br>
+  • Update opening stock for existing medicines<br>
+  Works with Bais, Kottakkal, and any invoice JSON in the standard format.
+</div>
+<label class="btn btn-success btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:8px">📂 Upload Invoice JSON
+<input type="file" accept=".json" onchange="importInvoiceJSON(event)" style="display:none"></label>
+<div id="invoice-import-status" style="font-size:11px;margin-top:4px"></div>
+</div>
 </div>
 <div style="margin-top:12px">
 <h3 style="color:#1a3a5c;margin-bottom:8px;font-size:13px">Full Medicine List (<span id="med-count">0</span>)</h3>
@@ -1497,7 +1510,7 @@ function renderMedList(){
     const un=getUnitNum(m.name,m.cat);
     return`<tr><td>${n}</td><td><b>${m.name}</b></td><td>${m.cat}</td>
       <td><span class="badge badge-blue">${ut}</span></td>
-      <td>${un||'(dynamic)'}</td>
+      <td>${m.custom?(m.unitNum||'—'):(((m.cat==='VATI/RASAS'||m.cat==='GUGGULU'))?'(dynamic)':getUnitNum(m.name,m.cat))}</td>
       <td>${m.custom?'<span class="badge badge-teal">CUSTOM</span>':'<span class="badge" style="background:#eee;color:#333">BASE</span>'}</td>
       <td class="no-print">${m.custom?`<button class="btn btn-danger btn-sm" onclick="removeMedicine('${m.name.replace(/'/g,"\\'")}')">Remove</button>`:'-'}</td></tr>`;
   }).join('')||'<tr><td colspan="7" style="text-align:center;padding:10px;color:#666">No medicines found.</td></tr>';
@@ -1560,7 +1573,89 @@ function exportExcel(){
   XLSX.writeFile(wb,`JAIN_AGM_Stock_${yr}.xlsx`);
 }
 
-function resetAllData(){
+// ── INVOICE JSON IMPORT ──
+function importInvoiceJSON(e){
+  const f=e.target.files[0];if(!f)return;
+  const st=document.getElementById('invoice-import-status');
+  st.textContent='⏳ Reading invoice...';st.style.color='#1a3a5c';
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const inv=JSON.parse(ev.target.result);
+      if(!inv.items||!Array.isArray(inv.items))throw new Error('Invalid format — missing items array');
+      const yr=parseInt(inv.year)||CY;
+      const month=parseInt(inv.month); // 0-based
+      if(isNaN(month)||month<0||month>11)throw new Error('Invalid month in JSON (must be 0–11)');
+
+      let updated=0,added=0,skipped=0;
+      const log=[];
+
+      inv.items.forEach(item=>{
+        const name=item.name;
+        const qty=parseInt(item.qty)||0;
+        if(!name||qty<=0){skipped++;return;}
+
+        if(item.base){
+          // Update opening stock for existing base/custom medicine
+          if(!openingStock[yr])openingStock[yr]={};
+          if(!openingStock[yr][name])openingStock[yr][name]={};
+          const cur=openingStock[yr][name][month]||0;
+          openingStock[yr][name][month]=cur+qty;
+          sv('open'+yr,openingStock[yr]);
+          log.push(`✅ Stock updated: ${name} +${qty} (${MONTHS[month]} ${yr})`);
+          updated++;
+        } else {
+          // Add as custom medicine if not already in list
+          const exists=getAllMeds().some(m=>m.name.toLowerCase()===name.toLowerCase());
+          if(!exists){
+            customMedicines.push({
+              cat:item.cat||'MISCELLANEOUS',
+              name:name,
+              unitType:item.unitType||'unit',
+              unitNum:item.unitNum||1,
+              custom:true
+            });
+            sv('custom',customMedicines);
+            log.push(`➕ New medicine added: ${name} (${item.cat})`);
+            added++;
+          }
+          // Set opening stock regardless of whether it was new or existing custom
+          if(!openingStock[yr])openingStock[yr]={};
+          if(!openingStock[yr][name])openingStock[yr][name]={};
+          const cur=openingStock[yr][name][month]||0;
+          openingStock[yr][name][month]=cur+qty;
+          sv('open'+yr,openingStock[yr]);
+          // Ensure dispensed array exists
+          if(!dispensed[yr])dispensed[yr]={};
+          if(!dispensed[yr][name])dispensed[yr][name]=new Array(12).fill(0);
+          sv('disp'+yr,dispensed[yr]);
+          if(exists){log.push(`🔄 Stock updated (existing custom): ${name} +${qty}`);updated++;}
+        }
+      });
+
+      // Refresh UI
+      populateFilters();renderRegister();renderMedList();
+
+      const summary=`✅ Invoice imported: ${inv.supplier||'Unknown supplier'}\n`+
+        `📅 ${inv.date||''} | ${MONTHS[month]} ${yr}\n`+
+        `➕ New medicines added: ${added}\n`+
+        `✅ Stock updated: ${updated}\n`+
+        (skipped?`⚠️ Skipped: ${skipped}\n`:'')+
+        `\nReload the page (F5) to see all changes.`;
+
+      st.innerHTML=`<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:8px;line-height:1.8;white-space:pre-line">${summary}</div>`;
+      st.style.color='#1a7a4a';
+      console.log('Invoice Import Log:\n'+log.join('\n'));
+
+    }catch(err){
+      st.textContent='❌ Error: '+err.message;st.style.color='#a00';
+      console.error('Invoice import failed:',err);
+    }
+  };
+  reader.readAsText(f);e.target.value='';
+}
+
+
   if(!confirm('Reset all manually edited data?'))return;
   dispensed={2025:{},2026:{}};openingStock={2025:{},2026:{}};unitOverrides={};
   ['disp2025','disp2026','open2025','open2026','units'].forEach(k=>{try{localStorage.removeItem('jagm_'+k);}catch(e){}});
