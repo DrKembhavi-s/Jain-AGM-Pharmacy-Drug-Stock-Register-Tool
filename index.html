@@ -762,14 +762,16 @@ function getUnitType(name,cat){
   return getDefaultUnitType(name,cat);
 }
 function getUnitNum(name,cat,yr,m){
-  // For Vati/Rasas & Guggulu: dynamic = actual dispensed count for that month
+  // Custom medicines always use their manually entered fixed number
+  const cm=customMedicines.find(x=>x.name===name);
+  if(cm&&cm.unitNum!==undefined&&cm.unitNum>0)return cm.unitNum;
+  // Unit overrides (set via Edit Mode) take priority for base medicines
+  if(unitOverrides[name]&&unitOverrides[name].number!==undefined)return unitOverrides[name].number;
+  // For BASE Vati/Rasas & Guggulu only: dynamic = actual dispensed count
   if((cat==='VATI/RASAS'||cat==='GUGGULU')){
     if(m!==undefined&&yr!==undefined)return getDisp(yr,name,m);
     return 0;
   }
-  if(unitOverrides[name]&&unitOverrides[name].number!==undefined)return unitOverrides[name].number;
-  const cm=customMedicines.find(m=>m.name===name);
-  if(cm&&cm.unitNum!==undefined)return cm.unitNum;
   return getDefaultUnitNum(name,cat);
 }
 function setUnitOverride(name,type,number){
@@ -890,7 +892,7 @@ function renderRegister(){
       html+=`<tr class="cat-row"><td colspan="${cols}">▸ ${med.cat}</td></tr>`;lastCat=med.cat;
     }
     const ut=getUnitType(med.name,med.cat);
-    const isDyn=isDynCat(med.cat);
+    const isDyn=isDynCat(med.cat)&&!med.custom;
 
     // Unit Type cell — editable if editMode2
     const utCell=editMode2
@@ -1587,7 +1589,7 @@ function showTab(t,el){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+t).classList.add('active');el.classList.add('active');
   if(t==='invoices')renderInvoiceList();
-  if(t==='indent')renderIndentPreview();
+  if(t==='indent'){renderIndentPreview('OPD');renderIndentPreview('IPD');}
   if(t==='medicines'){renderMedList();populateFilters();}
   if(t==='po'){renderAutoPO();renderPOHistory();}
   if(t==='analytics')populateAnalyticsSelect();
