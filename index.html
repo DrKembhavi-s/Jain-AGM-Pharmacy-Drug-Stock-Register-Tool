@@ -471,7 +471,7 @@ Upload a supplier invoice JSON to add new medicines and update stock automatical
 </div>
 
 <script>
-window.onerror=function(msg,src,line,col){document.body.innerHTML='<pre style="color:red;padding:20px;font-size:13px">JS ERROR at line '+line+' col '+col+':\n'+msg+'</pre>';return true;};
+window.onerror=function(msg,src,line,col){console.log('ERR line '+line+': '+msg);return true;};
 var CY=new Date().getFullYear();
 var DEPTS=['Kayachikitsa','Shalya Tantra','Shalakya Tantra','Panchakarma','Kaumara Bhritya','Prasuti Tantra & Stri Roga','Agada Tantra'];
 var SUPPLIER_MAP={'CHURNAS':'SDM','KWATHA CHOORNAS':'SDM','GHRITAS':'AVN','LEHAS':'AVN','VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC','LINIMENTS':'ARC','GUGGULU':'IMI','ASAVA-ARISHTA':'VED','KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM','OINTMENTS':'ARC','MISCELLANEOUS':'OTHER'};
