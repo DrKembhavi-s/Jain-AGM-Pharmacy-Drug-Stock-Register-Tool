@@ -340,10 +340,26 @@ Use Edit Mode in the register to update opening stock and dispensed quantities.<
 <div class="info-box" style="background:#f5f0ff;border-color:#c9a0ff;font-size:11px">
 Upload your college software's Daily Stock Register Excel.<br>
 <b>Format:</b> Row 4 = headers (S.No, Medicine Name, Category, Opening, Day 1…Day N, Closing)<br>
-Month &amp; Year auto-detected from header. Medicine names fuzzy-matched automatically.
+Month &amp; Year auto-detected. Medicine names fuzzy-matched. Choose import mode below.
 </div>
-<label class="btn btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:6px;background:#6b3fa0;color:#fff">📂 Upload Daily Register Excel<input type="file" accept=".xlsx,.xls" onchange="importDailyRegisterExcel(event)" style="display:none"></label>
+<div style="display:flex;gap:10px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
+  <div style="font-size:12px;font-weight:700;color:#6b3fa0">Import Mode:</div>
+  <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
+    <input type="radio" name="import-mode" value="add" checked> ➕ <b>Add</b> — accumulate each upload (for daily uploads)
+  </label>
+  <label style="font-size:12px;display:flex;align-items:center;gap:4px;cursor:pointer">
+    <input type="radio" name="import-mode" value="replace"> 🔄 <b>Replace</b> — overwrite entire month total
+  </label>
+</div>
+<div style="background:#e8f4fd;border:1px solid #b8d4ea;border-radius:4px;padding:6px 10px;font-size:11px;margin-bottom:8px" id="import-mode-hint">
+  <b>Add mode:</b> Each upload adds only the newly dispensed quantities to the running monthly total. Safe to upload every day or every fortnight.
+</div>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px">
+  <label class="btn btn-sm" style="cursor:pointer;background:#6b3fa0;color:#fff;margin:0">📂 Upload Daily Register Excel<input type="file" accept=".xlsx,.xls" onchange="importDailyRegisterExcel(event)" style="display:none"></label>
+  <button class="btn btn-danger btn-sm" onclick="clearMonthImportLog()" title="Clear the import history for a specific month">🗑 Clear Import Log</button>
+</div>
 <div id="daily-reg-import-status" style="font-size:11px;margin-top:4px"></div>
+<div id="import-log-display" style="font-size:11px;margin-top:6px"></div>
 </div>
 <div class="gen-box" style="border-color:#1a7a4a">
 <h3 style="color:#1a7a4a">🧾 Import Supplier Invoice (JSON)</h3>
@@ -504,6 +520,7 @@ function loadAll(){
   openingStock[2026]=ld('open2026',{});
   indentData=ld('indentdata',{OPD:{},IPD:{}});
   indentMeta=ld('indentmeta',{OPD:{number:'',date:'',saved:false},IPD:{number:'',date:'',saved:false}});
+  importLog=ld('importlog',{});
 }
 
 // ── HELPERS ──
@@ -1536,7 +1553,215 @@ function showSubTab(tabId,sub,el){
 function closeModal(id){document.getElementById(id).style.display='none';}
 
 // ── DAILY REGISTER EXCEL IMPORT ──
+// importLog structure: { 'yr_month': [ {date, filename, medicines:{name:qty}, mode}, ... ] }
+var importLog={};
+
+function getImportMode(){
+  var r=document.querySelector('input[name="import-mode"]:checked');
+  return r?r.value:'add';
+}
+document.addEventListener('change',function(e){
+  if(e.target.name==='import-mode'){
+    var hint=document.getElementById('import-mode-hint');
+    if(!hint)return;
+    if(e.target.value==='add'){
+      hint.innerHTML='<b>Add mode:</b> Each upload adds only the newly dispensed quantities to the running monthly total. Safe to upload every day or every fortnight.';
+      hint.style.background='#e8f4fd';hint.style.borderColor='#b8d4ea';
+    } else {
+      hint.innerHTML='<b>Replace mode:</b> Overwrites the entire month\'s dispensed total. Use only when uploading a complete month at once.';
+      hint.style.background='#fff3cd';hint.style.borderColor='#ffc107';
+    }
+  }
+});
+
 function importDailyRegisterExcel(e){
+  var f=e.target.files[0];if(!f)return;
+  var fname=f.name;
+  var st=document.getElementById('daily-reg-import-status');
+  st.innerHTML='⏳ Reading file...';st.style.color='#1a3a5c';
+  var mode=getImportMode();
+
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+
+      // ── Detect month & year ──
+      var detectedMonth=-1,detectedYear=CY;
+      var monthNames={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+      for(var ri=0;ri<5;ri++){
+        var rowStr=rows[ri].join(' ').toLowerCase();
+        Object.keys(monthNames).forEach(function(mn){if(rowStr.indexOf(mn)>=0)detectedMonth=monthNames[mn];});
+        var ym=rowStr.match(/20\d\d/);if(ym)detectedYear=parseInt(ym[0]);
+      }
+      if(detectedMonth<0){st.innerHTML='❌ Could not detect month from file header.';st.style.color='#a00';return;}
+
+      // ── Find header row ──
+      var headerRowIdx=3;
+      for(var ri=0;ri<10;ri++){
+        var r=rows[ri];
+        for(var ci=0;ci<r.length;ci++){
+          var cell=String(r[ci]).toLowerCase();
+          if(cell.indexOf('medicine')>=0||cell.indexOf('s.no')>=0){headerRowIdx=ri;break;}
+        }
+      }
+      var headerRow=rows[headerRowIdx];
+
+      // ── Find columns ──
+      var colMedName=1,dayCols=[];
+      headerRow.forEach(function(h,ci){
+        var hs=String(h).toLowerCase().trim();
+        if(hs.indexOf('medicine')>=0||hs.indexOf('med name')>=0)colMedName=ci;
+        var n=parseInt(hs);
+        if(!isNaN(n)&&n>=1&&n<=31)dayCols.push({col:ci,day:n});
+      });
+      if(dayCols.length===0){st.innerHTML='❌ No day columns (1–31) found.';st.style.color='#a00';return;}
+
+      // ── Fuzzy match index ──
+      function normalize(s){
+        return String(s).toLowerCase()
+          .replace(/^\d+[a-z]?\.\s*/,'')
+          .replace(/[^a-z0-9]/g,' ')
+          .replace(/\s+/g,' ').trim();
+      }
+      var allMeds=getAllMeds();
+      var medIndex=allMeds.map(function(m){return{name:m.name,norm:normalize(m.name)};});
+      function fuzzyMatch(raw){
+        var n=normalize(raw);if(!n)return null;
+        for(var i=0;i<medIndex.length;i++)if(medIndex[i].norm===n)return medIndex[i].name;
+        for(var i=0;i<medIndex.length;i++){if(n.indexOf(medIndex[i].norm)>=0||medIndex[i].norm.indexOf(n)>=0)return medIndex[i].name;}
+        var tokens=n.split(' ').filter(function(t){return t.length>2;});
+        var best=null,bestScore=0;
+        medIndex.forEach(function(m){
+          var mt=m.norm.split(' ').filter(function(t){return t.length>2;});
+          var matches=tokens.filter(function(t){return mt.indexOf(t)>=0;}).length;
+          var score=matches/(Math.max(tokens.length,mt.length)||1);
+          if(score>bestScore&&score>=0.5){bestScore=score;best=m.name;}
+        });
+        return best;
+      }
+
+      // ── Process rows → sum day columns ──
+      var batchQty={};  // medName -> qty in THIS upload
+      var unmatched=[];
+      for(var ri=headerRowIdx+1;ri<rows.length;ri++){
+        var row=rows[ri];if(!row||row.length<3)continue;
+        var rawName=String(row[colMedName]||'').trim();
+        if(!rawName||rawName.toLowerCase().indexOf('total')>=0||rawName.indexOf('◆')>=0)continue;
+        if(rawName.toUpperCase()===rawName&&rawName.length>3&&!/\d/.test(rawName))continue;
+        var medName=fuzzyMatch(rawName);
+        if(!medName){if(rawName.length>1)unmatched.push(rawName);continue;}
+        var dayTotal=0;
+        dayCols.forEach(function(dc){
+          var vs=String(row[dc.col]||'').trim().replace(/[^0-9.]/g,'');
+          dayTotal+=parseFloat(vs)||0;
+        });
+        if(dayTotal>0)batchQty[medName]=(batchQty[medName]||0)+dayTotal;
+      }
+
+      // ── Apply to dispensed data ──
+      var logKey=detectedYear+'_'+detectedMonth;
+      var applied=0;
+      Object.keys(batchQty).forEach(function(name){
+        var qty=Math.round(batchQty[name]);
+        if(mode==='add'){
+          var cur=getDisp(detectedYear,name,detectedMonth);
+          setDisp(detectedYear,name,detectedMonth,cur+qty);
+        } else {
+          setDisp(detectedYear,name,detectedMonth,qty);
+        }
+        applied++;
+      });
+
+      // ── Save import log entry ──
+      if(!importLog[logKey])importLog[logKey]=[];
+      var logEntry={
+        ts:new Date().toISOString(),
+        date:new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+        filename:fname,
+        mode:mode,
+        days:dayCols.map(function(d){return d.day;}),
+        medicines:batchQty,
+        applied:applied,
+        unmatched:unmatched
+      };
+      importLog[logKey].push(logEntry);
+      sv('importlog',importLog);
+
+      // ── Result display ──
+      var mn=MONTHS[detectedMonth];
+      var resultHTML='<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:10px;font-size:11px;line-height:1.9">';
+      resultHTML+='<b style="font-size:12px;color:#1a7a4a">✅ Import Complete — '+mode.toUpperCase()+' mode</b><br>';
+      resultHTML+='<b>Month:</b> '+mn+' '+detectedYear+' &nbsp;|&nbsp; <b>Days in file:</b> Day '+dayCols[0].day+'–'+dayCols[dayCols.length-1].day+' &nbsp;|&nbsp; <b>Medicines updated:</b> '+applied+'<br>';
+      resultHTML+='<b>Upload #'+importLog[logKey].length+'</b> for this month saved to import log.';
+      if(unmatched.length>0){
+        resultHTML+='<br><br><b style="color:#856404">⚠️ '+unmatched.length+' unmatched:</b> ';
+        resultHTML+=unmatched.slice(0,5).map(function(u){return '<span style="background:#fff3cd;padding:1px 5px;border-radius:3px;margin:1px;display:inline-block">'+u+'</span>';}).join(' ');
+        if(unmatched.length>5)resultHTML+=' <i>+' +(unmatched.length-5)+' more</i>';
+      }
+      resultHTML+='</div>';
+      st.innerHTML=resultHTML;
+
+      renderImportLog(logKey);
+      renderRegister();renderStats();
+
+    }catch(err){
+      st.innerHTML='❌ Error: '+err.message;st.style.color='#a00';
+    }
+  };
+  reader.readAsArrayBuffer(f);e.target.value='';
+}
+
+function renderImportLog(logKey){
+  var el=document.getElementById('import-log-display');if(!el)return;
+  var entries=(importLog[logKey]||[]).slice().reverse();
+  if(!entries.length){el.innerHTML='';return;}
+  var parts=logKey.split('_');
+  var mn=MONTHS[parseInt(parts[1])]+' '+parts[0];
+  var html='<div style="margin-top:10px;border-top:1px solid #ddd;padding-top:8px">';
+  html+='<div style="font-size:12px;font-weight:700;color:#6b3fa0;margin-bottom:5px">📋 Import Log — '+mn+' ('+entries.length+' upload'+(entries.length===1?'':'s')+')</div>';
+  html+='<div style="max-height:180px;overflow-y:auto">';
+  entries.forEach(function(e,i){
+    var mCount=Object.keys(e.medicines).length;
+    var total=Object.values(e.medicines).reduce(function(s,v){return s+v;},0);
+    var modeColor=e.mode==='add'?'#1a7a4a':'#b36a00';
+    var modeBadge='<span style="background:'+(e.mode==='add'?'#d4edda':'#fff3cd')+';color:'+modeColor+';padding:1px 5px;border-radius:8px;font-size:10px;font-weight:700">'+e.mode.toUpperCase()+'</span>';
+    html+='<div style="background:#fafafa;border:1px solid #e0e0e0;border-radius:4px;padding:7px 10px;margin-bottom:5px;font-size:11px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center">';
+    html+='<div><b>#'+(entries.length-i)+'</b> '+modeBadge+' <span style="color:#555">'+e.date+'</span> &nbsp;|&nbsp; <b>'+e.filename+'</b></div>';
+    html+='<button class="btn btn-danger btn-sm" style="font-size:10px;padding:2px 6px" onclick="deleteImportEntry(\''+logKey+'\','+( entries.length-1-i)+')">🗑</button>';
+    html+='</div>';
+    html+='<div style="margin-top:3px;color:#333">Days: '+e.days[0]+'–'+e.days[e.days.length-1]+' &nbsp;|&nbsp; Medicines: '+mCount+' &nbsp;|&nbsp; Total qty: '+Math.round(total).toLocaleString();
+    if(e.unmatched&&e.unmatched.length>0)html+=' &nbsp;|&nbsp; <span style="color:#856404">⚠️ '+e.unmatched.length+' unmatched</span>';
+    html+='</div></div>';
+  });
+  html+='</div></div>';
+  el.innerHTML=html;
+}
+
+function deleteImportEntry(logKey,idx){
+  if(!confirm('Delete this import entry?\n\nNote: This only removes the log entry — it does NOT reverse the stock changes. Use Edit Mode in Stock Register to manually correct quantities if needed.'))return;
+  if(importLog[logKey])importLog[logKey].splice(idx,1);
+  sv('importlog',importLog);
+  renderImportLog(logKey);
+}
+
+function clearMonthImportLog(){
+  var keys=Object.keys(importLog);
+  if(!keys.length){alert('No import log entries to clear.');return;}
+  var opts=keys.map(function(k){var p=k.split('_');return MONTHS[parseInt(p[1])]+' '+p[0]+' ('+k+')';}).join('\n');
+  var choice=prompt('Enter the log key to clear (e.g. 2026_5 for June 2026):\n\nAvailable:\n'+opts);
+  if(!choice)return;
+  var key=choice.trim();
+  if(!importLog[key]){alert('Key not found: '+key);return;}
+  if(!confirm('Clear all '+importLog[key].length+' import entries for '+key+'?\n\nThis only clears the log, not the stock data.'))return;
+  delete importLog[key];sv('importlog',importLog);
+  document.getElementById('import-log-display').innerHTML='';
+  alert('✅ Import log cleared for '+key+'.');
+}
+
   var f=e.target.files[0];if(!f)return;
   var st=document.getElementById('daily-reg-import-status');
   st.innerHTML='⏳ Reading file...';st.style.color='#1a3a5c';
