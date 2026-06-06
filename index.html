@@ -98,7 +98,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 </head>
 <body>
 <header>
-<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL - PHARMACY MANAGEMENT SYSTEM</h1>
+<h1>JAIN AGM AYURVEDIC MEDICAL COLLEGE &amp; HOSPITAL — PHARMACY MANAGEMENT SYSTEM</h1>
 <p>Stock Register | Purchase Orders | Invoices | Dept. Indent (OPD/IPD) | FY <span id="fy-label"></span> | Varur, Hubli</p>
 </header>
 <div class="backup-bar no-print">
@@ -132,7 +132,7 @@ tr.cat-row td{background:#e8f0fe;font-weight:700;color:#1a3a5c;font-size:11px;pa
 <button class="btn btn-warning btn-sm" onclick="window.print()">Print</button>
 </div>
 <div id="edit-hint" style="font-size:11px;color:#1a7a4a;margin-bottom:6px;display:none;background:#f0fff4;border:1px solid #9ae6b4;padding:6px 10px;border-radius:4px">
-Edit Mode ON - Click yellow cells to edit opening stock or dispensed qty. Click Save Changes when done.
+Edit Mode ON — Click yellow cells to edit. Click Save Changes when done.
 </div>
 <div class="tbl-wrap" id="reg-table"></div>
 </div>
@@ -161,14 +161,12 @@ Enter quantities dispensed today. Leave blank or 0 for medicines not dispensed. 
 <span style="float:right;font-weight:700" id="disp-entry-count">0 medicines entered</span>
 </div>
 <div class="tbl-wrap" style="max-height:58vh">
-<table id="daily-disp-table">
-<thead><tr>
+<table><thead><tr>
 <th>#</th><th>Medicine</th><th>Category</th><th>Unit Type</th><th>Current Stock</th>
 <th style="background:#1a7a4a;min-width:100px">Qty Dispensed Today</th>
 <th style="background:#1a7a4a">Remarks</th>
 </tr></thead>
-<tbody id="daily-disp-body"></tbody>
-</table>
+<tbody id="daily-disp-body"></tbody></table>
 </div>
 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;flex-wrap:wrap;gap:8px">
 <div id="disp-save-status" style="font-size:12px;min-height:20px"></div>
@@ -202,7 +200,7 @@ Enter quantities dispensed today. Leave blank or 0 for medicines not dispensed. 
 <div id="tab-generator" class="panel">
 <div class="gen-box">
 <h3>Settings</h3>
-<div class="info-box">Actual dispensed data loaded from hospital records (2025 full year, 2026 Jan-May).</div>
+<div class="info-box">Dispensed data: 2025 full year, 2026 Jan–May loaded. Bais + Kottakkal invoices (May 2026) pre-loaded.</div>
 <div class="gen-row"><label>Min stock threshold (days)</label><input type="number" id="min-days" value="60" style="width:60px"></div>
 <div class="gen-row"><label>PO order period (months)</label><input type="number" id="po-months" value="2" style="width:60px"></div>
 <button class="btn btn-danger btn-sm" style="margin-top:6px" onclick="resetAllData()">Reset to Default Data</button>
@@ -321,15 +319,15 @@ Enter quantities dispensed today. Leave blank or 0 for medicines not dispensed. 
 <div class="gen-box" style="border-color:#6b3fa0">
 <h3 style="color:#6b3fa0">Import Daily Stock Register (Excel)</h3>
 <div class="info-box" style="background:#f5f0ff;border-color:#c9a0ff;font-size:11px">
-Upload college software Daily Stock Register Excel. Month and year auto-detected. Names fuzzy-matched.
+Upload college software Daily Stock Register Excel. Month/year auto-detected. Names fuzzy-matched.
 </div>
 <div style="margin-bottom:8px">
 <label style="font-size:12px;display:block;margin-bottom:4px;font-weight:700">Import Mode:</label>
 <label style="font-size:12px;display:flex;align-items:center;gap:6px;margin-bottom:4px;cursor:pointer">
-<input type="radio" name="impmode" value="add" checked> Add - accumulate (use for daily uploads)
+<input type="radio" name="impmode" value="add" checked> Add — accumulate (use for daily uploads)
 </label>
 <label style="font-size:12px;display:flex;align-items:center;gap:6px;cursor:pointer">
-<input type="radio" name="impmode" value="replace"> Replace - overwrite entire month
+<input type="radio" name="impmode" value="replace"> Replace — overwrite entire month
 </label>
 </div>
 <div style="display:flex;gap:8px;margin-bottom:6px">
@@ -366,6 +364,7 @@ Upload college software Daily Stock Register Excel. Month and year auto-detected
 <div id="analytics-content"></div>
 </div>
 
+<!-- Invoice Modal -->
 <div id="inv-modal" class="modal-bg" style="display:none">
 <div class="modal-box">
 <div class="modal-header no-print">
@@ -387,7 +386,7 @@ Upload college software Daily Stock Register Excel. Month and year auto-detected
 <button class="btn btn-primary btn-sm" onclick="buildInvoiceDoc()">Refresh</button>
 </div>
 <div class="tbl-wrap" style="max-height:180px">
-<table><thead><tr><th>#</th><th>Medicine</th><th>Unit Type</th><th>Number</th><th>Qty</th><th>Rate</th><th>GST %</th></tr></thead>
+<table><thead><tr><th>#</th><th>Medicine</th><th>Unit</th><th>Num</th><th>Qty</th><th>Rate</th><th>GST%</th></tr></thead>
 <tbody id="inv-price-body"></tbody></table>
 </div>
 </div>
@@ -396,6 +395,7 @@ Upload college software Daily Stock Register Excel. Month and year auto-detected
 </div>
 </div>
 
+<!-- Indent Modal -->
 <div id="indent-modal" class="modal-bg" style="display:none">
 <div class="modal-box" style="width:980px;max-width:98vw">
 <div class="modal-header no-print">
@@ -423,7 +423,7 @@ Upload college software Daily Stock Register Excel. Month and year auto-detected
 </div>
 <div class="tbl-wrap" style="max-height:52vh">
 <table><thead><tr>
-<th>#</th><th>Medicine</th><th>Category</th><th>Unit</th><th>Current Stock</th>
+<th>#</th><th>Medicine</th><th>Category</th><th>Unit</th><th>Stock</th>
 <th style="background:#1a7a4a;min-width:90px">Indent Qty</th>
 <th>Department</th><th>Remarks</th>
 </tr></thead>
@@ -434,159 +434,150 @@ Upload college software Daily Stock Register Excel. Month and year auto-detected
 </div>
 
 <script>
-var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-var CY = new Date().getFullYear();
-var DEPTS = ['Kayachikitsa','Shalya Tantra','Shalakya Tantra','Panchakarma','Kaumara Bhritya','Prasuti Tantra & Stri Roga','Agada Tantra'];
-var SUPPLIER_MAP = {'CHURNAS':'SDM','KWATHA CHOORNAS':'SDM','GHRITAS':'AVN','LEHAS':'AVN','VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC','LINIMENTS':'ARC','GUGGULU':'IMI','ASAVA-ARISHTA':'VED','KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM','OINTMENTS':'ARC','MISCELLANEOUS':'OTHER'};
-var SUPPLIER_NAMES = {'SDM':'SDM Pharmaceuticals, Udupi','AVN':'AVN Arogya Pvt Ltd, Coimbatore','SNA':'Shankar Narayan Ayurvedic, Pune','ARC':'Arco Lab, Bengaluru','IMI':'Impcops, Chennai','VED':'Veda Pharma, Mysuru','NAG':'Nagarjuna Ayurvedic, Thrissur','OTHER':'Other Suppliers'};
-var CAT_UNIT_TYPE = {'CHURNAS':'gm','KWATHA CHOORNAS':'gm','GHRITAS':'gm','LEHAS':'gm','VATI/RASAS':'Tablets','TAILAS':'ml','EYE MEDICINES':'ml','LINIMENTS':'gm','GUGGULU':'Tablets','ASAVA-ARISHTA':'ml','KASHAYAS':'ml','SYRUP':'ml','EXTERNAL USE':'gm','OINTMENTS':'gm','MISCELLANEOUS':'unit'};
-var CAT_UNIT_NUM = {'CHURNAS':25,'KWATHA CHOORNAS':25,'GHRITAS':150,'LEHAS':150,'VATI/RASAS':0,'TAILAS':100,'EYE MEDICINES':5,'LINIMENTS':30,'GUGGULU':0,'ASAVA-ARISHTA':200,'KASHAYAS':200,'SYRUP':200,'EXTERNAL USE':25,'OINTMENTS':25,'MISCELLANEOUS':1};
-var SMALL_PACK_TAILAS = ['Anu Taila','Bilwa Taila','Kumkumadi Taila'];
-var DEFAULT_PRICES = {'gm':0.5,'ml':0.8,'Tablets':2,'Capsules':3,'unit':50,'Other':10};
+var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var CY=new Date().getFullYear();
+var DEPTS=['Kayachikitsa','Shalya Tantra','Shalakya Tantra','Panchakarma','Kaumara Bhritya','Prasuti Tantra & Stri Roga','Agada Tantra'];
+var SUPPLIER_MAP={'CHURNAS':'SDM','KWATHA CHOORNAS':'SDM','GHRITAS':'AVN','LEHAS':'AVN','VATI/RASAS':'SNA','TAILAS':'NAG','EYE MEDICINES':'ARC','LINIMENTS':'ARC','GUGGULU':'IMI','ASAVA-ARISHTA':'VED','KASHAYAS':'VED','SYRUP':'ARC','EXTERNAL USE':'SDM','OINTMENTS':'ARC','MISCELLANEOUS':'OTHER'};
+var SUPPLIER_NAMES={'SDM':'SDM Pharmaceuticals, Udupi','AVN':'AVN Arogya Pvt Ltd, Coimbatore','SNA':'Shankar Narayan Ayurvedic, Pune','ARC':'Arco Lab, Bengaluru','IMI':'Impcops, Chennai','VED':'Veda Pharma, Mysuru','NAG':'Nagarjuna Ayurvedic, Thrissur','OTHER':'Other Suppliers'};
+var CAT_UNIT_TYPE={'CHURNAS':'gm','KWATHA CHOORNAS':'gm','GHRITAS':'gm','LEHAS':'gm','VATI/RASAS':'Tablets','TAILAS':'ml','EYE MEDICINES':'ml','LINIMENTS':'gm','GUGGULU':'Tablets','ASAVA-ARISHTA':'ml','KASHAYAS':'ml','SYRUP':'ml','EXTERNAL USE':'gm','OINTMENTS':'gm','MISCELLANEOUS':'unit'};
+var CAT_UNIT_NUM={'CHURNAS':25,'KWATHA CHOORNAS':25,'GHRITAS':150,'LEHAS':150,'VATI/RASAS':0,'TAILAS':100,'EYE MEDICINES':5,'LINIMENTS':30,'GUGGULU':0,'ASAVA-ARISHTA':200,'KASHAYAS':200,'SYRUP':200,'EXTERNAL USE':25,'OINTMENTS':25,'MISCELLANEOUS':1};
+var SMALL_PACK_TAILAS=['Anu Taila','Bilwa Taila','Kumkumadi Taila'];
+var DEFAULT_PRICES={'gm':0.5,'ml':0.8,'Tablets':2,'Capsules':3,'unit':50,'Other':10};
 
-var RAW_2025 = {'Ashwagandha Churna':[170,205,6357,100,1134,151,2259,5412,4884,3834,2915,5250],'Avipattikara Churna':[1755,9301,3952,522,1372,527,4393,5176,6390,8536,6366,4730],'Amalaki Churna':[26,101,503,0,100,18,50,150,3881,430,1600,666],'Abhaya Choorna':[0,581,933,0,100,361,500,100,0,300,512,15864],'Balachaturabhadra Churna':[0,131,40,27,441,43,0,50,110,0,30,0],'Haridra Choorna':[0,2000,170,0,100,21,903,1503,2097,280,640,200],'Hingwashtaka Choorna':[431,1845,2205,38,607,65,1634,1612,675,1037,2601,1355],'Manjistadi Churna':[2,200,0,0,302,91,355,130,401,187,1360,3771],'Nishaamalaki Choorna':[626,2955,2010,6,76,1800,821,2327,3881,2086,1777,2195],'Panchakola Choorna':[598,300,21,0,0,314,1523,1365,362,310,251,0],'Sitopaladi Choorna':[1103,7381,5995,141,4547,240,2842,4550,4744,4580,4758,2846],'Talisadi Choorna':[91,4378,2785,55,60,67,1235,2485,2909,2496,2225,4374],'Trikatu Choorna':[0,195,45,0,50,200,450,133,120,130,90,160],'Triphala Choorna':[464,6086,1986,278,530,307,4535,2655,4965,402,2580,17815],'Vaishwanara Choorna':[0,100,0,0,450,600,150,200,0,0,0,0],'Vidanga Churna':[22,705,450,16,66,28,0,260,400,311,365,457],'Yastimadhu Choorna':[0,1425,0,2180,920,2123,1501,360,0,470,0,1153],'Shuddha Gairika Churna':[0,205,50,0,1,2,0,0,0,50,60,0],'Pushyanuga Churna':[92,6280,3103,441,2649,3662,5661,7550,3996,5491,6111,4225],'Swadista Virechana Churna':[0,10,0,0,0,9,50,0,0,0,0,0],'Shatavari Choorna':[50,100,800,121,487,3200,602,2630,1260,1230,860,2508],'Asanadi Kw. Churna':[0,201,0,0,1,1,112,108,1,100,0,0],'Dashamoola Kw. Churna':[0,230,7205,200,218,59,1838,2969,3565,793,2513,10119],'Manjisthadi Kw. Choorna':[0,30,50,0,288,0,96,0,401,102,0,100],'Shadangadi Kwata. Choorna':[0,201,0,0,1,0,0,0,0,0,0,0],'Triphala Kwata. Choorna':[0,201,991,0,449,64,423,52,125,451,250,385],'Panchavalkala Kwatha Choorna':[0,201,482,143,452,56,555,902,698,200,1687,553],'Eranda Mula Kw. Churna':[0,80,0,0,0,0,1,0,0,100,0,0],'Mustadi Kw. Churna':[0,201,0,0,1,0,0,0,0,0,0,0],'Rasnasaptaka Kwatha Choorna':[0,725,258,119,214,231,262,133,647,252,506,578],'Brahmi Ghrita':[0,1010,154,0,651,4211,9,2156,4394,2303,2604,4484],'Guggulu Tiktaka Ghrita':[0,2,0,0,3,1428,1,0,4,130,0,190],'Indukantha Ghrita':[0,1,0,0,0,1100,0,0,0,72,0,0],'Mahatikta Ghrita':[0,66,1,0,2401,1,11,0,0,72,341,231],'Phalasarpi Ghrita':[0,2251,111,400,59,1,8,2110,406,383,131,150],'Shatavari Ghrita':[50,1556,104,0,1400,5400,2219,3358,1163,236,1326,0],'Sukumara Ghrita':[39,5,0,18,1110,4400,812,1156,502,271,376,401],'Triphala Ghrita':[474,51,16,6,9209,5800,7,1253,623,468,479,1251],'Dadimadi Ghrita':[0,201,0,0,800,0,1000,0,0,32,0,0],'Shatadhouta Ghrita':[0,3,0,0,700,0,7,0,0,262,0,0],'Ashwagandha Ghrita':[0,1,0,0,10800,0,2,0,0,160,232,0],'Agastya Haritaki Rasayana':[0,53,200,0,250,21531,250,0,30,230,0,1655],'Ashwagandha Rasayana':[23067,11,385,0,900,200,1442,1667,19747,284,486,266],'Dashamula Rasayanam':[0,45,0,0,934,1186,2,0,451,30,232,4934],'Kushmanda Rasayana':[0,126,95,0,504,42,1182,433,441,770,601,149],'Manibhadra Leham':[0,2,0,0,0,1800,202,52,0,190,145,0],'Shatavari Gulam':[0,51,0,0,3,2130,6,252,250,0,90,0],'Sukumara Leha':[39,5,0,500,100,3,100,0,0,0,0,0],'Trivrith Leha':[0,40,0,0,0,0,0,0,0,1,0,0],'Haridra Khanda':[332,4970,2105,18,17320,0,1959,3581,3011,765,921,1738],'Agni Tundi Vati':[0,1690,1526,0,0,27,0,1486,2780,1952,2350,810],'Anuloma DS':[0,2328,4930,430,410,721,2213,2368,1277,1732,711,0],'Arogyavardhini Vati':[15300,23226,6795,9560,33190,20640,14105,13437,16662,21460,23900,12825],'Bilwadi Vati':[8180,3091,1320,5364,7844,7922,4400,4611,6770,3971,5435,3805],'Bolabhadda Rasa':[990,160,71,360,970,930,600,710,480,120,30,0],'Chandrakala Rasa':[1820,1105,170,1100,2580,3420,1360,1450,660,672,1891,1585],'Chitrakadi Vati':[1740,420,250,980,1920,1780,681,430,720,210,1761,941],'Chandraprabha Vati':[4960,6700,4352,240,10740,10340,5160,4370,3050,4080,10543,8615],'Gandhaka Rasayana':[26619,11336,7383,15623,46262,2800,11035,11332,21377,18973,16896,9505],'Kamaduga Rasa':[2333,3990,2485,1503,4540,1777,3102,3928,4888,3101,5426,3337],'Krimikutara Rasa':[700,786,1650,330,700,520,1407,880,1371,844,2211,411],'Laghusutashekara Rasa':[0,510,6710,200,500,1170,1153,1410,600,920,840,0],'Lasunadi Vati':[20,520,360,0,0,120,1880,1100,5851,401,990,640],'Lavangadi Vati':[20,120,280,0,45,135,97,50,480,130,630,175],'Nishakatakadi Kasaya':[65,0,200,61,626,5963,104,0,0,0,100,0],'Pachaka Vati':[0,100,700,10,1640,196,20,70,10,350,350,0],'Pathyadi Ghanavati':[0,50,1450,601,70,80,60,70,800,0,0,0],'Pravala Panchamrtha':[0,30,90,0,0,0,0,0,0,30,200,0],'Punarnava Mandura':[2360,3490,2090,480,2940,1840,1202,3120,2520,2807,2790,1999],'Rajapravartini Vati':[16,620,561,131,353,487,620,1510,780,480,1120,1340],'Rasayana Vati':[70,1230,310,60,7480,620,1855,755,1870,650,555,1220],'Saptamrita Loha':[3040,2562,1051,1780,4441,1680,1490,360,1880,1500,1605,1911],'Shaddharana Vati':[0,550,4100,20,280,610,170,210,135,140,170,0],'Sudarshana Ghanavati':[10,950,560,10,60,20,674,2592,2260,640,737,470],'Swasakutara Rasa':[1515,630,480,690,1620,1050,333,1423,3882,1018,1351,1307],'Tapyadi Vati':[0,42,0,0,0,240,38,755,180,1250,50,60],'Tribhuvana Keerti Rasa':[90,2546,1161,200,290,1755,672,1513,2390,1266,1760,1052],'Trishul Rasa':[0,60,860,200,40,150,3800,1700,0,0,30,0],'Varunadi Kashaya Tab':[99,1658,230,0,5507,11492,3774,6855,2749,1287,1434,4308],'Vishatinduka Vati':[0,200,0,0,0,0,400,0,0,0,0,0],'Manasamitra Vati':[20,1371,1101,0,0,1400,2368,2600,3740,4191,6006,2035],'Amavatari Rasa':[80,877,440,41,105,64,2620,2400,826,4251,2101,2269],'Kuberaksha Vati':[34,60,0,76,156,10,453,210,2400,30,0,302],'Gandhravahastyadi Ks. Tab':[25,80,0,1,63,20,142,25,42,3100,0,10],'Prasarinyadi Ks. Tab':[0,371,1900,640,640,337,2654,781,363,201,260,0],'Sahacharadi Ks. Tab':[0,273,2090,360,41,111,162,140,83,72,376,0],'Goutex Tab':[0,210,70,0,0,0,60,160,80,120,120,440],'Nirocil Tab':[0,430,190,680,2840,1440,200,151,30,475,30,242],'Pilocid Tab':[0,30,20,0,0,0,20,140,5000,0,0,103],'Pilocid Cap':[0,300,0,0,0,0,90,260,490,670,0,4820],'Rhukot Tab':[0,210,0,0,0,0,500,0,0,0,0,0],'Anu Taila':[0,2,4701,47,18,213,0,3223,0,0,25,0],'Bilwa Taila':[0,0,38,790,1082,202,32,33,80,293,0,727],'Bhringraja Taila':[0,0,630,108,0,0,0,1,50,0,142,0],'Brihat Saindhavadi Taila':[0,500,0,0,1,1,11,0,0,0,51,0],'Dhanwantari Taila':[0,160,100,0,392,254,332,35,683,0,0,888],'Ghandarva Hastadi Taila':[16,80,30,13,56,17,0,0,0,0,0,100],'Jatyadi Taila':[83,0,2,71,45,1171,28,30,53,199,0,3803],'Karpsyadi Taila':[0,0,210,1,313,0,0,0,30,0,100,0],'Karanja Taila':[0,522,12,18,107,810,710,18,630,0,0,1],'Kottam Chukkadi Taila':[0,100,0,1,201,360,870,0,0,0,0,0],'Kshirabala Taila':[0,108,85,66,667,630,584,106,350,158,0,166],'Lakshadi Taila':[64,53,0,0,49,580,0,100,0,0,0,151],'Mahamashadi Taila':[0,500,500,0,0,320,4,0,0,0,2385,0],'Mahanarayana Taila':[0,1663,500,0,0,32,2536,185,4168,701,0,889],'Mahavishagarbha Taila':[0,130,0,0,0,0,0,0,0,1416,0,20],'Murrchita Tila Taila':[0,108,200,0,0,1,100,1000,0,0,0,0],'Murrivenna Taila':[0,1,100,0,0,0,0,10,0,0,0,0],'Pinda Taila':[38,0,12,22,102,86,912,403,62,0,104,0],'Prasaranyadi Taila':[0,140,0,0,5,751,31,0,210,0,219,0],'Sahacharadi Taila':[12,227,257,20,31,179,22,4,70,669,0,3311],'Shadbindu Taila':[0,457,0,0,0,162,0,0,0,0,0,0],'Yastimadhu Taila':[0,1,1,0,0,0,0,0,0,0,1,0],'Narayana Taila':[31,1663,0,0,0,420,2536,185,0,0,50,0],'Kacha Yapanam Kuzhampu':[0,30,0,0,18,5,0,0,0,0,0,0],'Netra Amritam':[0,1,0,0,0,5048,0,0,0,2,0,0],'Sandhilin Liniment':[58,1,0,30,102,61,67,1,3,0,100,0],'Rhumapar Liniment':[0,1,0,0,0,26,0,0,0,0,0,0],'Kaishora Guggulu':[1280,5975,2910,660,5860,7660,4443,6260,7670,7540,6042,4740],'Kanchanara Guggulu':[0,7145,3540,30,5300,7840,0,4870,10720,9120,9051,6050],'Navaka Guggulu':[500,560,90,1120,2460,2100,1460,1290,1370,670,310,160],'Nimbadi Guggulu':[20,280,450,0,110,20,600,1005,500,690,1171,500],'Simhanada Guggulu':[1180,1240,1010,820,3940,1240,1960,1000,1830,2140,1590,1960],'Trayodashanga Guggulu':[0,5327,2971,4850,12960,8300,7897,9422,5900,7440,8056,6170],'Triphala Guggulu':[7040,18415,10024,13010,38210,23640,10835,13367,16891,21455,22300,14830],'Yogaraja Guggulu':[13890,630,10377,4411,30080,18620,0,12730,14871,15136,22452,20492],'Abhaya Arishta':[0,2013,408,0,2,3583,209,1182,900,1757,13177,0],'Amrita Arishta':[67,662,267,46,1431,73,252,230,43,308,281,317],'Aragwada Arishta':[0,22,0,2,48,24,0,1,0,23,1015,692],'Arjuna Arishta':[1,6,43,0,843,363,1,2,32,0,40,10],'Ashoka Arishta':[0,704,306,200,7800,14400,420,4418,1276,879,5183,3640],'Aravindasava':[0,2,2,0,70,6205,0,0,0,0,0,0],'Ashwagandha Arishta':[0,225,608,0,8600,74,240,471,324,131,820,2020],'Chandana Asava':[0,21,108,23,59,56,19,289,108,69,696,222],'Dashamula Arishta':[168,4950,842,118,3588,120,951,4556,1276,6092,16610,109],'Kanaka Asava':[56,155,4,35,0,52,206,408,5,31,100,8],'Khadira Arishta':[0,337,81,0,202,3400,9,1506,1044,759,2270,2732],'Kumari Asava':[38,1920,215,806,0,0,0,2965,218,32,1263,1458],'Lodra Asava':[0,954,815,0,3200,4698,33,1181,5,36,681,1165],'Mustaka Arishta':[96,1,1,41,66,26,10,54,145,0,239,120],'Punarnava Asava':[0,35,32,0,1204,2,13,371,74,20,331,0],'Rohitika Arishta':[0,7,1,0,1,89,15038,33,13,202,13,302],'Saraswata Arishta':[0,1478,600,69,700,962,1412,483,4884,1334,0,1013],'Saribadasava':[0,2,0,0,0,95,2,0,1,0,0,11],'Usira Asava':[0,451,113,0,4815,64,3,202,4,38,50,0],'Vasakasava':[0,155,1,0,0,260,3,1,200,1,0,202],'Amavatari Kashaya':[0,7,4,0,1,0,70,0,486,256,0,0],'Asthavarga Kashaya':[0,6,2,0,2400,200,3,7,4,120,4,405],'Bharadi Kashaya':[0,1658,0,0,216,59,0,0,2400,1,935,30],'Katakhadiradi Kashaya':[27,1,0,0,51,24,203,1,1,1,1,30],'Kokilaksha Kashaya':[0,1,2,0,22,0,7,2,34,31,0,0],'Manjistadi Kashaya':[81,616,84,53,2,1,2042,1600,318,1951,6516,0],'Rasnadi Kashaya':[171,671,889,384,1005,1,358,154,3163,1422,762,1125],'Varunadi Kashaya':[99,1658,0,48,44,3756,6855,2749,1287,200,0,0],'Amruttotara Kashaya':[0,611,4,0,0,520,0,2134,494,448,656,756],'Madiphala Rasayana Syrup':[23,775,254,69,1889,2,216,1478,484,288,173,314],'Syrup Nirocil':[1880,1488,18,0,0,0,673,1186,32,475,579,0],'Syrup Balachaturbhadra Rasa':[58,10,0,0,0,0,256,0,44,3,0,0],'Dashanga Agada Lepa Choorna':[0,390,392,0,1,43,130,240,86,670,910,110],'Kottam Chukkadi Lepa Choorna':[0,390,0,0,0,0,0,0,0,1,0,0],'Avalagujadi Lepa':[15,1,50,9,11,14,105,0,151,0,0,246],'Pilocid Ointment':[0,4,3,0,0,25,0,52,111,21,0,0],'Psorakot Ointment':[0,4,0,0,0,0,2,0,2,0,0,0],'Rhukot Ointment':[1,1,0,0,32,0,0,0,0,0,0,0],'Trichoderma Ointment':[0,1,0,0,0,0,13,302,2,3,0,51],'Jatyadi Ghrita Ointment':[0,2,3,0,0,0,1,1,0,0,0,0],'Shatadhauta Ghrita Ointment':[0,16,43,0,700,2400,7,577,1683,262,305,153],'Aparajita Dhupa Churna':[0,50,0,0,0,56,0,0,0,0,50,0],'Eladi Cream':[0,1,0,0,600,1,24,159,12,107,260,717],'Gandhaka Malahara':[1,100,5,0,0,0,111,50,301,73,223,178],'Gandakadya Malahara':[0,100,0,0,0,0,0,0,301,0,0,1],'Guduchi Satva':[109,425,372,56,152,0,1062,21,7,303,640,484],'White Ointment':[35,3,1,22,23,0,63,3,26,0,0,0]};
+var RAW_2025={'Ashwagandha Churna':[170,205,6357,100,1134,151,2259,5412,4884,3834,2915,5250],'Avipattikara Churna':[1755,9301,3952,522,1372,527,4393,5176,6390,8536,6366,4730],'Amalaki Churna':[26,101,503,0,100,18,50,150,3881,430,1600,666],'Abhaya Choorna':[0,581,933,0,100,361,500,100,0,300,512,15864],'Balachaturabhadra Churna':[0,131,40,27,441,43,0,50,110,0,30,0],'Haridra Choorna':[0,2000,170,0,100,21,903,1503,2097,280,640,200],'Hingwashtaka Choorna':[431,1845,2205,38,607,65,1634,1612,675,1037,2601,1355],'Manjistadi Churna':[2,200,0,0,302,91,355,130,401,187,1360,3771],'Nishaamalaki Choorna':[626,2955,2010,6,76,1800,821,2327,3881,2086,1777,2195],'Panchakola Choorna':[598,300,21,0,0,314,1523,1365,362,310,251,0],'Sitopaladi Choorna':[1103,7381,5995,141,4547,240,2842,4550,4744,4580,4758,2846],'Talisadi Choorna':[91,4378,2785,55,60,67,1235,2485,2909,2496,2225,4374],'Trikatu Choorna':[0,195,45,0,50,200,450,133,120,130,90,160],'Triphala Choorna':[464,6086,1986,278,530,307,4535,2655,4965,402,2580,17815],'Vaishwanara Choorna':[0,100,0,0,450,600,150,200,0,0,0,0],'Vidanga Churna':[22,705,450,16,66,28,0,260,400,311,365,457],'Yastimadhu Choorna':[0,1425,0,2180,920,2123,1501,360,0,470,0,1153],'Shuddha Gairika Churna':[0,205,50,0,1,2,0,0,0,50,60,0],'Pushyanuga Churna':[92,6280,3103,441,2649,3662,5661,7550,3996,5491,6111,4225],'Swadista Virechana Churna':[0,10,0,0,0,9,50,0,0,0,0,0],'Shatavari Choorna':[50,100,800,121,487,3200,602,2630,1260,1230,860,2508],'Asanadi Kw. Churna':[0,201,0,0,1,1,112,108,1,100,0,0],'Dashamoola Kw. Churna':[0,230,7205,200,218,59,1838,2969,3565,793,2513,10119],'Manjisthadi Kw. Choorna':[0,30,50,0,288,0,96,0,401,102,0,100],'Shadangadi Kwata. Choorna':[0,201,0,0,1,0,0,0,0,0,0,0],'Triphala Kwata. Choorna':[0,201,991,0,449,64,423,52,125,451,250,385],'Panchavalkala Kwatha Choorna':[0,201,482,143,452,56,555,902,698,200,1687,553],'Eranda Mula Kw. Churna':[0,80,0,0,0,0,1,0,0,100,0,0],'Mustadi Kw. Churna':[0,201,0,0,1,0,0,0,0,0,0,0],'Rasnasaptaka Kwatha Choorna':[0,725,258,119,214,231,262,133,647,252,506,578],'Brahmi Ghrita':[0,1010,154,0,651,4211,9,2156,4394,2303,2604,4484],'Guggulu Tiktaka Ghrita':[0,2,0,0,3,1428,1,0,4,130,0,190],'Indukantha Ghrita':[0,1,0,0,0,1100,0,0,0,72,0,0],'Mahatikta Ghrita':[0,66,1,0,2401,1,11,0,0,72,341,231],'Phalasarpi Ghrita':[0,2251,111,400,59,1,8,2110,406,383,131,150],'Shatavari Ghrita':[50,1556,104,0,1400,5400,2219,3358,1163,236,1326,0],'Sukumara Ghrita':[39,5,0,18,1110,4400,812,1156,502,271,376,401],'Triphala Ghrita':[474,51,16,6,9209,5800,7,1253,623,468,479,1251],'Dadimadi Ghrita':[0,201,0,0,800,0,1000,0,0,32,0,0],'Shatadhouta Ghrita':[0,3,0,0,700,0,7,0,0,262,0,0],'Ashwagandha Ghrita':[0,1,0,0,10800,0,2,0,0,160,232,0],'Agastya Haritaki Rasayana':[0,53,200,0,250,21531,250,0,30,230,0,1655],'Ashwagandha Rasayana':[23067,11,385,0,900,200,1442,1667,19747,284,486,266],'Dashamula Rasayanam':[0,45,0,0,934,1186,2,0,451,30,232,4934],'Kushmanda Rasayana':[0,126,95,0,504,42,1182,433,441,770,601,149],'Manibhadra Leham':[0,2,0,0,0,1800,202,52,0,190,145,0],'Shatavari Gulam':[0,51,0,0,3,2130,6,252,250,0,90,0],'Sukumara Leha':[39,5,0,500,100,3,100,0,0,0,0,0],'Trivrith Leha':[0,40,0,0,0,0,0,0,0,1,0,0],'Haridra Khanda':[332,4970,2105,18,17320,0,1959,3581,3011,765,921,1738],'Agni Tundi Vati':[0,1690,1526,0,0,27,0,1486,2780,1952,2350,810],'Anuloma DS':[0,2328,4930,430,410,721,2213,2368,1277,1732,711,0],'Arogyavardhini Vati':[15300,23226,6795,9560,33190,20640,14105,13437,16662,21460,23900,12825],'Bilwadi Vati':[8180,3091,1320,5364,7844,7922,4400,4611,6770,3971,5435,3805],'Bolabhadda Rasa':[990,160,71,360,970,930,600,710,480,120,30,0],'Chandrakala Rasa':[1820,1105,170,1100,2580,3420,1360,1450,660,672,1891,1585],'Chitrakadi Vati':[1740,420,250,980,1920,1780,681,430,720,210,1761,941],'Chandraprabha Vati':[4960,6700,4352,240,10740,10340,5160,4370,3050,4080,10543,8615],'Gandhaka Rasayana':[26619,11336,7383,15623,46262,2800,11035,11332,21377,18973,16896,9505],'Kamaduga Rasa':[2333,3990,2485,1503,4540,1777,3102,3928,4888,3101,5426,3337],'Krimikutara Rasa':[700,786,1650,330,700,520,1407,880,1371,844,2211,411],'Laghusutashekara Rasa':[0,510,6710,200,500,1170,1153,1410,600,920,840,0],'Lasunadi Vati':[20,520,360,0,0,120,1880,1100,5851,401,990,640],'Lavangadi Vati':[20,120,280,0,45,135,97,50,480,130,630,175],'Nishakatakadi Kasaya':[65,0,200,61,626,5963,104,0,0,0,100,0],'Pachaka Vati':[0,100,700,10,1640,196,20,70,10,350,350,0],'Pathyadi Ghanavati':[0,50,1450,601,70,80,60,70,800,0,0,0],'Pravala Panchamrtha':[0,30,90,0,0,0,0,0,0,30,200,0],'Punarnava Mandura':[2360,3490,2090,480,2940,1840,1202,3120,2520,2807,2790,1999],'Rajapravartini Vati':[16,620,561,131,353,487,620,1510,780,480,1120,1340],'Rasayana Vati':[70,1230,310,60,7480,620,1855,755,1870,650,555,1220],'Saptamrita Loha':[3040,2562,1051,1780,4441,1680,1490,360,1880,1500,1605,1911],'Shaddharana Vati':[0,550,4100,20,280,610,170,210,135,140,170,0],'Sudarshana Ghanavati':[10,950,560,10,60,20,674,2592,2260,640,737,470],'Swasakutara Rasa':[1515,630,480,690,1620,1050,333,1423,3882,1018,1351,1307],'Tapyadi Vati':[0,42,0,0,0,240,38,755,180,1250,50,60],'Tribhuvana Keerti Rasa':[90,2546,1161,200,290,1755,672,1513,2390,1266,1760,1052],'Trishul Rasa':[0,60,860,200,40,150,3800,1700,0,0,30,0],'Varunadi Kashaya Tab':[99,1658,230,0,5507,11492,3774,6855,2749,1287,1434,4308],'Vishatinduka Vati':[0,200,0,0,0,0,400,0,0,0,0,0],'Manasamitra Vati':[20,1371,1101,0,0,1400,2368,2600,3740,4191,6006,2035],'Amavatari Rasa':[80,877,440,41,105,64,2620,2400,826,4251,2101,2269],'Kuberaksha Vati':[34,60,0,76,156,10,453,210,2400,30,0,302],'Gandhravahastyadi Ks. Tab':[25,80,0,1,63,20,142,25,42,3100,0,10],'Prasarinyadi Ks. Tab':[0,371,1900,640,640,337,2654,781,363,201,260,0],'Sahacharadi Ks. Tab':[0,273,2090,360,41,111,162,140,83,72,376,0],'Goutex Tab':[0,210,70,0,0,0,60,160,80,120,120,440],'Nirocil Tab':[0,430,190,680,2840,1440,200,151,30,475,30,242],'Pilocid Tab':[0,30,20,0,0,0,20,140,5000,0,0,103],'Pilocid Cap':[0,300,0,0,0,0,90,260,490,670,0,4820],'Rhukot Tab':[0,210,0,0,0,0,500,0,0,0,0,0],'Anu Taila':[0,2,4701,47,18,213,0,3223,0,0,25,0],'Bilwa Taila':[0,0,38,790,1082,202,32,33,80,293,0,727],'Bhringraja Taila':[0,0,630,108,0,0,0,1,50,0,142,0],'Brihat Saindhavadi Taila':[0,500,0,0,1,1,11,0,0,0,51,0],'Dhanwantari Taila':[0,160,100,0,392,254,332,35,683,0,0,888],'Ghandarva Hastadi Taila':[16,80,30,13,56,17,0,0,0,0,0,100],'Jatyadi Taila':[83,0,2,71,45,1171,28,30,53,199,0,3803],'Karpsyadi Taila':[0,0,210,1,313,0,0,0,30,0,100,0],'Karanja Taila':[0,522,12,18,107,810,710,18,630,0,0,1],'Kottam Chukkadi Taila':[0,100,0,1,201,360,870,0,0,0,0,0],'Kshirabala Taila':[0,108,85,66,667,630,584,106,350,158,0,166],'Lakshadi Taila':[64,53,0,0,49,580,0,100,0,0,0,151],'Mahamashadi Taila':[0,500,500,0,0,320,4,0,0,0,2385,0],'Mahanarayana Taila':[0,1663,500,0,0,32,2536,185,4168,701,0,889],'Mahavishagarbha Taila':[0,130,0,0,0,0,0,0,0,1416,0,20],'Murrchita Tila Taila':[0,108,200,0,0,1,100,1000,0,0,0,0],'Murrivenna Taila':[0,1,100,0,0,0,0,10,0,0,0,0],'Pinda Taila':[38,0,12,22,102,86,912,403,62,0,104,0],'Prasaranyadi Taila':[0,140,0,0,5,751,31,0,210,0,219,0],'Sahacharadi Taila':[12,227,257,20,31,179,22,4,70,669,0,3311],'Shadbindu Taila':[0,457,0,0,0,162,0,0,0,0,0,0],'Yastimadhu Taila':[0,1,1,0,0,0,0,0,0,0,1,0],'Narayana Taila':[31,1663,0,0,0,420,2536,185,0,0,50,0],'Kacha Yapanam Kuzhampu':[0,30,0,0,18,5,0,0,0,0,0,0],'Netra Amritam':[0,1,0,0,0,5048,0,0,0,2,0,0],'Sandhilin Liniment':[58,1,0,30,102,61,67,1,3,0,100,0],'Rhumapar Liniment':[0,1,0,0,0,26,0,0,0,0,0,0],'Kaishora Guggulu':[1280,5975,2910,660,5860,7660,4443,6260,7670,7540,6042,4740],'Kanchanara Guggulu':[0,7145,3540,30,5300,7840,0,4870,10720,9120,9051,6050],'Navaka Guggulu':[500,560,90,1120,2460,2100,1460,1290,1370,670,310,160],'Nimbadi Guggulu':[20,280,450,0,110,20,600,1005,500,690,1171,500],'Simhanada Guggulu':[1180,1240,1010,820,3940,1240,1960,1000,1830,2140,1590,1960],'Trayodashanga Guggulu':[0,5327,2971,4850,12960,8300,7897,9422,5900,7440,8056,6170],'Triphala Guggulu':[7040,18415,10024,13010,38210,23640,10835,13367,16891,21455,22300,14830],'Yogaraja Guggulu':[13890,630,10377,4411,30080,18620,0,12730,14871,15136,22452,20492],'Abhaya Arishta':[0,2013,408,0,2,3583,209,1182,900,1757,13177,0],'Amrita Arishta':[67,662,267,46,1431,73,252,230,43,308,281,317],'Aragwada Arishta':[0,22,0,2,48,24,0,1,0,23,1015,692],'Arjuna Arishta':[1,6,43,0,843,363,1,2,32,0,40,10],'Ashoka Arishta':[0,704,306,200,7800,14400,420,4418,1276,879,5183,3640],'Aravindasava':[0,2,2,0,70,6205,0,0,0,0,0,0],'Ashwagandha Arishta':[0,225,608,0,8600,74,240,471,324,131,820,2020],'Chandana Asava':[0,21,108,23,59,56,19,289,108,69,696,222],'Dashamula Arishta':[168,4950,842,118,3588,120,951,4556,1276,6092,16610,109],'Kanaka Asava':[56,155,4,35,0,52,206,408,5,31,100,8],'Khadira Arishta':[0,337,81,0,202,3400,9,1506,1044,759,2270,2732],'Kumari Asava':[38,1920,215,806,0,0,0,2965,218,32,1263,1458],'Lodra Asava':[0,954,815,0,3200,4698,33,1181,5,36,681,1165],'Mustaka Arishta':[96,1,1,41,66,26,10,54,145,0,239,120],'Punarnava Asava':[0,35,32,0,1204,2,13,371,74,20,331,0],'Rohitika Arishta':[0,7,1,0,1,89,15038,33,13,202,13,302],'Saraswata Arishta':[0,1478,600,69,700,962,1412,483,4884,1334,0,1013],'Saribadasava':[0,2,0,0,0,95,2,0,1,0,0,11],'Usira Asava':[0,451,113,0,4815,64,3,202,4,38,50,0],'Vasakasava':[0,155,1,0,0,260,3,1,200,1,0,202],'Amavatari Kashaya':[0,7,4,0,1,0,70,0,486,256,0,0],'Asthavarga Kashaya':[0,6,2,0,2400,200,3,7,4,120,4,405],'Bharadi Kashaya':[0,1658,0,0,216,59,0,0,2400,1,935,30],'Katakhadiradi Kashaya':[27,1,0,0,51,24,203,1,1,1,1,30],'Kokilaksha Kashaya':[0,1,2,0,22,0,7,2,34,31,0,0],'Manjistadi Kashaya':[81,616,84,53,2,1,2042,1600,318,1951,6516,0],'Rasnadi Kashaya':[171,671,889,384,1005,1,358,154,3163,1422,762,1125],'Varunadi Kashaya':[99,1658,0,48,44,3756,6855,2749,1287,200,0,0],'Amruttotara Kashaya':[0,611,4,0,0,520,0,2134,494,448,656,756],'Madiphala Rasayana Syrup':[23,775,254,69,1889,2,216,1478,484,288,173,314],'Syrup Nirocil':[1880,1488,18,0,0,0,673,1186,32,475,579,0],'Syrup Balachaturbhadra Rasa':[58,10,0,0,0,0,256,0,44,3,0,0],'Dashanga Agada Lepa Choorna':[0,390,392,0,1,43,130,240,86,670,910,110],'Kottam Chukkadi Lepa Choorna':[0,390,0,0,0,0,0,0,0,1,0,0],'Avalagujadi Lepa':[15,1,50,9,11,14,105,0,151,0,0,246],'Pilocid Ointment':[0,4,3,0,0,25,0,52,111,21,0,0],'Psorakot Ointment':[0,4,0,0,0,0,2,0,2,0,0,0],'Rhukot Ointment':[1,1,0,0,32,0,0,0,0,0,0,0],'Trichoderma Ointment':[0,1,0,0,0,0,13,302,2,3,0,51],'Jatyadi Ghrita Ointment':[0,2,3,0,0,0,1,1,0,0,0,0],'Shatadhauta Ghrita Ointment':[0,16,43,0,700,2400,7,577,1683,262,305,153],'Aparajita Dhupa Churna':[0,50,0,0,0,56,0,0,0,0,50,0],'Eladi Cream':[0,1,0,0,600,1,24,159,12,107,260,717],'Gandhaka Malahara':[1,100,5,0,0,0,111,50,301,73,223,178],'Gandakadya Malahara':[0,100,0,0,0,0,0,0,301,0,0,1],'Guduchi Satva':[109,425,372,56,152,0,1062,21,7,303,640,484],'White Ointment':[35,3,1,22,23,0,63,3,26,0,0,0]};
 
-var RAW_2026 = {'Ashwagandha Churna':[3652,9844,6357,11965,0,0,0,0,0,0,0,0],'Avipattikara Churna':[7815,9301,3952,4911,0,0,0,0,0,0,0,0],'Amalaki Churna':[175,101,503,421,0,0,0,0,0,0,0,0],'Abhaya Choorna':[80,581,933,825,0,0,0,0,0,0,0,0],'Balachaturabhadra Churna':[140,131,40,100,0,0,0,0,0,0,0,0],'Haridra Choorna':[0,6680,170,131,0,0,0,0,0,0,0,0],'Hingwashtaka Choorna':[2742,1895,2205,2345,0,0,0,0,0,0,0,0],'Manjistadi Churna':[110,200,2785,20,0,0,0,0,0,0,0,0],'Nishaamalaki Choorna':[3806,2955,2010,2763,0,0,0,0,0,0,0,0],'Panchakola Choorna':[70,300,21,3286,0,0,0,0,0,0,0,0],'Sitopaladi Choorna':[4624,6741,5995,6047,0,0,0,0,0,0,0,0],'Talisadi Choorna':[3048,2883,2785,3842,0,0,0,0,0,0,0,0],'Trikatu Choorna':[85,195,45,522,0,0,0,0,0,0,0,0],'Triphala Choorna':[2416,2550,1986,3286,0,0,0,0,0,0,0,0],'Vaishwanara Choorna':[20,0,0,0,0,0,0,0,0,0,0,0],'Vidanga Churna':[0,705,450,1015,0,0,0,0,0,0,0,0],'Yastimadhu Choorna':[780,1425,865,2731,0,0,0,0,0,0,0,0],'Shuddha Gairika Churna':[25,50,0,110,0,0,0,0,0,0,0,0],'Pushyanuga Churna':[5110,6280,3103,6071,0,0,0,0,0,0,0,0],'Shatavari Choorna':[290,100,800,180,0,0,0,0,0,0,0,0],'Asanadi Kw. Churna':[50,40,2785,20,0,0,0,0,0,0,0,0],'Dashamoola Kw. Churna':[6091,8572,7205,11779,0,0,0,0,0,0,0,0],'Manjisthadi Kw. Choorna':[110,260,50,20,0,0,0,0,0,0,0,0],'Triphala Kwata. Choorna':[2184,1902,991,991,0,0,0,0,0,0,0,0],'Panchavalkala Kwatha Choorna':[172,201,482,150,0,0,0,0,0,0,0,0],'Eranda Mula Kw. Churna':[20,80,0,0,0,0,0,0,0,0,0,0],'Mustadi Kw. Churna':[110,200,0,20,0,0,0,0,0,0,0,0],'Rasnasaptaka Kwatha Choorna':[90,630,258,75,0,0,0,0,0,0,0,0],'Brahmi Ghrita':[919,1137,0,53,0,0,0,0,0,0,0,0],'Guggulu Tiktaka Ghrita':[20,2,0,0,0,0,0,0,0,0,0,0],'Indukantha Ghrita':[0,1,0,0,0,0,0,0,0,0,0,0],'Mahatikta Ghrita':[40,66,0,12,20,0,0,0,0,0,0,0],'Phalasarpi Ghrita':[450,2251,111,10,0,0,0,0,0,0,0,0],'Shatavari Ghrita':[614,2056,104,1063,0,0,0,0,0,0,0,0],'Sukumara Ghrita':[51,5,0,114,0,0,0,0,0,0,0,0],'Triphala Ghrita':[77,1656,16,1066,0,0,0,0,0,0,0,0],'Agastya Haritaki Rasayana':[130,53,200,186,20,0,0,0,0,0,0,0],'Ashwagandha Rasayana':[814,308,385,441,0,0,0,0,0,0,0,0],'Dashamula Rasayanam':[43,45,0,21,20,0,0,0,0,0,0,0],'Kushmanda Rasayana':[320,126,95,156,20,0,0,0,0,0,0,0],'Manibhadra Leham':[30,0,0,0,0,0,0,0,0,0,0,0],'Shatavari Gulam':[614,100,104,1063,20,0,0,0,0,0,0,0],'Sukumara Leha':[51,5,0,1,0,0,0,0,0,0,0,0],'Trivrith Leha':[0,0,0,30,20,0,0,0,0,0,0,0],'Haridra Khanda':[3637,50,2105,1797,0,0,0,0,0,0,0,0],'Agni Tundi Vati':[960,1730,1526,1240,0,0,0,0,0,0,0,0],'Anuloma DS':[2410,2328,493,758,0,0,0,0,0,0,0,0],'Arogyavardhini Vati':[17610,23996,6795,8732,0,0,0,0,0,0,0,0],'Bilwadi Vati':[4501,3120,1320,2150,0,0,0,0,0,0,0,0],'Bolabhadda Rasa':[150,260,71,320,0,0,0,0,0,0,0,0],'Chandrakala Rasa':[971,1105,170,881,0,0,0,0,0,0,0,0],'Chitrakadi Vati':[310,420,250,810,0,0,0,0,0,0,0,0],'Chandraprabha Vati':[6400,6850,4352,4841,0,0,0,0,0,0,0,0],'Gandhaka Rasayana':[12590,12926,7383,11736,0,0,0,0,0,0,0,0],'Kamaduga Rasa':[3951,4490,2485,3652,0,0,0,0,0,0,0,0],'Krimikutara Rasa':[660,786,1720,883,200,0,0,0,0,0,0,0],'Laghusutashekara Rasa':[770,580,671,810,0,0,0,0,0,0,0,0],'Lasunadi Vati':[180,610,360,180,0,0,0,0,0,0,0,0],'Lavangadi Vati':[90,120,280,425,0,0,0,0,0,0,0,0],'Nishakatakadi Kasaya':[22,1,0,0,200,0,0,0,0,0,0,0],'Pachaka Vati':[240,100,70,610,0,0,0,0,0,0,0,0],'Pathyadi Ghanavati':[0,50,145,0,0,0,0,0,0,0,0,0],'Pravala Panchamrtha':[0,0,90,51,0,0,0,0,0,0,0,0],'Punarnava Mandura':[3755,3500,2090,3055,1000,0,0,0,0,0,0,0],'Rajapravartini Vati':[650,990,561,660,0,0,0,0,0,0,0,0],'Rasayana Vati':[1010,1230,310,530,0,0,0,0,0,0,0,0],'Saptamrita Loha':[2000,2812,1051,1102,500,0,0,0,0,0,0,0],'Shaddharana Vati':[210,680,410,460,0,0,0,0,0,0,0,0],'Sudarshana Ghanavati':[310,1140,560,540,0,0,0,0,0,0,0,0],'Swasakutara Rasa':[590,790,480,361,700,0,0,0,0,0,0,0],'Tribhuvana Keerti Rasa':[2490,2616,1161,2151,0,0,0,0,0,0,0,0],'Varunadi Kashaya Tab':[1703,1658,230,393,0,0,0,0,0,0,0,0],'Manasamitra Vati':[1040,1431,1101,842,0,0,0,0,0,0,0,0],'Amavatari Rasa':[1775,877,440,671,0,0,0,0,0,0,0,0],'Gandhravahastyadi Ks. Tab':[0,1,801,30,20,0,0,0,0,0,0,0],'Prasarinyadi Ks. Tab':[166,638,190,71,200,0,0,0,0,0,0,0],'Sahacharadi Ks. Tab':[42,50,209,367,200,0,0,0,0,0,0,0],'Goutex Tab':[130,210,70,420,0,0,0,0,0,0,0,0],'Nirocil Tab':[20,430,190,20,0,0,0,0,0,0,0,0],'Pilocid Tab':[80,30,0,0,0,0,0,0,0,0,0,0],'Pilocid Cap':[146,30,20,0,0,0,0,0,0,0,0,0],'Anu Taila':[13,0,47,75,0,0,0,0,0,0,0,0],'Bilwa Taila':[239,38,79,638,0,0,0,0,0,0,0,0],'Bhringraja Taila':[0,261,0,202,0,0,0,0,0,0,0,0],'Brihat Saindhavadi Taila':[0,200,0,0,0,0,0,0,0,0,0,0],'Dhanwantari Taila':[430,160,0,10,0,0,0,0,0,0,0,0],'Ghandarva Hastadi Taila':[0,0,300,0,0,0,0,0,0,0,0,0],'Jatyadi Taila':[186,0,2,71,0,0,0,0,0,0,0,0],'Karpsyadi Taila':[135,0,0,211,0,0,0,0,0,0,0,0],'Karanja Taila':[0,3,0,5221,0,0,0,0,0,0,0,0],'Kshirabala Taila':[24,140,95,106,0,0,0,0,0,0,0,0],'Lakshadi Taila':[0,1,531,1,0,0,0,0,0,0,0,0],'Mahamashadi Taila':[0,15,0,2574,0,0,0,0,0,0,0,0],'Mahanarayana Taila':[280,1663,5,538,0,0,0,0,0,0,0,0],'Pinda Taila':[0,3,120,0,0,0,0,0,0,0,0,0],'Prasaranyadi Taila':[166,638,0,0,0,0,0,0,0,0,0,0],'Sahacharadi Taila':[81,227,257,639,0,0,0,0,0,0,0,0],'Narayana Taila':[280,1663,5,538,0,0,0,0,0,0,0,0],'Sandhilin Liniment':[0,0,0,0,0,0,0,0,0,0,0,0],'Rhumapar Liniment':[0,0,30,0,0,0,0,0,0,0,0,0],'Kaishora Guggulu':[5020,6005,2910,3862,500,0,0,0,0,0,0,0],'Kanchanara Guggulu':[7735,7515,3540,6071,500,0,0,0,0,0,0,0],'Navaka Guggulu':[140,560,90,300,0,0,0,0,0,0,0,0],'Nimbadi Guggulu':[121,280,450,320,0,0,0,0,0,0,0,0],'Simhanada Guggulu':[1060,1240,1010,1340,500,0,0,0,0,0,0,0],'Trayodashanga Guggulu':[7380,5582,2971,4173,250,0,0,0,0,0,0,0],'Triphala Guggulu':[19312,18495,10024,15362,0,0,0,0,0,0,0,0],'Yogaraja Guggulu':[19521,16590,10377,743,0,0,0,0,0,0,0,0],'Abhaya Arishta':[1936,2013,408,219,25,0,0,0,0,0,0,0],'Amrita Arishta':[193,662,267,75,25,0,0,0,0,0,0,0],'Aragwada Arishta':[56,22,125,30,25,0,0,0,0,0,0,0],'Arjuna Arishta':[31,6,43,26,0,0,0,0,0,0,0,0],'Ashoka Arishta':[839,704,306,359,25,0,0,0,0,0,0,0],'Aravindasava':[2,0,0,2,25,0,0,0,0,0,0,0],'Ashwagandha Arishta':[217,427,608,79,0,0,0,0,0,0,0,0],'Chandana Asava':[121,21,108,87,25,0,0,0,0,0,0,0],'Dashamula Arishta':[3317,5198,842,792,25,0,0,0,0,0,0,0],'Kanaka Asava':[16,155,4,5,0,0,0,0,0,0,0,0],'Khadira Arishta':[521,3174,81,73,25,0,0,0,0,0,0,0],'Kumari Asava':[373,1920,215,0,25,0,0,0,0,0,0,0],'Lodra Asava':[458,954,815,208,0,0,0,0,0,0,0,0],'Mustaka Arishta':[7,1,1,17,0,0,0,0,0,0,0,0],'Punarnava Asava':[1,35,32,47,0,0,0,0,0,0,0,0],'Rohitika Arishta':[14,7,1,1,0,0,0,0,0,0,0,0],'Saraswata Arishta':[534,1678,600,227,0,0,0,0,0,0,0,0],'Saribadasava':[20,2,2,0,25,0,0,0,0,0,0,0],'Usira Asava':[105,451,113,1,8,0,0,0,0,0,0,0],'Vasakasava':[16,155,1,14,0,0,0,0,0,0,0,0],'Amavatari Kashaya':[238,7,4,1,0,0,0,0,0,0,0,0],'Asthavarga Kashaya':[3,6,2,7,200,0,0,0,0,0,0,0],'Bharadi Kashaya':[1703,1658,230,393,0,0,0,0,0,0,0,0],'Katakhadiradi Kashaya':[1,1,0,3,20,0,0,0,0,0,0,0],'Kokilaksha Kashaya':[100,1,0,2,0,0,0,0,0,0,0,0],'Manjistadi Kashaya':[144,202,84,253,0,0,0,0,0,0,0,0],'Rasnadi Kashaya':[1325,671,889,291,0,0,0,0,0,0,0,0],'Varunadi Kashaya':[1703,0,0,0,0,0,0,0,0,0,0,0],'Amruttotara Kashaya':[215,611,4,3,200,0,0,0,0,0,0,0],'Madiphala Rasayana Syrup':[1754,837,254,40,0,0,0,0,0,0,0,0],'Syrup Nirocil':[56,1448,18,41,0,0,0,0,0,0,0,0],'Syrup Balachaturbhadra Rasa':[20,10,0,0,0,0,0,0,0,0,0,0],'Dashanga Agada Lepa Choorna':[252,471,392,310,0,0,0,0,0,0,0,0],'Avalagujadi Lepa':[72,1,50,70,0,0,0,0,0,0,0,0],'Pilocid Ointment':[36,4,3,0,20,0,0,0,0,0,0,0],'Psorakot Ointment':[2,0,0,0,0,0,0,0,0,0,0,0],'Rhukot Ointment':[2,0,1,0,15,0,0,0,0,0,0,0],'Trichoderma Ointment':[1,1,0,1,0,0,0,0,0,0,0,0],'Jatyadi Ghrita Ointment':[2,2,0,3,0,0,0,0,0,0,0,0],'Shatadhauta Ghrita Ointment':[126,16,43,460,30,0,0,0,0,0,0,0],'Aparajita Dhupa Churna':[0,50,0,0,0,0,0,0,0,0,0,0],'Eladi Cream':[10,1,0,3,0,0,0,0,0,0,0,0],'Gandhaka Malahara':[77,100,5,150,0,0,0,0,0,0,0,0],'Gandakadya Malahara':[77,100,5,150,0,0,0,0,0,0,0,0],'Guduchi Satva':[106,425,372,531,0,0,0,0,0,0,0,0],'White Ointment':[0,0,1,0,0,0,0,0,0,0,0,0],'Dhanvantari Vati':[0,0,0,0,200,0,0,0,0,0,0,0]};
+var RAW_2026={'Ashwagandha Churna':[3652,9844,6357,11965,0,0,0,0,0,0,0,0],'Avipattikara Churna':[7815,9301,3952,4911,0,0,0,0,0,0,0,0],'Amalaki Churna':[175,101,503,421,0,0,0,0,0,0,0,0],'Abhaya Choorna':[80,581,933,825,0,0,0,0,0,0,0,0],'Balachaturabhadra Churna':[140,131,40,100,0,0,0,0,0,0,0,0],'Haridra Choorna':[0,6680,170,131,0,0,0,0,0,0,0,0],'Hingwashtaka Choorna':[2742,1895,2205,2345,0,0,0,0,0,0,0,0],'Manjistadi Churna':[110,200,2785,20,0,0,0,0,0,0,0,0],'Nishaamalaki Choorna':[3806,2955,2010,2763,0,0,0,0,0,0,0,0],'Panchakola Choorna':[70,300,21,3286,0,0,0,0,0,0,0,0],'Sitopaladi Choorna':[4624,6741,5995,6047,0,0,0,0,0,0,0,0],'Talisadi Choorna':[3048,2883,2785,3842,0,0,0,0,0,0,0,0],'Trikatu Choorna':[85,195,45,522,0,0,0,0,0,0,0,0],'Triphala Choorna':[2416,2550,1986,3286,0,0,0,0,0,0,0,0],'Vaishwanara Choorna':[20,0,0,0,0,0,0,0,0,0,0,0],'Vidanga Churna':[0,705,450,1015,0,0,0,0,0,0,0,0],'Yastimadhu Choorna':[780,1425,865,2731,0,0,0,0,0,0,0,0],'Shuddha Gairika Churna':[25,50,0,110,0,0,0,0,0,0,0,0],'Pushyanuga Churna':[5110,6280,3103,6071,0,0,0,0,0,0,0,0],'Shatavari Choorna':[290,100,800,180,0,0,0,0,0,0,0,0],'Asanadi Kw. Churna':[50,40,2785,20,0,0,0,0,0,0,0,0],'Dashamoola Kw. Churna':[6091,8572,7205,11779,0,0,0,0,0,0,0,0],'Manjisthadi Kw. Choorna':[110,260,50,20,0,0,0,0,0,0,0,0],'Triphala Kwata. Choorna':[2184,1902,991,991,0,0,0,0,0,0,0,0],'Panchavalkala Kwatha Choorna':[172,201,482,150,0,0,0,0,0,0,0,0],'Eranda Mula Kw. Churna':[20,80,0,0,0,0,0,0,0,0,0,0],'Mustadi Kw. Churna':[110,200,0,20,0,0,0,0,0,0,0,0],'Rasnasaptaka Kwatha Choorna':[90,630,258,75,0,0,0,0,0,0,0,0],'Brahmi Ghrita':[919,1137,0,53,0,0,0,0,0,0,0,0],'Guggulu Tiktaka Ghrita':[20,2,0,0,0,0,0,0,0,0,0,0],'Indukantha Ghrita':[0,1,0,0,0,0,0,0,0,0,0,0],'Mahatikta Ghrita':[40,66,0,12,20,0,0,0,0,0,0,0],'Phalasarpi Ghrita':[450,2251,111,10,0,0,0,0,0,0,0,0],'Shatavari Ghrita':[614,2056,104,1063,0,0,0,0,0,0,0,0],'Sukumara Ghrita':[51,5,0,114,0,0,0,0,0,0,0,0],'Triphala Ghrita':[77,1656,16,1066,0,0,0,0,0,0,0,0],'Agastya Haritaki Rasayana':[130,53,200,186,20,0,0,0,0,0,0,0],'Ashwagandha Rasayana':[814,308,385,441,0,0,0,0,0,0,0,0],'Dashamula Rasayanam':[43,45,0,21,20,0,0,0,0,0,0,0],'Kushmanda Rasayana':[320,126,95,156,20,0,0,0,0,0,0,0],'Manibhadra Leham':[30,0,0,0,0,0,0,0,0,0,0,0],'Shatavari Gulam':[614,100,104,1063,20,0,0,0,0,0,0,0],'Sukumara Leha':[51,5,0,1,0,0,0,0,0,0,0,0],'Trivrith Leha':[0,0,0,30,20,0,0,0,0,0,0,0],'Haridra Khanda':[3637,50,2105,1797,0,0,0,0,0,0,0,0],'Agni Tundi Vati':[960,1730,1526,1240,0,0,0,0,0,0,0,0],'Anuloma DS':[2410,2328,493,758,0,0,0,0,0,0,0,0],'Arogyavardhini Vati':[17610,23996,6795,8732,0,0,0,0,0,0,0,0],'Bilwadi Vati':[4501,3120,1320,2150,0,0,0,0,0,0,0,0],'Bolabhadda Rasa':[150,260,71,320,0,0,0,0,0,0,0,0],'Chandrakala Rasa':[971,1105,170,881,0,0,0,0,0,0,0,0],'Chitrakadi Vati':[310,420,250,810,0,0,0,0,0,0,0,0],'Chandraprabha Vati':[6400,6850,4352,4841,0,0,0,0,0,0,0,0],'Gandhaka Rasayana':[12590,12926,7383,11736,0,0,0,0,0,0,0,0],'Kamaduga Rasa':[3951,4490,2485,3652,0,0,0,0,0,0,0,0],'Krimikutara Rasa':[660,786,1720,883,200,0,0,0,0,0,0,0],'Laghusutashekara Rasa':[770,580,671,810,0,0,0,0,0,0,0,0],'Lasunadi Vati':[180,610,360,180,0,0,0,0,0,0,0,0],'Lavangadi Vati':[90,120,280,425,0,0,0,0,0,0,0,0],'Nishakatakadi Kasaya':[22,1,0,0,200,0,0,0,0,0,0,0],'Pachaka Vati':[240,100,70,610,0,0,0,0,0,0,0,0],'Pathyadi Ghanavati':[0,50,145,0,0,0,0,0,0,0,0,0],'Pravala Panchamrtha':[0,0,90,51,0,0,0,0,0,0,0,0],'Punarnava Mandura':[3755,3500,2090,3055,1000,0,0,0,0,0,0,0],'Rajapravartini Vati':[650,990,561,660,0,0,0,0,0,0,0,0],'Rasayana Vati':[1010,1230,310,530,0,0,0,0,0,0,0,0],'Saptamrita Loha':[2000,2812,1051,1102,500,0,0,0,0,0,0,0],'Shaddharana Vati':[210,680,410,460,0,0,0,0,0,0,0,0],'Sudarshana Ghanavati':[310,1140,560,540,0,0,0,0,0,0,0,0],'Swasakutara Rasa':[590,790,480,361,700,0,0,0,0,0,0,0],'Tribhuvana Keerti Rasa':[2490,2616,1161,2151,0,0,0,0,0,0,0,0],'Varunadi Kashaya Tab':[1703,1658,230,393,0,0,0,0,0,0,0,0],'Manasamitra Vati':[1040,1431,1101,842,0,0,0,0,0,0,0,0],'Amavatari Rasa':[1775,877,440,671,0,0,0,0,0,0,0,0],'Gandhravahastyadi Ks. Tab':[0,1,801,30,20,0,0,0,0,0,0,0],'Prasarinyadi Ks. Tab':[166,638,190,71,200,0,0,0,0,0,0,0],'Sahacharadi Ks. Tab':[42,50,209,367,200,0,0,0,0,0,0,0],'Goutex Tab':[130,210,70,420,0,0,0,0,0,0,0,0],'Nirocil Tab':[20,430,190,20,0,0,0,0,0,0,0,0],'Pilocid Tab':[80,30,0,0,0,0,0,0,0,0,0,0],'Pilocid Cap':[146,30,20,0,0,0,0,0,0,0,0,0],'Anu Taila':[13,0,47,75,0,0,0,0,0,0,0,0],'Bilwa Taila':[239,38,79,638,0,0,0,0,0,0,0,0],'Bhringraja Taila':[0,261,0,202,0,0,0,0,0,0,0,0],'Brihat Saindhavadi Taila':[0,200,0,0,0,0,0,0,0,0,0,0],'Dhanwantari Taila':[430,160,0,10,0,0,0,0,0,0,0,0],'Ghandarva Hastadi Taila':[0,0,300,0,0,0,0,0,0,0,0,0],'Jatyadi Taila':[186,0,2,71,0,0,0,0,0,0,0,0],'Karpsyadi Taila':[135,0,0,211,0,0,0,0,0,0,0,0],'Karanja Taila':[0,3,0,5221,0,0,0,0,0,0,0,0],'Kshirabala Taila':[24,140,95,106,0,0,0,0,0,0,0,0],'Lakshadi Taila':[0,1,531,1,0,0,0,0,0,0,0,0],'Mahamashadi Taila':[0,15,0,2574,0,0,0,0,0,0,0,0],'Mahanarayana Taila':[280,1663,5,538,0,0,0,0,0,0,0,0],'Pinda Taila':[0,3,120,0,0,0,0,0,0,0,0,0],'Prasaranyadi Taila':[166,638,0,0,0,0,0,0,0,0,0,0],'Sahacharadi Taila':[81,227,257,639,0,0,0,0,0,0,0,0],'Narayana Taila':[280,1663,5,538,0,0,0,0,0,0,0,0],'Sandhilin Liniment':[0,0,0,0,0,0,0,0,0,0,0,0],'Rhumapar Liniment':[0,0,30,0,0,0,0,0,0,0,0,0],'Kaishora Guggulu':[5020,6005,2910,3862,500,0,0,0,0,0,0,0],'Kanchanara Guggulu':[7735,7515,3540,6071,500,0,0,0,0,0,0,0],'Navaka Guggulu':[140,560,90,300,0,0,0,0,0,0,0,0],'Nimbadi Guggulu':[121,280,450,320,0,0,0,0,0,0,0,0],'Simhanada Guggulu':[1060,1240,1010,1340,500,0,0,0,0,0,0,0],'Trayodashanga Guggulu':[7380,5582,2971,4173,250,0,0,0,0,0,0,0],'Triphala Guggulu':[19312,18495,10024,15362,0,0,0,0,0,0,0,0],'Yogaraja Guggulu':[19521,16590,10377,743,0,0,0,0,0,0,0,0],'Abhaya Arishta':[1936,2013,408,219,25,0,0,0,0,0,0,0],'Amrita Arishta':[193,662,267,75,25,0,0,0,0,0,0,0],'Aragwada Arishta':[56,22,125,30,25,0,0,0,0,0,0,0],'Arjuna Arishta':[31,6,43,26,0,0,0,0,0,0,0,0],'Ashoka Arishta':[839,704,306,359,25,0,0,0,0,0,0,0],'Aravindasava':[2,0,0,2,25,0,0,0,0,0,0,0],'Ashwagandha Arishta':[217,427,608,79,0,0,0,0,0,0,0,0],'Chandana Asava':[121,21,108,87,25,0,0,0,0,0,0,0],'Dashamula Arishta':[3317,5198,842,792,25,0,0,0,0,0,0,0],'Kanaka Asava':[16,155,4,5,0,0,0,0,0,0,0,0],'Khadira Arishta':[521,3174,81,73,25,0,0,0,0,0,0,0],'Kumari Asava':[373,1920,215,0,25,0,0,0,0,0,0,0],'Lodra Asava':[458,954,815,208,0,0,0,0,0,0,0,0],'Mustaka Arishta':[7,1,1,17,0,0,0,0,0,0,0,0],'Punarnava Asava':[1,35,32,47,0,0,0,0,0,0,0,0],'Rohitika Arishta':[14,7,1,1,0,0,0,0,0,0,0,0],'Saraswata Arishta':[534,1678,600,227,0,0,0,0,0,0,0,0],'Saribadasava':[20,2,2,0,25,0,0,0,0,0,0,0],'Usira Asava':[105,451,113,1,8,0,0,0,0,0,0,0],'Vasakasava':[16,155,1,14,0,0,0,0,0,0,0,0],'Amavatari Kashaya':[238,7,4,1,0,0,0,0,0,0,0,0],'Asthavarga Kashaya':[3,6,2,7,200,0,0,0,0,0,0,0],'Bharadi Kashaya':[1703,1658,230,393,0,0,0,0,0,0,0,0],'Katakhadiradi Kashaya':[1,1,0,3,20,0,0,0,0,0,0,0],'Kokilaksha Kashaya':[100,1,0,2,0,0,0,0,0,0,0,0],'Manjistadi Kashaya':[144,202,84,253,0,0,0,0,0,0,0,0],'Rasnadi Kashaya':[1325,671,889,291,0,0,0,0,0,0,0,0],'Varunadi Kashaya':[1703,0,0,0,0,0,0,0,0,0,0,0],'Amruttotara Kashaya':[215,611,4,3,200,0,0,0,0,0,0,0],'Madiphala Rasayana Syrup':[1754,837,254,40,0,0,0,0,0,0,0,0],'Syrup Nirocil':[56,1448,18,41,0,0,0,0,0,0,0,0],'Syrup Balachaturbhadra Rasa':[20,10,0,0,0,0,0,0,0,0,0,0],'Dashanga Agada Lepa Choorna':[252,471,392,310,0,0,0,0,0,0,0,0],'Avalagujadi Lepa':[72,1,50,70,0,0,0,0,0,0,0,0],'Pilocid Ointment':[36,4,3,0,20,0,0,0,0,0,0,0],'Psorakot Ointment':[2,0,0,0,0,0,0,0,0,0,0,0],'Rhukot Ointment':[2,0,1,0,15,0,0,0,0,0,0,0],'Trichoderma Ointment':[1,1,0,1,0,0,0,0,0,0,0,0],'Jatyadi Ghrita Ointment':[2,2,0,3,0,0,0,0,0,0,0,0],'Shatadhauta Ghrita Ointment':[126,16,43,460,30,0,0,0,0,0,0,0],'Aparajita Dhupa Churna':[0,50,0,0,0,0,0,0,0,0,0,0],'Eladi Cream':[10,1,0,3,0,0,0,0,0,0,0,0],'Gandhaka Malahara':[77,100,5,150,0,0,0,0,0,0,0,0],'Gandakadya Malahara':[77,100,5,150,0,0,0,0,0,0,0,0],'Guduchi Satva':[106,425,372,531,0,0,0,0,0,0,0,0],'White Ointment':[0,0,1,0,0,0,0,0,0,0,0,0],'Dhanvantari Vati':[0,0,0,0,200,0,0,0,0,0,0,0]};
 
-var INVOICE_STOCK_2026 = {'Kaishora Guggulu':500,'Kanchanara Guggulu':500,'Simhanada Guggulu':500,'Trayodashanga Guggulu':250,'Punarnava Mandura':1000,'Swasakutara Rasa':500,'Saptamrita Loha':500,'Abhaya Arishta':25,'Amrita Arishta':25,'Ashoka Arishta':25,'Aragwada Arishta':25,'Usira Asava':8,'Kumari Asava':25,'Khadira Arishta':25,'Chandana Asava':25,'Dashamula Arishta':25,'Saribadasava':25,'Aravindasava':25,'Pilocid Ointment':20,'Rhukot Ointment':15,'Mahatikta Ghrita':20,'Shatadhauta Ghrita Ointment':30,'Katakhadiradi Kashaya':20,'Gandhravahastyadi Ks. Tab':20,'Rasnasaptaka Kwatha Choorna':20,'Asthavarga Kashaya':200,'Prasarinyadi Ks. Tab':200,'Sahacharadi Ks. Tab':200,'Amruttotara Kashaya':200,'Nishakatakadi Kasaya':200,'Agastya Haritaki Rasayana':20,'Kushmanda Rasayana':20,'Trivrith Leha':20,'Dashamula Rasayanam':20,'Shatavari Gulam':20,'Haridra Khanda':20,'Kacha Yapanam Kuzhampu':5,'Netra Amritam':5,'Elaneer Kuzhampu':5,'Krimikutara Rasa':200,'Dhanvantari Vati':200,'Bilwadi Vati':200,'Swasakutara Rasa':200};
+var INVOICE_STOCK_2026={'Kaishora Guggulu':500,'Kanchanara Guggulu':500,'Simhanada Guggulu':500,'Trayodashanga Guggulu':250,'Punarnava Mandura':1000,'Swasakutara Rasa':500,'Saptamrita Loha':500,'Diabegone Forte':500,'Kuberaksha Bais':1000,'Gomutra Ghan Vati':500,'Giloy Ghan Vati':500,'Kutaj Ghan Vati':250,'Mahashudarshan Ghan Vati':500,'Mahamanjisthadi Ghan Vati':500,'Maharasnadi Ghan Vati':500,'Nirgundi Ghan Vati':500,'Parijat Ghan Vati':500,'Rasna Saptak Ghan Vati':500,'Varunadi Ghan Vati Ashmari':500,'Amratadi Guggul':500,'Gokshuradi Guggul':500,'Kukutnakhi Guggul':500,'Rasnadi Guggul':500,'Swayambhu Guggul':500,'Lakshami Vilas Ras':500,'Shirshuladi Vajra Ras':500,'Sutshekhar Ras':500,'Aam Pachak Vati':1000,'Kandughna Mahakashay':500,'Kushthaghna Mahakashay Vati':500,'Dhatri Loh Vati':1000,'Abhaya Arishta':25,'Amrita Arishta':25,'Ashoka Arishta':25,'Aragwada Arishta':25,'Usira Asava':8,'Kumari Asava':25,'Khadira Arishta':25,'Chandana Asava':25,'Dashamula Arishta':25,'Saribadasava':25,'Aravindasava':25,'Pilocid Ointment':20,'Rhukot Ointment':15,'Mahatikta Ghrita':20,'Shatadhauta Ghrita Ointment':30,'Katakhadiradi Kashaya':20,'Gandhravahastyadi Ks. Tab':20,'Rasnasaptaka Kwatha Choorna':20,'Asthavarga Kashaya':200,'Prasarinyadi Ks. Tab':200,'Sahacharadi Ks. Tab':200,'Amruttotara Kashaya':200,'Nishakatakadi Kasaya':200,'Agastya Haritaki Rasayana':20,'Kushmanda Rasayana':20,'Trivrith Leha':20,'Dashamula Rasayanam':20,'Shatavari Gulam':20,'Haridra Khanda':20,'Kacha Yapanam Kuzhampu':5,'Netra Amritam':5,'Elaneer Kuzhampu':5,'Krimikutara Rasa':200,'Dhanvantari Vati':200,'Bilwadi Vati':200,'Prasaranyadi Kashayam':20,'Sahacharadi Kashayam':20,'Rasnairandadi Kwatham':200,'Balaguluchyadi Kwatham':200,'Dhanvantaram Kwatham':200,'Indukantam Kwatham':200,'Aragvadhadi Kwatham':200,'Migrakot Tablet':200,'Ostikot Tablet':200,'Niruryadi Gulika':200,'Valiya Marma Gulika':200,'Hridayarnavarasam Gulika':200,'Vettumaran Gulika':200};
 
-var BASE_LIST = [['Ashwagandha Churna','CHURNAS'],['Avipattikara Churna','CHURNAS'],['Amalaki Churna','CHURNAS'],['Abhaya Choorna','CHURNAS'],['Balachaturabhadra Churna','CHURNAS'],['Haridra Choorna','CHURNAS'],['Hingwashtaka Choorna','CHURNAS'],['Manjistadi Churna','CHURNAS'],['Nishaamalaki Choorna','CHURNAS'],['Panchakola Choorna','CHURNAS'],['Sitopaladi Choorna','CHURNAS'],['Talisadi Choorna','CHURNAS'],['Trikatu Choorna','CHURNAS'],['Triphala Choorna','CHURNAS'],['Vaishwanara Choorna','CHURNAS'],['Vidanga Churna','CHURNAS'],['Yastimadhu Choorna','CHURNAS'],['Shuddha Gairika Churna','CHURNAS'],['Pushyanuga Churna','CHURNAS'],['Swadista Virechana Churna','CHURNAS'],['Shatavari Choorna','CHURNAS'],['Asanadi Kw. Churna','KWATHA CHOORNAS'],['Dashamoola Kw. Churna','KWATHA CHOORNAS'],['Manjisthadi Kw. Choorna','KWATHA CHOORNAS'],['Shadangadi Kwata. Choorna','KWATHA CHOORNAS'],['Triphala Kwata. Choorna','KWATHA CHOORNAS'],['Panchavalkala Kwatha Choorna','KWATHA CHOORNAS'],['Eranda Mula Kw. Churna','KWATHA CHOORNAS'],['Mustadi Kw. Churna','KWATHA CHOORNAS'],['Rasnasaptaka Kwatha Choorna','KWATHA CHOORNAS'],['Brahmi Ghrita','GHRITAS'],['Guggulu Tiktaka Ghrita','GHRITAS'],['Indukantha Ghrita','GHRITAS'],['Mahatikta Ghrita','GHRITAS'],['Phalasarpi Ghrita','GHRITAS'],['Shatavari Ghrita','GHRITAS'],['Sukumara Ghrita','GHRITAS'],['Triphala Ghrita','GHRITAS'],['Dadimadi Ghrita','GHRITAS'],['Shatadhouta Ghrita','GHRITAS'],['Ashwagandha Ghrita','GHRITAS'],['Agastya Haritaki Rasayana','LEHAS'],['Ashwagandha Rasayana','LEHAS'],['Dashamula Rasayanam','LEHAS'],['Kushmanda Rasayana','LEHAS'],['Manibhadra Leham','LEHAS'],['Shatavari Gulam','LEHAS'],['Sukumara Leha','LEHAS'],['Trivrith Leha','LEHAS'],['Haridra Khanda','LEHAS'],['Agni Tundi Vati','VATI/RASAS'],['Anuloma DS','VATI/RASAS'],['Arogyavardhini Vati','VATI/RASAS'],['Bilwadi Vati','VATI/RASAS'],['Bolabhadda Rasa','VATI/RASAS'],['Chandrakala Rasa','VATI/RASAS'],['Chitrakadi Vati','VATI/RASAS'],['Chandraprabha Vati','VATI/RASAS'],['Gandhaka Rasayana','VATI/RASAS'],['Kamaduga Rasa','VATI/RASAS'],['Krimikutara Rasa','VATI/RASAS'],['Laghusutashekara Rasa','VATI/RASAS'],['Lasunadi Vati','VATI/RASAS'],['Lavangadi Vati','VATI/RASAS'],['Nishakatakadi Kasaya','VATI/RASAS'],['Pachaka Vati','VATI/RASAS'],['Pathyadi Ghanavati','VATI/RASAS'],['Pravala Panchamrtha','VATI/RASAS'],['Punarnava Mandura','VATI/RASAS'],['Rajapravartini Vati','VATI/RASAS'],['Rasayana Vati','VATI/RASAS'],['Saptamrita Loha','VATI/RASAS'],['Shaddharana Vati','VATI/RASAS'],['Sudarshana Ghanavati','VATI/RASAS'],['Swasakutara Rasa','VATI/RASAS'],['Tapyadi Vati','VATI/RASAS'],['Tribhuvana Keerti Rasa','VATI/RASAS'],['Trishul Rasa','VATI/RASAS'],['Varunadi Kashaya Tab','VATI/RASAS'],['Vishatinduka Vati','VATI/RASAS'],['Manasamitra Vati','VATI/RASAS'],['Amavatari Rasa','VATI/RASAS'],['Kuberaksha Vati','VATI/RASAS'],['Gandhravahastyadi Ks. Tab','VATI/RASAS'],['Prasarinyadi Ks. Tab','VATI/RASAS'],['Sahacharadi Ks. Tab','VATI/RASAS'],['Goutex Tab','VATI/RASAS'],['Nirocil Tab','VATI/RASAS'],['Pilocid Tab','VATI/RASAS'],['Pilocid Cap','VATI/RASAS'],['Rhukot Tab','VATI/RASAS'],['Dhanvantari Vati','VATI/RASAS'],['Anu Taila','TAILAS'],['Bilwa Taila','TAILAS'],['Bhringraja Taila','TAILAS'],['Brihat Saindhavadi Taila','TAILAS'],['Dhanwantari Taila','TAILAS'],['Ghandarva Hastadi Taila','TAILAS'],['Jatyadi Taila','TAILAS'],['Karpsyadi Taila','TAILAS'],['Karanja Taila','TAILAS'],['Kottam Chukkadi Taila','TAILAS'],['Kshirabala Taila','TAILAS'],['Lakshadi Taila','TAILAS'],['Mahamashadi Taila','TAILAS'],['Mahanarayana Taila','TAILAS'],['Mahavishagarbha Taila','TAILAS'],['Murrchita Tila Taila','TAILAS'],['Murrivenna Taila','TAILAS'],['Pinda Taila','TAILAS'],['Prasaranyadi Taila','TAILAS'],['Sahacharadi Taila','TAILAS'],['Shadbindu Taila','TAILAS'],['Yastimadhu Taila','TAILAS'],['Narayana Taila','TAILAS'],['Kacha Yapanam Kuzhampu','EYE MEDICINES'],['Netra Amritam','EYE MEDICINES'],['Elaneer Kuzhampu','EYE MEDICINES'],['Sandhilin Liniment','LINIMENTS'],['Rhumapar Liniment','LINIMENTS'],['Kaishora Guggulu','GUGGULU'],['Kanchanara Guggulu','GUGGULU'],['Navaka Guggulu','GUGGULU'],['Nimbadi Guggulu','GUGGULU'],['Simhanada Guggulu','GUGGULU'],['Trayodashanga Guggulu','GUGGULU'],['Triphala Guggulu','GUGGULU'],['Yogaraja Guggulu','GUGGULU'],['Amratadi Guggul','GUGGULU'],['Gokshuradi Guggul','GUGGULU'],['Kukutnakhi Guggul','GUGGULU'],['Rasnadi Guggul','GUGGULU'],['Swayambhu Guggul','GUGGULU'],['Abhaya Arishta','ASAVA-ARISHTA'],['Amrita Arishta','ASAVA-ARISHTA'],['Aragwada Arishta','ASAVA-ARISHTA'],['Arjuna Arishta','ASAVA-ARISHTA'],['Ashoka Arishta','ASAVA-ARISHTA'],['Aravindasava','ASAVA-ARISHTA'],['Ashwagandha Arishta','ASAVA-ARISHTA'],['Chandana Asava','ASAVA-ARISHTA'],['Dashamula Arishta','ASAVA-ARISHTA'],['Kanaka Asava','ASAVA-ARISHTA'],['Khadira Arishta','ASAVA-ARISHTA'],['Kumari Asava','ASAVA-ARISHTA'],['Lodra Asava','ASAVA-ARISHTA'],['Mustaka Arishta','ASAVA-ARISHTA'],['Punarnava Asava','ASAVA-ARISHTA'],['Rohitika Arishta','ASAVA-ARISHTA'],['Saraswata Arishta','ASAVA-ARISHTA'],['Saribadasava','ASAVA-ARISHTA'],['Usira Asava','ASAVA-ARISHTA'],['Vasakasava','ASAVA-ARISHTA'],['Amavatari Kashaya','KASHAYAS'],['Asthavarga Kashaya','KASHAYAS'],['Bharadi Kashaya','KASHAYAS'],['Katakhadiradi Kashaya','KASHAYAS'],['Kokilaksha Kashaya','KASHAYAS'],['Manjistadi Kashaya','KASHAYAS'],['Rasnadi Kashaya','KASHAYAS'],['Varunadi Kashaya','KASHAYAS'],['Amruttotara Kashaya','KASHAYAS'],['Prasaranyadi Kashayam','KASHAYAS'],['Sahacharadi Kashayam','KASHAYAS'],['Kandughna Mahakashay','KASHAYAS'],['Madiphala Rasayana Syrup','SYRUP'],['Syrup Nirocil','SYRUP'],['Syrup Balachaturbhadra Rasa','SYRUP'],['Dashanga Agada Lepa Choorna','EXTERNAL USE'],['Kottam Chukkadi Lepa Choorna','EXTERNAL USE'],['Avalagujadi Lepa','EXTERNAL USE'],['Pilocid Ointment','OINTMENTS'],['Psorakot Ointment','OINTMENTS'],['Rhukot Ointment','OINTMENTS'],['Trichoderma Ointment','OINTMENTS'],['Jatyadi Ghrita Ointment','OINTMENTS'],['Shatadhauta Ghrita Ointment','OINTMENTS'],['Aparajita Dhupa Churna','MISCELLANEOUS'],['Eladi Cream','MISCELLANEOUS'],['Gandhaka Malahara','MISCELLANEOUS'],['Gandakadya Malahara','MISCELLANEOUS'],['Guduchi Satva','MISCELLANEOUS'],['White Ointment','MISCELLANEOUS']];
+var BASE_LIST=[['Ashwagandha Churna','CHURNAS'],['Avipattikara Churna','CHURNAS'],['Amalaki Churna','CHURNAS'],['Abhaya Choorna','CHURNAS'],['Balachaturabhadra Churna','CHURNAS'],['Haridra Choorna','CHURNAS'],['Hingwashtaka Choorna','CHURNAS'],['Manjistadi Churna','CHURNAS'],['Nishaamalaki Choorna','CHURNAS'],['Panchakola Choorna','CHURNAS'],['Sitopaladi Choorna','CHURNAS'],['Talisadi Choorna','CHURNAS'],['Trikatu Choorna','CHURNAS'],['Triphala Choorna','CHURNAS'],['Vaishwanara Choorna','CHURNAS'],['Vidanga Churna','CHURNAS'],['Yastimadhu Choorna','CHURNAS'],['Shuddha Gairika Churna','CHURNAS'],['Pushyanuga Churna','CHURNAS'],['Swadista Virechana Churna','CHURNAS'],['Shatavari Choorna','CHURNAS'],['Asanadi Kw. Churna','KWATHA CHOORNAS'],['Dashamoola Kw. Churna','KWATHA CHOORNAS'],['Manjisthadi Kw. Choorna','KWATHA CHOORNAS'],['Shadangadi Kwata. Choorna','KWATHA CHOORNAS'],['Triphala Kwata. Choorna','KWATHA CHOORNAS'],['Panchavalkala Kwatha Choorna','KWATHA CHOORNAS'],['Eranda Mula Kw. Churna','KWATHA CHOORNAS'],['Mustadi Kw. Churna','KWATHA CHOORNAS'],['Rasnasaptaka Kwatha Choorna','KWATHA CHOORNAS'],['Brahmi Ghrita','GHRITAS'],['Guggulu Tiktaka Ghrita','GHRITAS'],['Indukantha Ghrita','GHRITAS'],['Mahatikta Ghrita','GHRITAS'],['Phalasarpi Ghrita','GHRITAS'],['Shatavari Ghrita','GHRITAS'],['Sukumara Ghrita','GHRITAS'],['Triphala Ghrita','GHRITAS'],['Dadimadi Ghrita','GHRITAS'],['Shatadhouta Ghrita','GHRITAS'],['Ashwagandha Ghrita','GHRITAS'],['Agastya Haritaki Rasayana','LEHAS'],['Ashwagandha Rasayana','LEHAS'],['Dashamula Rasayanam','LEHAS'],['Kushmanda Rasayana','LEHAS'],['Manibhadra Leham','LEHAS'],['Shatavari Gulam','LEHAS'],['Sukumara Leha','LEHAS'],['Trivrith Leha','LEHAS'],['Haridra Khanda','LEHAS'],['Agni Tundi Vati','VATI/RASAS'],['Anuloma DS','VATI/RASAS'],['Arogyavardhini Vati','VATI/RASAS'],['Bilwadi Vati','VATI/RASAS'],['Bolabhadda Rasa','VATI/RASAS'],['Chandrakala Rasa','VATI/RASAS'],['Chitrakadi Vati','VATI/RASAS'],['Chandraprabha Vati','VATI/RASAS'],['Gandhaka Rasayana','VATI/RASAS'],['Kamaduga Rasa','VATI/RASAS'],['Krimikutara Rasa','VATI/RASAS'],['Laghusutashekara Rasa','VATI/RASAS'],['Lasunadi Vati','VATI/RASAS'],['Lavangadi Vati','VATI/RASAS'],['Nishakatakadi Kasaya','VATI/RASAS'],['Pachaka Vati','VATI/RASAS'],['Pathyadi Ghanavati','VATI/RASAS'],['Pravala Panchamrtha','VATI/RASAS'],['Punarnava Mandura','VATI/RASAS'],['Rajapravartini Vati','VATI/RASAS'],['Rasayana Vati','VATI/RASAS'],['Saptamrita Loha','VATI/RASAS'],['Shaddharana Vati','VATI/RASAS'],['Sudarshana Ghanavati','VATI/RASAS'],['Swasakutara Rasa','VATI/RASAS'],['Tapyadi Vati','VATI/RASAS'],['Tribhuvana Keerti Rasa','VATI/RASAS'],['Trishul Rasa','VATI/RASAS'],['Varunadi Kashaya Tab','VATI/RASAS'],['Vishatinduka Vati','VATI/RASAS'],['Manasamitra Vati','VATI/RASAS'],['Amavatari Rasa','VATI/RASAS'],['Kuberaksha Vati','VATI/RASAS'],['Gandhravahastyadi Ks. Tab','VATI/RASAS'],['Prasarinyadi Ks. Tab','VATI/RASAS'],['Sahacharadi Ks. Tab','VATI/RASAS'],['Goutex Tab','VATI/RASAS'],['Nirocil Tab','VATI/RASAS'],['Pilocid Tab','VATI/RASAS'],['Pilocid Cap','VATI/RASAS'],['Rhukot Tab','VATI/RASAS'],['Dhanvantari Vati','VATI/RASAS'],['Diabegone Forte','VATI/RASAS'],['Kuberaksha Bais','VATI/RASAS'],['Gomutra Ghan Vati','VATI/RASAS'],['Giloy Ghan Vati','VATI/RASAS'],['Kutaj Ghan Vati','VATI/RASAS'],['Mahashudarshan Ghan Vati','VATI/RASAS'],['Mahamanjisthadi Ghan Vati','VATI/RASAS'],['Maharasnadi Ghan Vati','VATI/RASAS'],['Nirgundi Ghan Vati','VATI/RASAS'],['Parijat Ghan Vati','VATI/RASAS'],['Rasna Saptak Ghan Vati','VATI/RASAS'],['Varunadi Ghan Vati Ashmari','VATI/RASAS'],['Lakshami Vilas Ras','VATI/RASAS'],['Shirshuladi Vajra Ras','VATI/RASAS'],['Sutshekhar Ras','VATI/RASAS'],['Aam Pachak Vati','VATI/RASAS'],['Kushthaghna Mahakashay Vati','VATI/RASAS'],['Dhatri Loh Vati','VATI/RASAS'],['Rasnairandadi Kwatham','VATI/RASAS'],['Balaguluchyadi Kwatham','VATI/RASAS'],['Dhanvantaram Kwatham','VATI/RASAS'],['Indukantam Kwatham','VATI/RASAS'],['Aragvadhadi Kwatham','VATI/RASAS'],['Migrakot Tablet','VATI/RASAS'],['Ostikot Tablet','VATI/RASAS'],['Niruryadi Gulika','VATI/RASAS'],['Valiya Marma Gulika','VATI/RASAS'],['Hridayarnavarasam Gulika','VATI/RASAS'],['Vettumaran Gulika','VATI/RASAS'],['Anu Taila','TAILAS'],['Bilwa Taila','TAILAS'],['Bhringraja Taila','TAILAS'],['Brihat Saindhavadi Taila','TAILAS'],['Dhanwantari Taila','TAILAS'],['Ghandarva Hastadi Taila','TAILAS'],['Jatyadi Taila','TAILAS'],['Karpsyadi Taila','TAILAS'],['Karanja Taila','TAILAS'],['Kottam Chukkadi Taila','TAILAS'],['Kshirabala Taila','TAILAS'],['Lakshadi Taila','TAILAS'],['Mahamashadi Taila','TAILAS'],['Mahanarayana Taila','TAILAS'],['Mahavishagarbha Taila','TAILAS'],['Murrchita Tila Taila','TAILAS'],['Murrivenna Taila','TAILAS'],['Pinda Taila','TAILAS'],['Prasaranyadi Taila','TAILAS'],['Sahacharadi Taila','TAILAS'],['Shadbindu Taila','TAILAS'],['Yastimadhu Taila','TAILAS'],['Narayana Taila','TAILAS'],['Kacha Yapanam Kuzhampu','EYE MEDICINES'],['Netra Amritam','EYE MEDICINES'],['Elaneer Kuzhampu','EYE MEDICINES'],['Sandhilin Liniment','LINIMENTS'],['Rhumapar Liniment','LINIMENTS'],['Kaishora Guggulu','GUGGULU'],['Kanchanara Guggulu','GUGGULU'],['Navaka Guggulu','GUGGULU'],['Nimbadi Guggulu','GUGGULU'],['Simhanada Guggulu','GUGGULU'],['Trayodashanga Guggulu','GUGGULU'],['Triphala Guggulu','GUGGULU'],['Yogaraja Guggulu','GUGGULU'],['Amratadi Guggul','GUGGULU'],['Gokshuradi Guggul','GUGGULU'],['Kukutnakhi Guggul','GUGGULU'],['Rasnadi Guggul','GUGGULU'],['Swayambhu Guggul','GUGGULU'],['Abhaya Arishta','ASAVA-ARISHTA'],['Amrita Arishta','ASAVA-ARISHTA'],['Aragwada Arishta','ASAVA-ARISHTA'],['Arjuna Arishta','ASAVA-ARISHTA'],['Ashoka Arishta','ASAVA-ARISHTA'],['Aravindasava','ASAVA-ARISHTA'],['Ashwagandha Arishta','ASAVA-ARISHTA'],['Chandana Asava','ASAVA-ARISHTA'],['Dashamula Arishta','ASAVA-ARISHTA'],['Kanaka Asava','ASAVA-ARISHTA'],['Khadira Arishta','ASAVA-ARISHTA'],['Kumari Asava','ASAVA-ARISHTA'],['Lodra Asava','ASAVA-ARISHTA'],['Mustaka Arishta','ASAVA-ARISHTA'],['Punarnava Asava','ASAVA-ARISHTA'],['Rohitika Arishta','ASAVA-ARISHTA'],['Saraswata Arishta','ASAVA-ARISHTA'],['Saribadasava','ASAVA-ARISHTA'],['Usira Asava','ASAVA-ARISHTA'],['Vasakasava','ASAVA-ARISHTA'],['Amavatari Kashaya','KASHAYAS'],['Asthavarga Kashaya','KASHAYAS'],['Bharadi Kashaya','KASHAYAS'],['Katakhadiradi Kashaya','KASHAYAS'],['Kokilaksha Kashaya','KASHAYAS'],['Manjistadi Kashaya','KASHAYAS'],['Rasnadi Kashaya','KASHAYAS'],['Varunadi Kashaya','KASHAYAS'],['Amruttotara Kashaya','KASHAYAS'],['Prasaranyadi Kashayam','KASHAYAS'],['Sahacharadi Kashayam','KASHAYAS'],['Kandughna Mahakashay','KASHAYAS'],['Madiphala Rasayana Syrup','SYRUP'],['Syrup Nirocil','SYRUP'],['Syrup Balachaturbhadra Rasa','SYRUP'],['Dashanga Agada Lepa Choorna','EXTERNAL USE'],['Kottam Chukkadi Lepa Choorna','EXTERNAL USE'],['Avalagujadi Lepa','EXTERNAL USE'],['Pilocid Ointment','OINTMENTS'],['Psorakot Ointment','OINTMENTS'],['Rhukot Ointment','OINTMENTS'],['Trichoderma Ointment','OINTMENTS'],['Jatyadi Ghrita Ointment','OINTMENTS'],['Shatadhauta Ghrita Ointment','OINTMENTS'],['Aparajita Dhupa Churna','MISCELLANEOUS'],['Eladi Cream','MISCELLANEOUS'],['Gandhaka Malahara','MISCELLANEOUS'],['Gandakadya Malahara','MISCELLANEOUS'],['Guduchi Satva','MISCELLANEOUS'],['White Ointment','MISCELLANEOUS']];
 
-var customMedicines = [];
-var dispensed = {2025:{}, 2026:{}};
-var openingStock = {2025:{}, 2026:{}};
-var unitOverrides = {};
-var poHistory = [];
-var dispLog = [];
-var importLog = {};
-var currentPOItems = null, currentPONum = '';
-var indentData = {OPD:{}, IPD:{}};
-var indentMeta = {OPD:{number:'',date:'',saved:false}, IPD:{number:'',date:'',saved:false}};
-var currentIndentType = 'OPD';
-var editMode2 = false;
-var pendingEdits = {};
-var dailyEntries = {};
+// ── STATE ──
+var customMedicines=[];
+var dispensed={2025:{},2026:{}};
+var openingStock={2025:{},2026:{}};
+var unitOverrides={};
+var poHistory=[];
+var dispLog=[];
+var importLog={};
+var currentPOItems=null,currentPONum='';
+var indentData={OPD:{},IPD:{}};
+var indentMeta={OPD:{number:'',date:'',saved:false},IPD:{number:'',date:'',saved:false}};
+var currentIndentType='OPD';
+var editMode2=false;
+var pendingEdits={};
+var dailyEntries={};
+var _medIdx=[];
 
+// ── STORAGE ──
 function sv(k,v){try{localStorage.setItem('jagm_'+k,JSON.stringify(v));}catch(e){}}
 function ld(k,d){try{var x=localStorage.getItem('jagm_'+k);return x?JSON.parse(x):d;}catch(e){return d;}}
-
 function loadAll(){
-  customMedicines = ld('custom',[]);
-  poHistory = ld('pohistory',[]);
-  unitOverrides = ld('units',{});
-  dispLog = ld('displog',[]);
-  importLog = ld('importlog',{});
-  var d25=ld('disp2025',null); if(d25) dispensed[2025]=d25;
-  var d26=ld('disp2026',null); if(d26) dispensed[2026]=d26;
-  openingStock[2025] = ld('open2025',{});
-  openingStock[2026] = ld('open2026',{});
-  indentData = ld('indentdata',{OPD:{},IPD:{}});
-  indentMeta = ld('indentmeta',{OPD:{number:'',date:'',saved:false},IPD:{number:'',date:'',saved:false}});
+  customMedicines=ld('custom',[]);
+  poHistory=ld('pohistory',[]);
+  unitOverrides=ld('units',{});
+  dispLog=ld('displog',[]);
+  importLog=ld('importlog',{});
+  var d25=ld('disp2025',null);if(d25)dispensed[2025]=d25;
+  var d26=ld('disp2026',null);if(d26)dispensed[2026]=d26;
+  openingStock[2025]=ld('open2025',{});
+  openingStock[2026]=ld('open2026',{});
+  indentData=ld('indentdata',{OPD:{},IPD:{}});
+  indentMeta=ld('indentmeta',{OPD:{number:'',date:'',saved:false},IPD:{number:'',date:'',saved:false}});
 }
+
+// ── HELPERS ──
+function sid(name){return name.replace(/[^a-zA-Z0-9]/g,'_');}
+function regN(name){var i;for(i=0;i<_medIdx.length;i++){if(_medIdx[i]===name)return i;}_medIdx.push(name);return _medIdx.length-1;}
+function getN(idx){return _medIdx[idx]||'';}
 
 function getAllMeds(){
-  var r=[];
-  var i;
-  for(i=0;i<BASE_LIST.length;i++) r.push({name:BASE_LIST[i][0],cat:BASE_LIST[i][1],custom:false});
-  for(i=0;i<customMedicines.length;i++) r.push({name:customMedicines[i].name,cat:customMedicines[i].cat,custom:true,unitType:customMedicines[i].unitType,unitNum:customMedicines[i].unitNum});
+  var r=[],i;
+  for(i=0;i<BASE_LIST.length;i++)r.push({name:BASE_LIST[i][0],cat:BASE_LIST[i][1],custom:false});
+  for(i=0;i<customMedicines.length;i++)r.push({name:customMedicines[i].name,cat:customMedicines[i].cat,custom:true,unitType:customMedicines[i].unitType,unitNum:customMedicines[i].unitNum});
   return r;
 }
-function getCategories(){
-  var cats=[],seen={},meds=getAllMeds();
-  for(var i=0;i<meds.length;i++){if(!seen[meds[i].cat]){cats.push(meds[i].cat);seen[meds[i].cat]=1;}}
-  return cats;
-}
-function getDefaultUnitType(name,cat){
-  if(SMALL_PACK_TAILAS.indexOf(name)>=0) return 'ml';
-  return CAT_UNIT_TYPE[cat]||'unit';
-}
-function getDefaultUnitNum(name,cat){
-  if(SMALL_PACK_TAILAS.indexOf(name)>=0) return 10;
-  if(cat==='VATI/RASAS'||cat==='GUGGULU') return 0;
-  return CAT_UNIT_NUM[cat]||1;
-}
+function getCategories(){var cats=[],seen={},meds=getAllMeds(),i;for(i=0;i<meds.length;i++){if(!seen[meds[i].cat]){cats.push(meds[i].cat);seen[meds[i].cat]=1;}}return cats;}
+function getDefaultUnitType(name,cat){if(SMALL_PACK_TAILAS.indexOf(name)>=0)return 'ml';return CAT_UNIT_TYPE[cat]||'unit';}
+function getDefaultUnitNum(name,cat){if(SMALL_PACK_TAILAS.indexOf(name)>=0)return 10;if(cat==='VATI/RASAS'||cat==='GUGGULU')return 0;return CAT_UNIT_NUM[cat]||1;}
 function getUnitType(name,cat){
-  if(unitOverrides[name]&&unitOverrides[name].type!==undefined) return unitOverrides[name].type;
-  var i; for(i=0;i<customMedicines.length;i++){if(customMedicines[i].name===name&&customMedicines[i].unitType) return customMedicines[i].unitType;}
+  if(unitOverrides[name]&&unitOverrides[name].type!==undefined)return unitOverrides[name].type;
+  var i;for(i=0;i<customMedicines.length;i++){if(customMedicines[i].name===name&&customMedicines[i].unitType)return customMedicines[i].unitType;}
   return getDefaultUnitType(name,cat);
 }
 function getUnitNum(name,cat,yr,m){
-  var i; for(i=0;i<customMedicines.length;i++){if(customMedicines[i].name===name&&customMedicines[i].unitNum>0) return customMedicines[i].unitNum;}
-  if(unitOverrides[name]&&unitOverrides[name].number!==undefined) return unitOverrides[name].number;
-  if((cat==='VATI/RASAS'||cat==='GUGGULU')){if(m!==undefined&&yr!==undefined) return getDisp(yr,name,m); return 0;}
+  var i;for(i=0;i<customMedicines.length;i++){if(customMedicines[i].name===name&&customMedicines[i].unitNum>0)return customMedicines[i].unitNum;}
+  if(unitOverrides[name]&&unitOverrides[name].number!==undefined)return unitOverrides[name].number;
+  if(cat==='VATI/RASAS'||cat==='GUGGULU'){if(m!==undefined&&yr!==undefined)return getDisp(yr,name,m);return 0;}
   return getDefaultUnitNum(name,cat);
 }
 function setUnitOverride(name,type,number){
-  if(!unitOverrides[name]) unitOverrides[name]={};
-  if(type!==undefined) unitOverrides[name].type=type;
-  if(number!==undefined) unitOverrides[name].number=number;
+  if(!unitOverrides[name])unitOverrides[name]={};
+  if(type!==undefined)unitOverrides[name].type=type;
+  if(number!==undefined)unitOverrides[name].number=number;
   sv('units',unitOverrides);
 }
 function getDisp(yr,name,m){
-  if(dispensed[yr]&&dispensed[yr][name]&&dispensed[yr][name][m]!==undefined) return dispensed[yr][name][m];
+  if(dispensed[yr]&&dispensed[yr][name]&&dispensed[yr][name][m]!==undefined)return dispensed[yr][name][m];
   var raw=yr===2025?RAW_2025:RAW_2026;
-  return (raw[name]&&raw[name][m]!==undefined)?raw[name][m]:0;
+  return(raw[name]&&raw[name][m]!==undefined)?raw[name][m]:0;
 }
 function setDisp(yr,name,m,val){
-  if(!dispensed[yr]) dispensed[yr]={};
-  if(!dispensed[yr][name]) dispensed[yr][name]=new Array(12).fill(0);
-  dispensed[yr][name][m]=val;
-  sv('disp'+yr,dispensed[yr]);
+  if(!dispensed[yr])dispensed[yr]={};
+  if(!dispensed[yr][name])dispensed[yr][name]=new Array(12).fill(0);
+  dispensed[yr][name][m]=val;sv('disp'+yr,dispensed[yr]);
 }
 function getOpening(yr,name,m){
-  if(openingStock[yr]&&openingStock[yr][name]&&openingStock[yr][name][m]!==undefined) return openingStock[yr][name][m];
+  if(openingStock[yr]&&openingStock[yr][name]&&openingStock[yr][name][m]!==undefined)return openingStock[yr][name][m];
   if(yr===2026&&m===4&&INVOICE_STOCK_2026[name]!==undefined){var pc=getClosing(2026,name,3);return pc+INVOICE_STOCK_2026[name];}
-  if(m===0) return 0;
+  if(m===0)return 0;
   return getClosing(yr,name,m-1);
 }
 function setOpening(yr,name,m,val){
-  if(!openingStock[yr]) openingStock[yr]={};
-  if(!openingStock[yr][name]) openingStock[yr][name]={};
-  openingStock[yr][name][m]=val;
-  sv('open'+yr,openingStock[yr]);
+  if(!openingStock[yr])openingStock[yr]={};
+  if(!openingStock[yr][name])openingStock[yr][name]={};
+  openingStock[yr][name][m]=val;sv('open'+yr,openingStock[yr]);
 }
 function getClosing(yr,name,m){return Math.max(0,getOpening(yr,name,m)-getDisp(yr,name,m));}
 function getDailyRate(yr,name){var s=0,c=0,m;for(m=0;m<12;m++){var v=getDisp(yr,name,m);if(v>0){s+=v;c++;}}return c?s/(c*30):0;}
 function getLastClose(yr,name){var last=yr===2026?4:11;return getClosing(yr,name,last);}
+function getMed(name){var meds=getAllMeds(),i;for(i=0;i<meds.length;i++){if(meds[i].name===name)return meds[i];}return null;}
 
+// ── BACKUP ──
 function exportAllData(){
   var keys=['custom','open2025','open2026','disp2025','disp2026','units','pohistory','displog','indentdata','indentmeta','importlog'];
-  var backup={version:2,exported:new Date().toISOString(),data:{}};
-  var i; for(i=0;i<keys.length;i++){try{var v=localStorage.getItem('jagm_'+keys[i]);if(v)backup.data[keys[i]]=JSON.parse(v);}catch(e){}}
+  var backup={version:2,exported:new Date().toISOString(),data:{}},i;
+  for(i=0;i<keys.length;i++){try{var v=localStorage.getItem('jagm_'+keys[i]);if(v)backup.data[keys[i]]=JSON.parse(v);}catch(e){}}
   var blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-  var a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='JAGM_Backup_'+new Date().toISOString().slice(0,10)+'.json';
-  a.click();
-  document.getElementById('backup-status').textContent='Saved backup.';
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JAGM_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  document.getElementById('backup-status').textContent='Saved.';
   setTimeout(function(){document.getElementById('backup-status').textContent='';},4000);
 }
 function importAllData(e){
-  var f=e.target.files[0]; if(!f) return;
-  if(!confirm('Restore from backup? Replaces all current data.')) return;
+  var f=e.target.files[0];if(!f)return;
+  if(!confirm('Restore from backup? Replaces all data.'))return;
   var reader=new FileReader();
   reader.onload=function(ev){
     try{
-      var backup=JSON.parse(ev.target.result);
-      if(!backup.data) throw new Error('Invalid backup');
-      var keys=['custom','open2025','open2026','disp2025','disp2026','units','pohistory','displog','indentdata','indentmeta','importlog'];
-      var i,restored=0;
-      for(i=0;i<keys.length;i++){if(backup.data[keys[i]]!==undefined){try{localStorage.setItem('jagm_'+keys[i],JSON.stringify(backup.data[keys[i]]));restored++;}catch(err){}}}
-      loadAll(); populateFilters(); renderRegister(); renderMedList();
-      document.getElementById('backup-status').textContent='Restored '+restored+' datasets.';
+      var backup=JSON.parse(ev.target.result);if(!backup.data)throw new Error('Invalid');
+      var keys=['custom','open2025','open2026','disp2025','disp2026','units','pohistory','displog','indentdata','indentmeta','importlog'],i,r=0;
+      for(i=0;i<keys.length;i++){if(backup.data[keys[i]]!==undefined){try{localStorage.setItem('jagm_'+keys[i],JSON.stringify(backup.data[keys[i]]));r++;}catch(err){}}}
+      loadAll();populateFilters();renderRegister();renderMedList();
+      document.getElementById('backup-status').textContent='Restored '+r+' datasets.';
       setTimeout(function(){document.getElementById('backup-status').textContent='';},4000);
     }catch(err){alert('Restore failed: '+err.message);}
   };
-  reader.readAsText(f); e.target.value='';
+  reader.readAsText(f);e.target.value='';
 }
 
+// ── EDIT MODE ──
 function toggleEditMode(){
   editMode2=!editMode2;
   document.getElementById('edit-mode-label').textContent=editMode2?'ON':'OFF';
   document.getElementById('edit-hint').style.display=editMode2?'block':'none';
   document.getElementById('save-changes-btn').style.display=editMode2?'inline-block':'none';
   document.getElementById('edit-toggle-btn').style.background=editMode2?'#b36a00':'';
-  if(!editMode2) pendingEdits={};
+  if(!editMode2)pendingEdits={};
   renderRegister();
 }
 function cellEdit(el){
@@ -598,9 +589,9 @@ function cellEdit(el){
   document.getElementById('save-changes-btn').style.background='#a00';
 }
 function saveAllEdits(){
-  var keys=Object.keys(pendingEdits),count=keys.length;
-  if(!count){alert('No changes to save.');return;}
-  var i; for(i=0;i<keys.length;i++){var e=pendingEdits[keys[i]];if(e.field==='open')setOpening(e.yr,e.name,e.m,e.val);else setDisp(e.yr,e.name,e.m,e.val);}
+  var keys=Object.keys(pendingEdits),count=keys.length,i;
+  if(!count){alert('No changes.');return;}
+  for(i=0;i<keys.length;i++){var e=pendingEdits[keys[i]];if(e.field==='open')setOpening(e.yr,e.name,e.m,e.val);else setDisp(e.yr,e.name,e.m,e.val);}
   pendingEdits={};
   document.getElementById('save-changes-btn').textContent='Saved '+count+' changes!';
   document.getElementById('save-changes-btn').style.background='#1a7a4a';
@@ -608,22 +599,14 @@ function saveAllEdits(){
   setTimeout(function(){document.getElementById('save-changes-btn').textContent='Save Changes';},3000);
 }
 function unitTypeEdit(el){setUnitOverride(el.dataset.med,el.textContent.trim(),undefined);}
-function unitNumEdit(el){
-  var name=el.dataset.med,cat=el.dataset.cat,val=parseInt(el.textContent.replace(/,/g,''))||0;
-  if(cat==='VATI/RASAS'||cat==='GUGGULU'){el.textContent=val;return;}
-  setUnitOverride(name,undefined,val);
-}
+function unitNumEdit(el){var name=el.dataset.med,cat=el.dataset.cat,val=parseInt(el.textContent.replace(/,/g,''))||0;if(cat==='VATI/RASAS'||cat==='GUGGULU'){el.textContent=val;return;}setUnitOverride(name,undefined,val);}
 
+// ── STATS ──
 function renderStats(){
   var yr=parseInt(document.getElementById('reg-year').value)||CY;
   var minDays=parseInt(document.getElementById('min-days').value)||60;
   var low=0,watch=0,total=0,meds=getAllMeds(),i,m;
-  for(i=0;i<meds.length;i++){
-    var dr=getDailyRate(yr,meds[i].name); if(!dr) continue;
-    var cl=getLastClose(yr,meds[i].name),dl=cl/dr;
-    for(m=0;m<12;m++) total+=getDisp(yr,meds[i].name,m);
-    if(dl<minDays) low++; else if(dl<minDays*2) watch++;
-  }
+  for(i=0;i<meds.length;i++){var dr=getDailyRate(yr,meds[i].name);if(!dr)continue;var cl=getLastClose(yr,meds[i].name),dl=cl/dr;for(m=0;m<12;m++)total+=getDisp(yr,meds[i].name,m);if(dl<minDays)low++;else if(dl<minDays*2)watch++;}
   document.getElementById('reg-stats').innerHTML=
     '<div class="stat-card"><div class="stat-num">'+getAllMeds().length+'</div><div class="stat-lbl">Medicines</div></div>'+
     '<div class="stat-card"><div class="stat-num">'+getCategories().length+'</div><div class="stat-lbl">Categories</div></div>'+
@@ -633,6 +616,7 @@ function renderStats(){
     '<div class="stat-card"><div class="stat-num" style="color:'+(editMode2?'#e67e00':'#888')+'">'+(editMode2?'ON':'OFF')+'</div><div class="stat-lbl">Edit Mode</div></div>';
 }
 
+// ── REGISTER ──
 function renderRegister(){
   renderStats();
   var yr=parseInt(document.getElementById('reg-year').value)||CY;
@@ -644,9 +628,9 @@ function renderRegister(){
   var html='<table><thead>';
   if(selMonth==='all'){
     html+='<tr><th rowspan="2">#</th><th rowspan="2">Medicine</th><th rowspan="2">Cat</th><th rowspan="2">Unit</th>';
-    var mi; for(mi=0;mi<12;mi++) html+='<th colspan="3">'+MONTHS[mi]+'</th>';
+    var mi;for(mi=0;mi<12;mi++)html+='<th colspan="3">'+MONTHS[mi]+'</th>';
     html+='<th rowspan="2">Total</th><th rowspan="2">Status</th></tr><tr>';
-    for(mi=0;mi<12;mi++) html+='<th class="sub">Open</th><th class="sub">Disp</th><th class="sub">Close</th>';
+    for(mi=0;mi<12;mi++)html+='<th class="sub">Open</th><th class="sub">Disp</th><th class="sub">Close</th>';
     html+='</tr>';
   } else {
     html+='<tr><th>#</th><th>Medicine</th><th>Cat</th><th>Unit</th><th>Opening</th><th>Dispensed</th><th>Closing</th><th>Daily Rate</th><th>Days Left</th><th>Status</th></tr>';
@@ -655,13 +639,11 @@ function renderRegister(){
   var n=0,lastCat='',meds=getAllMeds(),i,m2;
   for(i=0;i<meds.length;i++){
     var med=meds[i];
-    if(selCat!=='all'&&med.cat!==selCat) continue;
-    if(search&&med.name.toLowerCase().indexOf(search)<0) continue;
-    var dr=getDailyRate(yr,med.name);
-    var lastCl=getLastClose(yr,med.name);
-    var dl=dr>0?Math.round(lastCl/dr):999;
+    if(selCat!=='all'&&med.cat!==selCat)continue;
+    if(search&&med.name.toLowerCase().indexOf(search)<0)continue;
+    var dr=getDailyRate(yr,med.name),lastCl=getLastClose(yr,med.name),dl=dr>0?Math.round(lastCl/dr):999;
     var st=dl<minDays?'low':dl<minDays*2?'watch':'ok';
-    if(lowOnly&&st!=='low') continue;
+    if(lowOnly&&st!=='low')continue;
     n++;
     var isDyn=(med.cat==='VATI/RASAS'||med.cat==='GUGGULU')&&!med.custom;
     var ut=getUnitType(med.name,med.cat);
@@ -669,54 +651,40 @@ function renderRegister(){
     var utCell=editMode2?'<span class="unit-edit" contenteditable="true" data-med="'+med.name+'" data-cat="'+med.cat+'" onblur="unitTypeEdit(this)">'+ut+'</span>':'<span class="badge badge-blue">'+ut+'</span>';
     html+='<tr'+(st==='low'?' class="low-stock"':'')+'><td>'+n+'</td><td><b>'+med.name+'</b></td><td style="color:#666;font-size:10px">'+med.cat+'</td><td>'+utCell+'</td>';
     if(selMonth==='all'){
-      var total=0;
+      var tot=0;
       for(m2=0;m2<12;m2++){
-        var op=getOpening(yr,med.name,m2),disp=getDisp(yr,med.name,m2),cl2=getClosing(yr,med.name,m2);
-        total+=disp;
-        if(editMode2){
-          html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+m2+'" data-field="open" onblur="cellEdit(this)">'+op+'</span></td>';
-          html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+m2+'" data-field="disp" onblur="cellEdit(this)">'+disp+'</span></td>';
-          html+='<td>'+cl2.toLocaleString()+'</td>';
-        } else {
-          html+='<td>'+op.toLocaleString()+'</td><td>'+disp.toLocaleString()+'</td><td>'+cl2.toLocaleString()+'</td>';
-        }
+        var op=getOpening(yr,med.name,m2),disp=getDisp(yr,med.name,m2),cl2=getClosing(yr,med.name,m2);tot+=disp;
+        if(editMode2){html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+m2+'" data-field="open" onblur="cellEdit(this)">'+op+'</span></td><td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+m2+'" data-field="disp" onblur="cellEdit(this)">'+disp+'</span></td><td>'+cl2.toLocaleString()+'</td>';}
+        else{html+='<td>'+op.toLocaleString()+'</td><td>'+disp.toLocaleString()+'</td><td>'+cl2.toLocaleString()+'</td>';}
       }
       var bg=st==='low'?'badge-red':st==='watch'?'badge-amber':'badge-green';
-      html+='<td><b>'+total.toLocaleString()+'</b></td><td><span class="badge '+bg+'">'+st.toUpperCase()+'</span></td>';
+      html+='<td><b>'+tot.toLocaleString()+'</b></td><td><span class="badge '+bg+'">'+st.toUpperCase()+'</span></td>';
     } else {
-      var mi2=parseInt(selMonth);
-      var op2=getOpening(yr,med.name,mi2),disp2=getDisp(yr,med.name,mi2),cl3=getClosing(yr,med.name,mi2);
+      var mi2=parseInt(selMonth),op2=getOpening(yr,med.name,mi2),disp2=getDisp(yr,med.name,mi2),cl3=getClosing(yr,med.name,mi2);
       var dlm=dr>0?Math.round(cl3/dr):'-';
       var bg2=typeof dlm==='number'&&dlm<minDays?'badge-red':typeof dlm==='number'&&dlm<minDays*2?'badge-amber':'badge-green';
       var lb=typeof dlm==='number'&&dlm<minDays?'LOW':typeof dlm==='number'&&dlm<minDays*2?'WATCH':'OK';
-      if(editMode2){
-        html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+mi2+'" data-field="open" onblur="cellEdit(this)">'+op2+'</span></td>';
-        html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+mi2+'" data-field="disp" onblur="cellEdit(this)">'+disp2+'</span></td>';
-        html+='<td>'+cl3.toLocaleString()+'</td>';
-      } else {
-        html+='<td>'+op2.toLocaleString()+'</td><td>'+disp2.toLocaleString()+'</td><td>'+cl3.toLocaleString()+'</td>';
-      }
+      if(editMode2){html+='<td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+mi2+'" data-field="open" onblur="cellEdit(this)">'+op2+'</span></td><td><span class="editable" contenteditable="true" data-yr="'+yr+'" data-med="'+med.name+'" data-m="'+mi2+'" data-field="disp" onblur="cellEdit(this)">'+disp2+'</span></td><td>'+cl3.toLocaleString()+'</td>';}
+      else{html+='<td>'+op2.toLocaleString()+'</td><td>'+disp2.toLocaleString()+'</td><td>'+cl3.toLocaleString()+'</td>';}
       html+='<td>'+(dr>0?dr.toFixed(1):0)+'/day</td><td>'+dlm+'</td><td><span class="badge '+bg2+'">'+lb+'</span></td>';
     }
     html+='</tr>';
   }
-  if(!n) html+='<tr><td colspan="20" style="text-align:center;padding:14px;color:#666">No records found.</td></tr>';
+  if(!n)html+='<tr><td colspan="20" style="text-align:center;padding:14px;color:#666">No records found.</td></tr>';
   html+='</tbody></table>';
   document.getElementById('reg-table').innerHTML=html;
 }
 
+// ── AUTO PO ──
 function getAutoPOData(){
   var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
   var minDays=parseInt(document.getElementById('min-days').value)||60;
   var poMos=parseInt(document.getElementById('po-months').value)||2;
   var bySupplier={},meds=getAllMeds(),i;
   for(i=0;i<meds.length;i++){
-    var med=meds[i];
-    var dr=getDailyRate(yr,med.name); if(!dr) continue;
-    var lastCl=getLastClose(yr,med.name),daysLeft=lastCl/dr;
-    if(daysLeft>minDays) continue;
-    var sup=SUPPLIER_MAP[med.cat]||'OTHER';
-    if(!bySupplier[sup]) bySupplier[sup]=[];
+    var med=meds[i];var dr=getDailyRate(yr,med.name);if(!dr)continue;
+    var lastCl=getLastClose(yr,med.name),daysLeft=lastCl/dr;if(daysLeft>minDays)continue;
+    var sup=SUPPLIER_MAP[med.cat]||'OTHER';if(!bySupplier[sup])bySupplier[sup]=[];
     bySupplier[sup].push({name:med.name,cat:med.cat,unitType:getUnitType(med.name,med.cat),unitNum:getUnitNum(med.name,med.cat),currentStock:Math.round(lastCl),dailyRate:dr,daysLeft:Math.round(daysLeft),orderQty:Math.round(dr*30*poMos)});
   }
   return bySupplier;
@@ -725,28 +693,24 @@ function renderAutoPO(){
   var bySupplier=getAutoPOData();
   var yr=parseInt(document.getElementById('reg-year').value)||CY;
   var supFilter=document.getElementById('po-supplier').value;
-  var html='',poNum=1;
-  var sups=Object.keys(bySupplier).sort();
-  var i,j;
+  var html='',poNum=1,sups=Object.keys(bySupplier).sort(),i,j;
   for(i=0;i<sups.length;i++){
-    var sup=sups[i];
-    if(supFilter!=='all'&&sup!==supFilter){poNum++;continue;}
+    var sup=sups[i];if(supFilter!=='all'&&sup!==supFilter){poNum++;continue;}
     var items=bySupplier[sup];
     var poId='PO-JAGM-'+yr+'-'+String(poNum).padStart(3,'0');
     items.sort(function(a,b){return a.daysLeft-b.daysLeft;});
-    html+='<div class="po-card"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><div>';
-    html+='<div style="font-size:13px;font-weight:700;color:#1a3a5c">'+poId+'</div>';
+    html+='<div class="po-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">';
+    html+='<div><div style="font-size:13px;font-weight:700;color:#1a3a5c">'+poId+'</div>';
     html+='<div style="font-size:11px">To: <b>'+(SUPPLIER_NAMES[sup]||sup)+'</b></div></div>';
-    html+='<button class="btn btn-info btn-sm no-print" onclick="openInvoice(\''+sup+'\',\''+poId+'\')">Invoice</button></div>';
+    html+='<button class="btn btn-info btn-sm no-print" data-sup="'+sup+'" data-poid="'+poId+'" onclick="openInvoice(this.dataset.sup,this.dataset.poid)">Invoice</button></div>';
     html+='<table style="width:100%"><thead><tr><th style="background:#2c5282">#</th><th style="background:#2c5282">Medicine</th><th style="background:#2c5282">Unit</th><th style="background:#2c5282">Stock</th><th style="background:#2c5282">Days Left</th><th style="background:#2c5282">Order Qty</th></tr></thead><tbody>';
     for(j=0;j<items.length;j++){
       var it=items[j];
       html+='<tr'+(it.daysLeft<15?' style="background:#fff0f0"':'')+'><td>'+(j+1)+'</td><td><b>'+it.name+'</b></td><td><span class="badge badge-blue">'+it.unitType+'</span></td><td>'+it.currentStock+'</td><td><span class="badge '+(it.daysLeft<15?'badge-red':'badge-amber')+'">'+it.daysLeft+'d</span></td><td><b>'+it.orderQty+'</b></td></tr>';
     }
-    html+='</tbody></table></div>';
-    poNum++;
+    html+='</tbody></table></div>';poNum++;
   }
-  if(!html) html='<div style="padding:14px;background:#f0fff4;border:1px solid #9ae6b4;border-radius:5px;color:#1a7a4a">All medicines adequately stocked.</div>';
+  if(!html)html='<div style="padding:14px;background:#f0fff4;border:1px solid #9ae6b4;border-radius:5px;color:#1a7a4a">All medicines adequately stocked.</div>';
   document.getElementById('auto-po-content').innerHTML=html;
 }
 function renderManualPOTable(){
@@ -755,17 +719,15 @@ function renderManualPOTable(){
   var search=document.getElementById('manual-search').value.toLowerCase();
   var html='',n=0,meds=getAllMeds(),i;
   for(i=0;i<meds.length;i++){
-    var med=meds[i];
-    if(catF!=='all'&&med.cat!==catF) continue;
-    if(search&&med.name.toLowerCase().indexOf(search)<0) continue;
-    var cl=getLastClose(yr,med.name),dr=getDailyRate(yr,med.name); n++;
-    html+='<tr><td style="text-align:center"><input type="checkbox" class="mpo-chk" data-name="'+med.name+'" data-cat="'+med.cat+'"></td><td>'+n+'</td><td><b>'+med.name+'</b></td><td style="color:#555;font-size:10px">'+med.cat+'</td><td><span class="badge badge-blue">'+getUnitType(med.name,med.cat)+'</span></td><td>'+(getUnitNum(med.name,med.cat)||'-')+'</td><td>'+Math.round(cl).toLocaleString()+'</td><td>'+(dr>0?dr.toFixed(1):0)+'/day</td><td><input type="number" min="0" value="'+Math.max(0,Math.round(dr*60))+'" style="width:75px" id="mpo-qty-'+med.name.replace(/\W/g,'_')+'"></td></tr>';
+    var med=meds[i];if(catF!=='all'&&med.cat!==catF)continue;if(search&&med.name.toLowerCase().indexOf(search)<0)continue;
+    var cl=getLastClose(yr,med.name),dr=getDailyRate(yr,med.name);n++;
+    html+='<tr><td style="text-align:center"><input type="checkbox" class="mpo-chk" data-name="'+med.name+'" data-cat="'+med.cat+'"></td><td>'+n+'</td><td><b>'+med.name+'</b></td><td style="color:#555;font-size:10px">'+med.cat+'</td><td><span class="badge badge-blue">'+getUnitType(med.name,med.cat)+'</span></td><td>'+(getUnitNum(med.name,med.cat)||'-')+'</td><td>'+Math.round(cl).toLocaleString()+'</td><td>'+(dr>0?dr.toFixed(1):0)+'/day</td><td><input type="number" min="0" value="'+Math.max(0,Math.round(dr*60))+'" style="width:75px" id="mpo-qty-'+sid(med.name)+'"></td></tr>';
   }
   document.getElementById('manual-po-body').innerHTML=html||'<tr><td colspan="9" style="text-align:center;padding:12px;color:#666">No medicines.</td></tr>';
 }
-function toggleAllManual(cb){var els=document.querySelectorAll('.mpo-chk');var i;for(i=0;i<els.length;i++)els[i].checked=cb.checked;}
-function selectAllManual(){var els=document.querySelectorAll('.mpo-chk');var i;for(i=0;i<els.length;i++)els[i].checked=true;}
-function clearAllManual(){var els=document.querySelectorAll('.mpo-chk');var i;for(i=0;i<els.length;i++)els[i].checked=false;document.getElementById('chk-all').checked=false;}
+function toggleAllManual(cb){var els=document.querySelectorAll('.mpo-chk'),i;for(i=0;i<els.length;i++)els[i].checked=cb.checked;}
+function selectAllManual(){var els=document.querySelectorAll('.mpo-chk'),i;for(i=0;i<els.length;i++)els[i].checked=true;}
+function clearAllManual(){var els=document.querySelectorAll('.mpo-chk'),i;for(i=0;i<els.length;i++)els[i].checked=false;document.getElementById('chk-all').checked=false;}
 function generateManualPO(){
   var selMonth=parseInt(document.getElementById('manual-po-month').value);
   var selYear=parseInt(document.getElementById('manual-po-year').value);
@@ -774,15 +736,14 @@ function generateManualPO(){
   var items=[],i;
   for(i=0;i<checked.length;i++){
     var name=checked[i].dataset.name,cat=checked[i].dataset.cat;
-    var qty=parseInt((document.getElementById('mpo-qty-'+name.replace(/\W/g,'_'))||{value:0}).value)||0;
-    if(qty>0) items.push({name:name,cat:cat,unitType:getUnitType(name,cat),unitNum:getUnitNum(name,cat),orderQty:qty,dailyRate:getDailyRate(selYear,name),currentStock:Math.round(getLastClose(selYear,name))});
+    var qty=parseInt((document.getElementById('mpo-qty-'+sid(name))||{value:0}).value)||0;
+    if(qty>0)items.push({name:name,cat:cat,unitType:getUnitType(name,cat),unitNum:getUnitNum(name,cat),orderQty:qty,dailyRate:getDailyRate(selYear,name),currentStock:Math.round(getLastClose(selYear,name))});
   }
   if(!items.length){alert('Enter quantities > 0.');return;}
   var poId='PO-JAGM-'+selYear+'-M'+String(poHistory.length+1).padStart(3,'0');
   poHistory.push({id:poId,type:'manual',month:selMonth,year:selYear,date:new Date(selYear,selMonth,15).toLocaleDateString('en-IN'),items:items});
-  for(i=0;i<items.length;i++){var cur=getOpening(selYear,items[i].name,selMonth);setOpening(selYear,items[i].name,selMonth,cur+items[i].orderQty);}
-  sv('pohistory',poHistory);
-  renderPOHistory();renderInvoiceList();renderRegister();clearAllManual();
+  for(i=0;i<items.length;i++){setOpening(selYear,items[i].name,selMonth,getOpening(selYear,items[i].name,selMonth)+items[i].orderQty);}
+  sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();renderRegister();clearAllManual();
   alert('PO '+poId+' generated.');
 }
 function renderPOHistory(){
@@ -790,17 +751,22 @@ function renderPOHistory(){
   if(!poHistory.length){el.innerHTML='<div style="padding:14px;color:#666">No manual POs.</div>';return;}
   var html='',i;
   for(i=poHistory.length-1;i>=0;i--){
-    var po=poHistory[i];
-    html+='<div class="po-card" style="border-color:#9ae6b4"><div style="display:flex;justify-content:space-between;margin-bottom:5px"><div><b>'+po.id+'</b></div><div style="display:flex;gap:5px"><button class="btn btn-info btn-sm" onclick="openInvoiceFromPO(\''+po.id+'\')">Invoice</button><button class="btn btn-danger btn-sm" onclick="deletePO(\''+po.id+'\')">Del</button></div></div><div style="font-size:11px;color:#555">'+po.date+' | '+po.items.length+' items | '+MONTHS[po.month]+' '+po.year+'</div></div>';
+    var po=poHistory[i],preview='',j;
+    for(j=0;j<Math.min(4,po.items.length);j++)preview+='<span class="badge badge-blue" style="margin:1px">'+po.items[j].name+' ('+po.items[j].orderQty+')</span>';
+    if(po.items.length>4)preview+=' +'+(po.items.length-4)+' more';
+    html+='<div class="po-card" style="border-color:#9ae6b4"><div style="display:flex;justify-content:space-between;margin-bottom:5px">';
+    html+='<div><b>'+po.id+'</b> <span class="badge badge-green">MANUAL</span></div>';
+    html+='<div style="display:flex;gap:5px"><button class="btn btn-info btn-sm" data-poid="'+po.id+'" onclick="openInvoiceFromPO(this.dataset.poid)">Invoice</button><button class="btn btn-danger btn-sm" data-poid="'+po.id+'" onclick="deletePO(this.dataset.poid)">Del</button></div></div>';
+    html+='<div style="font-size:11px;color:#555">'+po.date+' | '+po.items.length+' items | '+MONTHS[po.month]+' '+po.year+'</div>';
+    html+='<div style="margin-top:4px">'+preview+'</div></div>';
   }
   el.innerHTML=html;
 }
-function deletePO(id){if(!confirm('Remove PO?'))return;poHistory=poHistory.filter(function(p){return p.id!==id;});sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();}
+function deletePO(id){if(!confirm('Remove PO?'))return;var newH=[],i;for(i=0;i<poHistory.length;i++){if(poHistory[i].id!==id)newH.push(poHistory[i]);}poHistory=newH;sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();}
 function clearPOHistory(){if(!confirm('Clear all?'))return;poHistory=[];sv('pohistory',poHistory);renderPOHistory();renderInvoiceList();}
 function exportAutoPOExcel(){
   var byS=getAutoPOData(),yr=parseInt(document.getElementById('reg-year').value)||CY;
-  var wb=XLSX.utils.book_new(),rows=[['PO','Supplier','Medicine','Category','Unit','Stock','Days','Order Qty']],n=1;
-  var sups=Object.keys(byS).sort(),i,j;
+  var wb=XLSX.utils.book_new(),rows=[['PO','Supplier','Medicine','Category','Unit','Stock','Days','Order Qty']],n=1,sups=Object.keys(byS).sort(),i,j;
   for(i=0;i<sups.length;i++){var sup=sups[i];for(j=0;j<byS[sup].length;j++){var it=byS[sup][j];rows.push(['PO-JAGM-'+yr+'-'+String(n).padStart(3,'0'),SUPPLIER_NAMES[sup]||sup,it.name,it.cat,it.unitType,it.currentStock,it.daysLeft,it.orderQty]);}n++;}
   var ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'Auto PO');XLSX.writeFile(wb,'Auto_PO_'+yr+'.xlsx');
 }
@@ -810,20 +776,23 @@ function exportPOHistoryExcel(){
   var ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'PO History');XLSX.writeFile(wb,'PO_History.xlsx');
 }
 
+// ── INVOICE ──
 function renderInvoiceList(){
   var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
-  var byS=getAutoPOData();
+  var byS=getAutoPOData(),sups=Object.keys(byS).sort(),n=1,i;
   var html='<div style="font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Auto PO Invoices</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin-bottom:14px">';
-  var sups=Object.keys(byS).sort(),n=1,i;
   for(i=0;i<sups.length;i++){
     var poId='PO-JAGM-'+yr+'-'+String(n).padStart(3,'0');
-    html+='<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:11px"><div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:2px">'+poId.replace('PO-','INV-')+'</div><div style="font-size:11px;margin-bottom:7px">'+byS[sups[i]].length+' items</div><button class="btn btn-primary btn-sm" style="width:100%" onclick="openInvoice(\''+sups[i]+'\',\''+poId+'\')">Open</button></div>';
+    html+='<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:11px"><div style="font-size:12px;font-weight:700;color:#1a3a5c;margin-bottom:2px">'+poId.replace('PO-','INV-')+'</div><div style="font-size:11px;margin-bottom:7px">'+byS[sups[i]].length+' items</div><button class="btn btn-primary btn-sm" style="width:100%" data-sup="'+sups[i]+'" data-poid="'+poId+'" onclick="openInvoice(this.dataset.sup,this.dataset.poid)">Open</button></div>';
     n++;
   }
   html+='</div>';
   if(poHistory.length){
     html+='<div style="font-size:13px;font-weight:700;color:#1a3a5c;margin-bottom:8px">Manual PO Invoices</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px">';
-    for(i=0;i<poHistory.length;i++){var po=poHistory[i];html+='<div style="background:#fff;border:1px solid #c3e6cb;border-radius:5px;padding:11px"><div style="font-size:12px;font-weight:700;color:#1a7a4a;margin-bottom:2px">'+po.id.replace('PO-','INV-')+'</div><div style="font-size:11px;margin-bottom:7px">'+po.date+' | '+po.items.length+' items</div><button class="btn btn-success btn-sm" style="width:100%" onclick="openInvoiceFromPO(\''+po.id+'\')">Open</button></div>';}
+    for(i=0;i<poHistory.length;i++){
+      var po=poHistory[i];
+      html+='<div style="background:#fff;border:1px solid #c3e6cb;border-radius:5px;padding:11px"><div style="font-size:12px;font-weight:700;color:#1a7a4a;margin-bottom:2px">'+po.id.replace('PO-','INV-')+'</div><div style="font-size:11px;margin-bottom:7px">'+po.date+' | '+po.items.length+' items</div><button class="btn btn-success btn-sm" style="width:100%" data-poid="'+po.id+'" onclick="openInvoiceFromPO(this.dataset.poid)">Open</button></div>';
+    }
     html+='</div>';
   }
   document.getElementById('inv-po-list').innerHTML=html;
@@ -836,62 +805,64 @@ function _openInvModal(poId){
   document.getElementById('inv-modal-title').textContent='Invoice - '+poId.replace('PO-','INV-');
   var pb='',i;
   for(i=0;i<currentPOItems.length;i++){
-    var item=currentPOItems[i];
-    var ut=item.unitType||getUnitType(item.name,item.cat);
-    var dp=DEFAULT_PRICES[ut]||50;
-    pb+='<tr><td>'+(i+1)+'</td><td><b>'+item.name+'</b></td><td><span class="badge badge-blue">'+ut+'</span></td><td>'+(item.unitNum||'-')+'</td><td>'+item.orderQty+'</td><td><input type="number" id="price-'+i+'" value="'+dp+'" min="0.01" step="0.01" oninput="buildInvoiceDoc()"></td><td><select id="gst-'+i+'" onchange="buildInvoiceDoc()"><option value="5">5%</option><option value="12" selected>12%</option></select></td></tr>';
+    var item=currentPOItems[i],ut=item.unitType||getUnitType(item.name,item.cat),un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat),dp=DEFAULT_PRICES[ut]||50;
+    pb+='<tr><td>'+(i+1)+'</td><td><b>'+item.name+'</b></td><td><span class="badge badge-blue">'+ut+'</span></td><td>'+(un||'-')+'</td><td>'+item.orderQty+'</td><td><input type="number" id="price-'+i+'" value="'+dp+'" min="0.01" step="0.01" oninput="buildInvoiceDoc()"></td><td><select id="gst-'+i+'" onchange="buildInvoiceDoc()"><option value="5">5%</option><option value="12" selected>12%</option></select></td></tr>';
   }
   document.getElementById('inv-price-body').innerHTML=pb;
-  buildInvoiceDoc();
-  document.getElementById('inv-modal').style.display='flex';
+  buildInvoiceDoc();document.getElementById('inv-modal').style.display='flex';
 }
-function applyDefaultGST(){var g=document.getElementById('inv-gst-default').value;var i;for(i=0;i<currentPOItems.length;i++){var el=document.getElementById('gst-'+i);if(el)el.value=g;}buildInvoiceDoc();}
+function applyDefaultGST(){var g=document.getElementById('inv-gst-default').value,i;for(i=0;i<currentPOItems.length;i++){var el=document.getElementById('gst-'+i);if(el)el.value=g;}buildInvoiceDoc();}
 function buildInvoiceDoc(){
   var invNum=document.getElementById('inv-number').value;
   var invDate=document.getElementById('inv-date').value;
-  var df=invDate?new Date(invDate+'T00:00:00').toLocaleDateString('en-IN'):'';
+  var df=invDate?new Date(invDate+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
+  var due=invDate?new Date(new Date(invDate+'T00:00:00').getTime()+30*86400000).toLocaleDateString('en-IN',{day:'2-digit',month:'long',year:'numeric'}):'-';
   var rows='',sub=0,gstT=0,i;
   for(i=0;i<currentPOItems.length;i++){
     var item=currentPOItems[i];
     var p=parseFloat((document.getElementById('price-'+i)||{value:0}).value)||0;
     var g=parseFloat((document.getElementById('gst-'+i)||{value:12}).value)||12;
     var ut=item.unitType||getUnitType(item.name,item.cat);
+    var un=item.unitNum!==undefined?item.unitNum:getUnitNum(item.name,item.cat);
     var b=p*item.orderQty,ga=b*g/100;sub+=b;gstT+=ga;
-    rows+='<tr><td>'+(i+1)+'</td><td>'+item.name+'</td><td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 5px;border-radius:3px;font-size:10px">'+ut+'</span></td><td style="text-align:right">'+item.orderQty+'</td><td style="text-align:right">'+p.toFixed(2)+'</td><td style="text-align:right">'+b.toFixed(2)+'</td><td style="text-align:center">'+g+'%</td><td style="text-align:right">'+ga.toFixed(2)+'</td><td style="text-align:right"><b>'+(b+ga).toFixed(2)+'</b></td></tr>';
+    rows+='<tr><td>'+(i+1)+'</td><td>'+item.name+'</td><td style="color:#555;font-size:10px">'+item.cat+'</td><td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 5px;border-radius:3px;font-size:10px">'+ut+'</span></td><td style="text-align:center">'+(un||'-')+'</td><td style="text-align:right">'+item.orderQty+'</td><td style="text-align:right">'+p.toFixed(2)+'</td><td style="text-align:right">'+b.toFixed(2)+'</td><td style="text-align:center">'+g+'%</td><td style="text-align:right">'+ga.toFixed(2)+'</td><td style="text-align:right"><b>'+(b+ga).toFixed(2)+'</b></td></tr>';
   }
   var grand=sub+gstT;
-  document.getElementById('inv-doc-wrap').innerHTML='<div class="inv-doc"><div style="display:flex;justify-content:space-between;border-bottom:2px solid #1a3a5c;padding-bottom:10px;margin-bottom:10px"><div><div style="font-size:16px;font-weight:700;color:#1a3a5c">TAX INVOICE</div><div style="font-size:12px;font-weight:700">Astanga Wellness Distributors</div><div style="font-size:11px;color:#555">Vidyanagar, Hubli - 580021<br>GSTIN: 29AAPCA9132R1ZP</div></div><div style="text-align:right;font-size:11px"><div style="font-weight:700">'+invNum+'</div><div>Date: '+df+'</div><div>PO Ref: '+currentPONum+'</div></div></div><div class="inv-grid"><div class="inv-box"><strong>Bill To</strong><br>Principal, JAIN AGM AMC & H<br>Varur, Hubli - 581207</div><div class="inv-box"><strong>Supplier</strong><br>Astanga Wellness Distributors<br>GSTIN: 29AAPCA9132R1ZP</div></div><table><thead><tr><th>#</th><th>Medicine</th><th style="text-align:center">Unit</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Base</th><th style="text-align:center">GST</th><th style="text-align:right">GST Amt</th><th style="text-align:right">Total</th></tr></thead><tbody>'+rows+'</tbody></table><div class="inv-totals"><table><tr><td>Subtotal</td><td style="text-align:right">'+sub.toFixed(2)+'</td></tr><tr><td>GST</td><td style="text-align:right">'+gstT.toFixed(2)+'</td></tr><tr class="grand"><td><b>Grand Total</b></td><td style="text-align:right"><b>'+grand.toFixed(2)+'</b></td></tr></table></div><div style="clear:both"></div></div>';
+  function tw(n){var a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];function cv(x){if(x===0)return'';if(x<20)return a[x]+' ';if(x<100)return b[Math.floor(x/10)]+' '+(x%10?a[x%10]+' ':'');if(x<1000)return a[Math.floor(x/100)]+' Hundred '+(x%100?cv(x%100):'');if(x<100000)return cv(Math.floor(x/1000))+'Thousand '+cv(x%1000);if(x<10000000)return cv(Math.floor(x/100000))+'Lakh '+cv(x%100000);return cv(Math.floor(x/10000000))+'Crore '+cv(x%10000000);}return(cv(Math.round(n))||'Zero')+' Rupees Only';}
+  document.getElementById('inv-doc-wrap').innerHTML=
+    '<div class="inv-doc"><div style="display:flex;justify-content:space-between;border-bottom:2px solid #1a3a5c;padding-bottom:10px;margin-bottom:10px">'+
+    '<div><div style="font-size:16px;font-weight:700;color:#1a3a5c">TAX INVOICE</div><div style="font-size:12px;font-weight:700;margin-top:2px">Astanga Wellness Distributors</div><div style="font-size:11px;color:#555;line-height:1.8">Vidyanagar, Hubli - 580021<br>GSTIN: 29AAPCA9132R1ZP</div></div>'+
+    '<div style="text-align:right;font-size:11px"><div style="font-weight:700;font-size:12px;color:#1a3a5c">Invoice: '+invNum+'</div><div>Date: '+df+'</div><div>Due: '+due+'</div><div>PO Ref: '+currentPONum+'</div><div>Terms: Net 30 Days</div></div></div>'+
+    '<div class="inv-grid"><div class="inv-box"><strong>Bill To</strong><br>Principal, JAIN AGM AMC &amp; H<br>Varur, Hubli - 581207, Karnataka</div>'+
+    '<div class="inv-box"><strong>Supplier</strong><br>Astanga Wellness Distributors<br>Vidyanagar, Hubli - 580021<br>GSTIN: 29AAPCA9132R1ZP | KA (29)</div></div>'+
+    '<table><thead><tr><th>#</th><th>Medicine</th><th>Category</th><th style="text-align:center">Unit</th><th style="text-align:center">Num</th><th style="text-align:right">Qty</th><th style="text-align:right">Rate</th><th style="text-align:right">Base</th><th style="text-align:center">GST</th><th style="text-align:right">GST Amt</th><th style="text-align:right">Total</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+    '<div class="inv-totals"><table><tr><td>Subtotal</td><td style="text-align:right">'+sub.toFixed(2)+'</td></tr><tr><td>GST</td><td style="text-align:right">'+gstT.toFixed(2)+'</td></tr><tr class="grand"><td><b>Grand Total</b></td><td style="text-align:right"><b>'+grand.toFixed(2)+'</b></td></tr></table></div>'+
+    '<div style="clear:both;font-size:11px;background:#f8f9fa;border:1px solid #eee;border-radius:3px;padding:6px 9px;margin-bottom:9px"><b>In words:</b> '+tw(grand)+'</div>'+
+    '<div class="inv-footer"><div><b>Terms</b><br>1. Payment within 30 days.<br>2. Disputes subject to Hubli jurisdiction.</div><div style="text-align:right"><div style="margin-bottom:32px">For <b>Astanga Wellness Distributors</b></div><div>Authorised Signatory</div></div></div></div>';
 }
 function printInvoice(){window.print();}
 function exportInvoiceExcel(){
-  if(!currentPOItems) return;
-  var invNum=document.getElementById('inv-number').value;
-  var wb=XLSX.utils.book_new(),hdr=[['JAIN AGM TAX INVOICE'],['Invoice: '+invNum],[],['#','Medicine','Unit','Qty','Rate','Base','GST%','GST Amt','Total']],i;
-  var s=0,g=0;
-  for(i=0;i<currentPOItems.length;i++){
-    var item=currentPOItems[i];
-    var p=parseFloat((document.getElementById('price-'+i)||{value:0}).value)||0;
-    var gp=parseFloat((document.getElementById('gst-'+i)||{value:12}).value)||12;
-    var b=p*item.orderQty,ga=b*gp/100;s+=b;g+=ga;
-    hdr.push([i+1,item.name,item.unitType||'',item.orderQty,p.toFixed(2),b.toFixed(2),gp+'%',ga.toFixed(2),(b+ga).toFixed(2)]);
-  }
-  hdr.push(['','','','','','Subtotal','','',s.toFixed(2)],['','','','','','GST','','',g.toFixed(2)],['','','','','','TOTAL','','', (s+g).toFixed(2)]);
+  if(!currentPOItems)return;
+  var invNum=document.getElementById('inv-number').value,invDate=document.getElementById('inv-date').value;
+  var wb=XLSX.utils.book_new(),hdr=[['JAIN AGM TAX INVOICE'],['Invoice: '+invNum,'Date: '+invDate],[],['#','Medicine','Category','Unit','Qty','Rate','Base','GST%','GST Amt','Total']],i,s=0,g=0;
+  for(i=0;i<currentPOItems.length;i++){var item=currentPOItems[i];var p=parseFloat((document.getElementById('price-'+i)||{value:0}).value)||0;var gp=parseFloat((document.getElementById('gst-'+i)||{value:12}).value)||12;var b=p*item.orderQty,ga=b*gp/100;s+=b;g+=ga;hdr.push([i+1,item.name,item.cat,item.unitType||'',item.orderQty,p.toFixed(2),b.toFixed(2),gp+'%',ga.toFixed(2),(b+ga).toFixed(2)]);}
+  hdr.push(['','','','','','Subtotal','',s.toFixed(2),'',''],['','','','','','GST','',g.toFixed(2),'',''],['','','','','','TOTAL','',(s+g).toFixed(2),'','']);
   var ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,'Invoice');XLSX.writeFile(wb,invNum+'.xlsx');
 }
 
+// ── INDENT ──
 function openIndentEditor(type){
   currentIndentType=type;
   var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
   var t=new Date();
-  if(!indentMeta[type].date) indentMeta[type].date=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
-  if(!indentMeta[type].number) indentMeta[type].number='IND-JAGM-'+type+'-'+yr+'-001';
+  if(!indentMeta[type].date)indentMeta[type].date=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  if(!indentMeta[type].number)indentMeta[type].number='IND-JAGM-'+type+'-'+yr+'-001';
   document.getElementById('ind-date').value=indentMeta[type].date;
   document.getElementById('ind-number').value=indentMeta[type].number;
   document.getElementById('ind-type-display').value=type;
   document.getElementById('indent-modal-title').textContent=type+' Daily Medicine Indent';
-  var cf=document.getElementById('ind-cat-filter');
+  var cf=document.getElementById('ind-cat-filter'),cats=getCategories(),i;
   cf.innerHTML='<option value="all">All Categories</option>';
-  var cats=getCategories(),i;
   for(i=0;i<cats.length;i++){var o=document.createElement('option');o.value=cats[i];o.textContent=cats[i];cf.appendChild(o);}
   document.getElementById('ind-search').value='';
   document.getElementById('ind-show-filter').value='all';
@@ -907,55 +878,50 @@ function buildIndentEditor(){
   var meds=getAllMeds(),lastCat='',n=0,html='',i;
   for(i=0;i<meds.length;i++){
     var med=meds[i];
-    if(catF!=='all'&&med.cat!==catF) continue;
-    if(search&&med.name.toLowerCase().indexOf(search)<0) continue;
+    if(catF!=='all'&&med.cat!==catF)continue;
+    if(search&&med.name.toLowerCase().indexOf(search)<0)continue;
     var entry=indentData[type][med.name]||{qty:'',dept:'',remarks:''};
-    if(showF==='entered'&&(!entry.qty||parseInt(entry.qty)<=0)) continue;
+    if(showF==='entered'&&(!entry.qty||parseInt(entry.qty)<=0))continue;
     var ut=getUnitType(med.name,med.cat);
     var stock=Math.max(0,Math.round(getLastClose(yr,med.name)));
     var hasEntry=entry.qty&&parseInt(entry.qty)>0;
-    var safeId=med.name.replace(/[^a-zA-Z0-9]/g,'_');
+    var midx=regN(med.name);
     if(med.cat!==lastCat){html+='<tr class="cat-row"><td colspan="8">'+med.cat+'</td></tr>';lastCat=med.cat;}
     n++;
-    html+='<tr id="indrow-'+safeId+'"'+(hasEntry?' class="ind-row-entered"':'')+'>';
-    html+='<td style="color:#888">'+n+'</td>';
-    html+='<td><b>'+med.name+'</b></td>';
+    html+='<tr id="ir-'+sid(med.name)+'"'+(hasEntry?' class="ind-row-entered"':'')+'>';
+    html+='<td style="color:#888">'+n+'</td><td><b>'+med.name+'</b></td>';
     html+='<td style="color:#666;font-size:10px">'+med.cat+'</td>';
     html+='<td><span class="badge badge-blue">'+ut+'</span></td>';
     html+='<td style="text-align:right;'+(stock===0?'color:#a00;font-weight:700':'')+'">'+stock.toLocaleString()+'</td>';
-    html+='<td style="padding:2px 4px"><input type="number" min="0" placeholder="0" value="'+(entry.qty||'')+'" style="width:85px;font-size:13px;font-weight:700;text-align:center;'+(hasEntry?'background:#f0fff4;border:2px solid #1a7a4a;border-radius:4px':'')+'" oninput="onIndentQtyInput(this,\''+med.name.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')" id="indqty-'+safeId+'"></td>';
-    html+='<td style="padding:2px 4px"><select style="font-size:11px;width:170px" id="inddept-'+safeId+'" onchange="onIndentDeptChange(this,\''+med.name.replace(/\\/g,'\\\\').replace(/'/g,'\\\'')+'\')">';
+    html+='<td style="padding:2px 4px"><input type="number" min="0" placeholder="0" value="'+(entry.qty||'')+'" style="width:85px;font-size:13px;font-weight:700;text-align:center;'+(hasEntry?'background:#f0fff4;border:2px solid #1a7a4a;border-radius:4px':'')+'" oninput="onIQ(this,'+midx+')"></td>';
+    html+='<td style="padding:2px 4px"><select style="font-size:11px;width:170px" onchange="onID(this,'+midx+')">';
     html+='<option value="">-- Dept --</option>';
-    var d; for(d=0;d<DEPTS.length;d++) html+='<option value="'+DEPTS[d]+'"'+(DEPTS[d]===entry.dept?' selected':'')+'>'+DEPTS[d]+'</option>';
+    var d;for(d=0;d<DEPTS.length;d++)html+='<option value="'+DEPTS[d]+'"'+(DEPTS[d]===entry.dept?' selected':'')+'>'+DEPTS[d]+'</option>';
     html+='</select></td>';
-    html+='<td style="padding:2px 4px"><input type="text" placeholder="Remarks..." value="'+(entry.remarks||'')+'" style="width:110px;font-size:11px" oninput="onIndentRemarksInput(this,\''+med.name.replace(/\\/g,'\\\\').replace(/'/g,'\\\')+'\')"></td>';
+    html+='<td style="padding:2px 4px"><input type="text" placeholder="Remarks..." value="'+(entry.remarks||'')+'" style="width:110px;font-size:11px" oninput="onIR(this,'+midx+')"></td>';
     html+='</tr>';
   }
   document.getElementById('indent-editor-body').innerHTML=html||'<tr><td colspan="8" style="text-align:center;padding:16px;color:#666">No medicines found.</td></tr>';
   updateIndentCount();
 }
-function onIndentQtyInput(el,name){
-  var type=currentIndentType,val=el.value;
-  if(!indentData[type][name]) indentData[type][name]={qty:'',dept:'',remarks:''};
+function onIQ(el,idx){
+  var name=getN(idx),type=currentIndentType,val=el.value;
+  if(!indentData[type][name])indentData[type][name]={qty:'',dept:'',remarks:''};
   indentData[type][name].qty=val;
   var hasEntry=val&&parseInt(val)>0;
-  var row=document.getElementById('indrow-'+name.replace(/[^a-zA-Z0-9]/g,'_'));
+  var row=document.getElementById('ir-'+sid(name));
   if(row){if(hasEntry)row.classList.add('ind-row-entered');else row.classList.remove('ind-row-entered');el.style.background=hasEntry?'#f0fff4':'';el.style.border=hasEntry?'2px solid #1a7a4a':'';el.style.borderRadius=hasEntry?'4px':'';}
   updateIndentCount();
 }
-function onIndentDeptChange(el,name){var type=currentIndentType;if(!indentData[type][name])indentData[type][name]={qty:'',dept:'',remarks:''};indentData[type][name].dept=el.value;}
-function onIndentRemarksInput(el,name){var type=currentIndentType;if(!indentData[type][name])indentData[type][name]={qty:'',dept:'',remarks:''};indentData[type][name].remarks=el.value;}
+function onID(el,idx){var name=getN(idx),type=currentIndentType;if(!indentData[type][name])indentData[type][name]={qty:'',dept:'',remarks:''};indentData[type][name].dept=el.value;}
+function onIR(el,idx){var name=getN(idx),type=currentIndentType;if(!indentData[type][name])indentData[type][name]={qty:'',dept:'',remarks:''};indentData[type][name].remarks=el.value;}
 function updateIndentCount(){
-  var type=currentIndentType,count=0;
-  var keys=Object.keys(indentData[type]),i;
+  var type=currentIndentType,count=0,keys=Object.keys(indentData[type]),i;
   for(i=0;i<keys.length;i++){var e=indentData[type][keys[i]];if(e.qty&&parseInt(e.qty)>0)count++;}
-  var el=document.getElementById('indent-entry-count');
-  if(el) el.textContent=count+' medicine'+(count===1?'':'s')+' entered';
+  var el=document.getElementById('indent-entry-count');if(el)el.textContent=count+' medicine'+(count===1?'':'s')+' entered';
 }
 function saveIndentAndUpdateStock(){
-  var type=currentIndentType;
-  var dateVal=document.getElementById('ind-date').value;
-  var indNum=document.getElementById('ind-number').value;
+  var type=currentIndentType,dateVal=document.getElementById('ind-date').value,indNum=document.getElementById('ind-number').value;
   var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
   if(!dateVal){alert('Please select a date.');return;}
   var keys=Object.keys(indentData[type]),entries=[],i;
@@ -963,13 +929,10 @@ function saveIndentAndUpdateStock(){
   if(!entries.length){alert('No quantities entered.');return;}
   var d=new Date(dateVal+'T00:00:00'),month=d.getMonth(),saved=0;
   for(i=0;i<entries.length;i++){
-    var name=entries[i].name,entry=entries[i].entry,qty=parseInt(entry.qty)||0;
-    if(!qty) continue;
-    var meds=getAllMeds(),med=null,j;
-    for(j=0;j<meds.length;j++){if(meds[j].name===name){med=meds[j];break;}}
-    var unit=med?getUnitType(name,med.cat):'unit',cat=med?med.cat:'';
+    var name=entries[i].name,entry=entries[i].entry,qty=parseInt(entry.qty)||0;if(!qty)continue;
+    var med=getMed(name),unit=med?getUnitType(name,med.cat):'unit',cat=med?med.cat:'';
     setDisp(yr,name,month,getDisp(yr,name,month)+qty);
-    dispLog.push({id:Date.now()+'_ind_'+saved,date:dateVal,yr:yr,month:month,name:name,cat:cat,qty:qty,unit:unit,source:type+' Indent',remarks:entry.remarks||''});
+    dispLog.push({id:Date.now()+'_i_'+saved,date:dateVal,yr:yr,month:month,name:name,cat:cat,qty:qty,unit:unit,source:type+' Indent',remarks:entry.remarks||''});
     saved++;
   }
   sv('displog',dispLog);
@@ -980,8 +943,7 @@ function saveIndentAndUpdateStock(){
 }
 function renderIndentPreview(type){
   var el=document.getElementById('indent-preview-'+type);if(!el)return;
-  var meta=indentMeta[type];
-  var keys=Object.keys(indentData[type]),entries=[],i;
+  var meta=indentMeta[type],keys=Object.keys(indentData[type]),entries=[],i;
   for(i=0;i<keys.length;i++){var e=indentData[type][keys[i]];if(e.qty&&parseInt(e.qty)>0)entries.push({name:keys[i],entry:e});}
   if(!meta.saved||!entries.length){
     el.innerHTML='<div style="padding:18px;background:#f8f9fa;border:1px solid #ddd;border-radius:5px;color:#666;text-align:center"><div style="font-size:22px;margin-bottom:6px">'+(type==='OPD'?'🏥':'🛏')+'</div><div style="font-weight:600">No '+type+' indent saved yet</div><div style="font-size:12px">Click Create / Edit '+type+' Indent to begin.</div></div>';
@@ -992,20 +954,14 @@ function renderIndentPreview(type){
   var typeColor=type==='OPD'?'#1a3a5c':'#6b3fa0';
   var tableRows='',totalQty=0,deptSum={};
   for(i=0;i<entries.length;i++){
-    var name=entries[i].name,entry=entries[i].entry;
-    var meds=getAllMeds(),med=null,j;
-    for(j=0;j<meds.length;j++){if(meds[j].name===name){med=meds[j];break;}}
-    var ut=med?getUnitType(name,med.cat):'-';
-    var stock=med?Math.max(0,Math.round(getLastClose(yr,name))):0;
-    var qty=parseInt(entry.qty)||0;
-    var dept=entry.dept||'General';
-    if(!deptSum[dept]) deptSum[dept]=0;
-    deptSum[dept]+=qty;totalQty+=qty;
+    var name=entries[i].name,entry=entries[i].entry,med=getMed(name);
+    var ut=med?getUnitType(name,med.cat):'-',stock=med?Math.max(0,Math.round(getLastClose(yr,name))):0;
+    var qty=parseInt(entry.qty)||0,dept=entry.dept||'General';
+    if(!deptSum[dept])deptSum[dept]=0;deptSum[dept]+=qty;totalQty+=qty;
     tableRows+='<tr><td style="text-align:center">'+(i+1)+'</td><td><b>'+name+'</b></td><td style="font-size:10px;color:#555">'+(med?med.cat:'')+'</td><td style="text-align:center"><span style="background:#cce5ff;color:#004085;padding:1px 4px;border-radius:3px;font-size:10px">'+ut+'</span></td><td style="text-align:right">'+stock+'</td><td><span class="dept-tag">'+dept+'</span></td><td style="text-align:center;font-weight:700;color:#1a7a4a">'+qty+'</td><td style="color:#666;font-size:11px">'+(entry.remarks||'-')+'</td></tr>';
   }
-  var deptRows='',dkeys=Object.keys(deptSum);
-  for(i=0;i<dkeys.length;i++) deptRows+='<tr><td><span class="dept-tag">'+dkeys[i]+'</span></td><td style="text-align:right;font-weight:700">'+deptSum[dkeys[i]]+'</td></tr>';
-  el.innerHTML='<div class="ind-doc"><div style="text-align:center;border-bottom:2px solid '+typeColor+';padding-bottom:9px;margin-bottom:10px"><h2 style="font-size:15px;color:'+typeColor+'">JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL</h2><div style="font-size:11px;color:#555">Varur, Hubli - 581207, Karnataka</div><div style="font-size:13px;font-weight:700;margin-top:5px;color:'+typeColor+'">DAILY MEDICINE INDENT - '+type+'</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px"><div><b>Indent No:</b> '+meta.number+'</div><div><b>Date:</b> '+ds+'</div><div><b>Type:</b> '+type+'</div><div><b>Items:</b> '+entries.length+' | <b>Total:</b> '+totalQty+'</div></div><table><thead><tr><th style="width:28px;text-align:center">#</th><th>Medicine</th><th>Category</th><th style="text-align:center">Unit</th><th style="text-align:right">Stock</th><th>Department</th><th style="text-align:center">Qty</th><th>Remarks</th></tr></thead><tbody>'+tableRows+'</tbody></table><div style="margin-top:12px"><div style="font-size:12px;font-weight:700;color:'+typeColor+';margin-bottom:5px">Department Summary</div><table style="width:auto;min-width:280px"><thead><tr><th>Department</th><th style="text-align:right">Total</th></tr></thead><tbody>'+deptRows+'<tr style="background:#e8f0fe"><td><b>Grand Total</b></td><td style="text-align:right;font-weight:700">'+totalQty+'</td></tr></tbody></table></div><div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px"><div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">HOD / Dept. Rep</div></div><div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">Medical Superintendent</div></div><div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">Pharmacist In-charge</div></div></div><div style="margin-top:10px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:7px">Stock updated: '+entries.length+' medicines on '+ds+'</div></div>';
+  var deptRows='',dkeys=Object.keys(deptSum);for(i=0;i<dkeys.length;i++)deptRows+='<tr><td><span class="dept-tag">'+dkeys[i]+'</span></td><td style="text-align:right;font-weight:700">'+deptSum[dkeys[i]]+'</td></tr>';
+  el.innerHTML='<div class="ind-doc"><div style="text-align:center;border-bottom:2px solid '+typeColor+';padding-bottom:9px;margin-bottom:10px"><h2 style="font-size:15px;color:'+typeColor+'">JAIN AGM AYURVEDIC MEDICAL COLLEGE &amp; HOSPITAL</h2><div style="font-size:11px;color:#555">Varur, Hubli - 581207, Karnataka</div><div style="font-size:13px;font-weight:700;margin-top:5px;color:'+typeColor+'">DAILY MEDICINE INDENT - '+type+'</div></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:10px;font-size:11.5px"><div><b>Indent No:</b> '+meta.number+'</div><div><b>Date:</b> '+ds+'</div><div><b>Type:</b> '+type+'</div><div><b>Items:</b> '+entries.length+' | Total: '+totalQty+'</div></div><table><thead><tr><th style="width:28px;text-align:center">#</th><th>Medicine</th><th>Category</th><th style="text-align:center">Unit</th><th style="text-align:right">Stock</th><th>Department</th><th style="text-align:center">Qty</th><th>Remarks</th></tr></thead><tbody>'+tableRows+'</tbody></table><div style="margin-top:12px"><div style="font-size:12px;font-weight:700;color:'+typeColor+';margin-bottom:5px">Department Summary</div><table style="width:auto;min-width:280px"><thead><tr><th>Department</th><th style="text-align:right">Total</th></tr></thead><tbody>'+deptRows+'<tr style="background:#e8f0fe"><td><b>Grand Total</b></td><td style="text-align:right;font-weight:700">'+totalQty+'</td></tr></tbody></table></div><div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px"><div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">HOD / Dept. Rep</div></div><div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">Medical Superintendent</div></div><div class="sig-box"><div style="margin-bottom:28px"></div><div style="font-weight:700">Pharmacist In-charge</div></div></div><div style="margin-top:10px;font-size:10px;color:#888;text-align:center;border-top:1px solid #eee;padding-top:7px">Stock updated: '+entries.length+' medicines on '+ds+'</div></div>';
 }
 function printIndent(type){
   var keys=Object.keys(indentData[type]),i,found=false;
@@ -1015,23 +971,16 @@ function printIndent(type){
 }
 function exportIndentExcel(type){
   if(!indentMeta[type].saved){alert('Create '+type+' indent first.');return;}
-  var meta=indentMeta[type];
-  var keys=Object.keys(indentData[type]),entries=[],i;
+  var meta=indentMeta[type],keys=Object.keys(indentData[type]),entries=[],i;
   for(i=0;i<keys.length;i++){var e=indentData[type][keys[i]];if(e.qty&&parseInt(e.qty)>0)entries.push({name:keys[i],entry:e});}
   if(!entries.length){alert('No entries.');return;}
   var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
-  var wb=XLSX.utils.book_new();
-  var hdr=[['JAIN AGM - Daily Medicine Indent - '+type],['Indent No: '+meta.number,'Date: '+meta.date],[],['#','Medicine','Category','Unit','Stock','Department','Qty','Remarks']];
-  for(i=0;i<entries.length;i++){
-    var name=entries[i].name,entry=entries[i].entry;
-    var meds=getAllMeds(),med=null,j;
-    for(j=0;j<meds.length;j++){if(meds[j].name===name){med=meds[j];break;}}
-    hdr.push([i+1,name,med?med.cat:'',med?getUnitType(name,med.cat):'',med?Math.max(0,Math.round(getLastClose(yr,name))):0,entry.dept||'General',parseInt(entry.qty)||0,entry.remarks||'']);
-  }
-  var ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,type+' Indent');
-  XLSX.writeFile(wb,(meta.number||'Indent')+'_'+type+'.xlsx');
+  var wb=XLSX.utils.book_new(),hdr=[['JAIN AGM - Daily Medicine Indent - '+type],['Indent No: '+meta.number,'Date: '+meta.date],[],['#','Medicine','Category','Unit','Stock','Department','Qty','Remarks']];
+  for(i=0;i<entries.length;i++){var name=entries[i].name,entry=entries[i].entry,med=getMed(name);hdr.push([i+1,name,med?med.cat:'',med?getUnitType(name,med.cat):'',med?Math.max(0,Math.round(getLastClose(yr,name))):0,entry.dept||'General',parseInt(entry.qty)||0,entry.remarks||'']);}
+  var ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,type+' Indent');XLSX.writeFile(wb,(meta.number||'Indent')+'_'+type+'.xlsx');
 }
 
+// ── MEDICINE LIST ──
 function toggleNewCat(){document.getElementById('new-cat-row').style.display=document.getElementById('new-med-cat').value==='__new__'?'flex':'none';}
 function addMedicine(){
   var name=document.getElementById('new-med-name').value.trim();
@@ -1041,39 +990,25 @@ function addMedicine(){
   var st=document.getElementById('add-med-status');
   if(!name){st.textContent='Name required';st.style.color='#a00';return;}
   if(!cat||cat==='__new__'){cat=document.getElementById('new-cat-name').value.trim();if(!cat){st.textContent='Category required';st.style.color='#a00';return;}}
-  var meds=getAllMeds(),i;
-  for(i=0;i<meds.length;i++){if(meds[i].name.toLowerCase()===name.toLowerCase()){st.textContent='Already exists';st.style.color='#a00';return;}}
-  customMedicines.push({cat:cat,name:name,unitType:ut,unitNum:num,custom:true});
-  sv('custom',customMedicines);
+  var meds=getAllMeds(),i;for(i=0;i<meds.length;i++){if(meds[i].name.toLowerCase()===name.toLowerCase()){st.textContent='Already exists';st.style.color='#a00';return;}}
+  customMedicines.push({cat:cat,name:name,unitType:ut,unitNum:num,custom:true});sv('custom',customMedicines);
   st.textContent=name+' added.';st.style.color='#1a7a4a';
   document.getElementById('new-med-name').value='';
   populateFilters();renderMedList();renderRegister();
 }
 function removeMedicine(name){
   if(!confirm('Remove "'+name+'"?'))return;
-  var i,newList=[];
-  for(i=0;i<customMedicines.length;i++){if(customMedicines[i].name!==name)newList.push(customMedicines[i]);}
-  customMedicines=newList;sv('custom',customMedicines);
-  populateFilters();renderMedList();renderRegister();
+  var newList=[],i;for(i=0;i<customMedicines.length;i++){if(customMedicines[i].name!==name)newList.push(customMedicines[i]);}
+  customMedicines=newList;sv('custom',customMedicines);populateFilters();renderMedList();renderRegister();
 }
 function exportMedList(){var blob=new Blob([JSON.stringify(customMedicines,null,2)],{type:'application/json'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JAGM_Custom_Meds.json';a.click();}
 function importMedList(e){
   var f=e.target.files[0];if(!f)return;
   var r=new FileReader();
   r.onload=function(ev){
-    try{
-      var imp=JSON.parse(ev.target.result),n=0,i;
-      var meds=getAllMeds();
-      for(i=0;i<imp.length;i++){
-        var exists=false,j;
-        for(j=0;j<meds.length;j++){if(meds[j].name===imp[i].name){exists=true;break;}}
-        if(imp[i].name&&imp[i].cat&&!exists){customMedicines.push(Object.assign({},imp[i],{custom:true}));n++;}
-      }
-      sv('custom',customMedicines);populateFilters();renderMedList();renderRegister();
-      document.getElementById('add-med-status').textContent='Imported '+n+' medicines.';
-    }catch(err){alert('Invalid JSON.');}
-  };
-  r.readAsText(f);e.target.value='';
+    try{var imp=JSON.parse(ev.target.result),n=0,i,meds=getAllMeds();for(i=0;i<imp.length;i++){var ex=false,j;for(j=0;j<meds.length;j++){if(meds[j].name===imp[i].name){ex=true;break;}}if(imp[i].name&&imp[i].cat&&!ex){customMedicines.push(Object.assign({},imp[i],{custom:true}));n++;}}sv('custom',customMedicines);populateFilters();renderMedList();renderRegister();document.getElementById('add-med-status').textContent='Imported '+n+' medicines.';}
+    catch(err){alert('Invalid JSON.');}
+  };r.readAsText(f);e.target.value='';
 }
 function importExcelData(e){
   var f=e.target.files[0];if(!f)return;
@@ -1083,26 +1018,19 @@ function importExcelData(e){
     try{
       var wb=XLSX.read(ev.target.result,{type:'array'}),imported=0,si;
       for(si=0;si<wb.SheetNames.length;si++){
-        var sn=wb.SheetNames[si];
-        var yr=sn.indexOf('2025')>=0?2025:sn.indexOf('2026')>=0?2026:null;if(!yr)continue;
+        var sn=wb.SheetNames[si],yr=sn.indexOf('2025')>=0?2025:sn.indexOf('2026')>=0?2026:null;if(!yr)continue;
         var ws=wb.Sheets[sn],data=XLSX.utils.sheet_to_json(ws,{header:1,defval:0}),ri;
         for(ri=1;ri<data.length;ri++){
-          var row=data[ri];
-          var rawName=String(row[0]||'').trim();if(!rawName)continue;
-          var meds=getAllMeds(),med=null,j;
-          for(j=0;j<meds.length;j++){if(meds[j].name.toLowerCase()===rawName.toLowerCase()){med=meds[j];break;}}
-          var medName=med?med.name:rawName;
-          if(!dispensed[yr]) dispensed[yr]={};
-          dispensed[yr][medName]=[];
-          var m; for(m=0;m<12;m++) dispensed[yr][medName][m]=parseInt(row[m+1])||0;
-          imported++;
+          var row=data[ri],rawName=String(row[0]||'').trim();if(!rawName)continue;
+          var med=getMed(rawName),medName=med?med.name:rawName;
+          if(!dispensed[yr])dispensed[yr]={};dispensed[yr][medName]=[];
+          var m;for(m=0;m<12;m++)dispensed[yr][medName][m]=parseInt(row[m+1])||0;imported++;
         }
         sv('disp'+yr,dispensed[yr]);
       }
       st.textContent='Imported '+imported+' medicines.';st.style.color='#1a7a4a';renderRegister();
     }catch(err){st.textContent='Error: '+err.message;st.style.color='#a00';}
-  };
-  reader.readAsArrayBuffer(f);e.target.value='';
+  };reader.readAsArrayBuffer(f);e.target.value='';
 }
 function importInvoiceJSON(e){
   var f=e.target.files[0];if(!f)return;
@@ -1110,45 +1038,34 @@ function importInvoiceJSON(e){
   var reader=new FileReader();
   reader.onload=function(ev){
     try{
-      var inv=JSON.parse(ev.target.result);
-      if(!inv.items||!Array.isArray(inv.items)) throw new Error('Invalid format');
-      var yr=parseInt(inv.year)||CY,month=parseInt(inv.month);
-      if(isNaN(month)||month<0||month>11) throw new Error('Invalid month');
+      var inv=JSON.parse(ev.target.result);if(!inv.items||!Array.isArray(inv.items))throw new Error('Invalid format');
+      var yr=parseInt(inv.year)||CY,month=parseInt(inv.month);if(isNaN(month)||month<0||month>11)throw new Error('Invalid month');
       var updated=0,added=0,i;
       for(i=0;i<inv.items.length;i++){
-        var item=inv.items[i],name=item.name,qty=parseInt(item.qty)||0;
-        if(!name||qty<=0) continue;
-        if(!openingStock[yr]) openingStock[yr]={};
-        if(!openingStock[yr][name]) openingStock[yr][name]={};
-        openingStock[yr][name][month]=(openingStock[yr][name][month]||0)+qty;
-        sv('open'+yr,openingStock[yr]);
-        var meds=getAllMeds(),exists=false,j;
-        for(j=0;j<meds.length;j++){if(meds[j].name.toLowerCase()===name.toLowerCase()){exists=true;break;}}
-        if(!exists){customMedicines.push({cat:item.cat||'MISCELLANEOUS',name:name,unitType:item.unitType||'unit',unitNum:item.unitNum||1,custom:true});sv('custom',customMedicines);added++;}
-        else updated++;
+        var item=inv.items[i],name=item.name,qty=parseInt(item.qty)||0;if(!name||qty<=0)continue;
+        if(!openingStock[yr])openingStock[yr]={};if(!openingStock[yr][name])openingStock[yr][name]={};
+        openingStock[yr][name][month]=(openingStock[yr][name][month]||0)+qty;sv('open'+yr,openingStock[yr]);
+        var med=getMed(name);if(!med){customMedicines.push({cat:item.cat||'MISCELLANEOUS',name:name,unitType:item.unitType||'unit',unitNum:item.unitNum||1,custom:true});sv('custom',customMedicines);added++;}else updated++;
       }
       populateFilters();renderRegister();renderMedList();
       st.innerHTML='<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:8px;font-size:11px">Supplier: '+(inv.supplier||'?')+' | New: '+added+' | Updated: '+updated+'</div>';
     }catch(err){st.textContent='Error: '+err.message;st.style.color='#a00';}
-  };
-  reader.readAsText(f);e.target.value='';
+  };reader.readAsText(f);e.target.value='';
 }
 function renderMedList(){
   var s=document.getElementById('med-list-search').value.toLowerCase();
   var cf=document.getElementById('med-list-cat').value;
   var meds=getAllMeds(),html='',n=0,i;
   for(i=0;i<meds.length;i++){
-    var m=meds[i];
-    if(cf!=='all'&&m.cat!==cf) continue;
-    if(s&&m.name.toLowerCase().indexOf(s)<0) continue;
-    n++;
-    var ut=getUnitType(m.name,m.cat);
-    html+='<tr><td>'+n+'</td><td><b>'+m.name+'</b></td><td>'+m.cat+'</td><td><span class="badge badge-blue">'+ut+'</span></td><td>'+(getUnitNum(m.name,m.cat)||'-')+'</td><td>'+(m.custom?'<span class="badge badge-teal">CUSTOM</span>':'<span class="badge" style="background:#eee;color:#333">BASE</span>')+'</td><td class="no-print">'+(m.custom?'<button class="btn btn-danger btn-sm" onclick="removeMedicine(\''+m.name.replace(/\\/g,'\\\\').replace(/'/g,'\\\')+'\')">Remove</button>':'-')+'</td></tr>';
+    var m=meds[i];if(cf!=='all'&&m.cat!==cf)continue;if(s&&m.name.toLowerCase().indexOf(s)<0)continue;n++;
+    var ut=getUnitType(m.name,m.cat),midx=regN(m.name);
+    html+='<tr><td>'+n+'</td><td><b>'+m.name+'</b></td><td>'+m.cat+'</td><td><span class="badge badge-blue">'+ut+'</span></td><td>'+(getUnitNum(m.name,m.cat)||'-')+'</td><td>'+(m.custom?'<span class="badge badge-teal">CUSTOM</span>':'<span class="badge" style="background:#eee;color:#333">BASE</span>')+'</td><td class="no-print">'+(m.custom?'<button class="btn btn-danger btn-sm" data-idx="'+midx+'" onclick="removeMedicine(getN(parseInt(this.dataset.idx)))">Remove</button>':'-')+'</td></tr>';
   }
   document.getElementById('med-count').textContent=getAllMeds().length;
   document.getElementById('med-list-body').innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:10px;color:#666">No medicines found.</td></tr>';
 }
 
+// ── ANALYTICS ──
 function populateAnalyticsSelect(){
   var sel=document.getElementById('an-med'),meds=getAllMeds(),i;
   sel.innerHTML='<option value="">-- Select medicine --</option>';
@@ -1157,43 +1074,36 @@ function populateAnalyticsSelect(){
 function renderAnalytics(){
   var name=document.getElementById('an-med').value,yr=parseInt(document.getElementById('an-year').value)||CY;
   if(!name){document.getElementById('analytics-content').innerHTML='';return;}
-  var meds=getAllMeds(),med=null,i;
-  for(i=0;i<meds.length;i++){if(meds[i].name===name){med=meds[i];break;}}
-  if(!med)return;
-  var data=[],m; for(m=0;m<12;m++) data.push(getDisp(yr,name,m));
-  var maxD=1,total=0; for(m=0;m<12;m++){if(data[m]>maxD)maxD=data[m];total+=data[m];}
+  var med=getMed(name);if(!med)return;
+  var data=[],m;for(m=0;m<12;m++)data.push(getDisp(yr,name,m));
+  var maxD=1,total=0;for(m=0;m<12;m++){if(data[m]>maxD)maxD=data[m];total+=data[m];}
   var ut=getUnitType(name,med.cat),bars='';
-  for(m=0;m<12;m++) bars+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div style="width:26px;font-size:11px;text-align:right;color:#555">'+MONTHS[m]+'</div><div style="width:'+Math.round(data[m]/maxD*300)+'px;min-width:2px;height:14px;background:#1a3a5c;border-radius:2px"></div><div style="font-size:11px">'+data[m].toLocaleString()+' '+ut+'</div></div>';
+  for(m=0;m<12;m++)bars+='<div style="display:flex;align-items:center;gap:7px;margin-bottom:3px"><div style="width:26px;font-size:11px;text-align:right;color:#555">'+MONTHS[m]+'</div><div style="width:'+Math.round(data[m]/maxD*300)+'px;min-width:2px;height:14px;background:#1a3a5c;border-radius:2px"></div><div style="font-size:11px">'+data[m].toLocaleString()+' '+ut+'</div></div>';
   var dr=getDailyRate(yr,name);
   document.getElementById('analytics-content').innerHTML='<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:14px;max-width:520px"><h3 style="color:#1a3a5c;margin-bottom:2px;font-size:13px">'+name+'</h3><div style="font-size:11px;color:#666;margin-bottom:11px">'+med.cat+' | <span class="badge badge-blue">'+ut+'</span> | '+yr+'</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px"><div class="stat-card"><div class="stat-num" style="font-size:16px">'+total.toLocaleString()+'</div><div class="stat-lbl">Annual</div></div><div class="stat-card"><div class="stat-num" style="font-size:16px">'+Math.round(total/12).toLocaleString()+'</div><div class="stat-lbl">Monthly avg</div></div><div class="stat-card"><div class="stat-num" style="font-size:16px">'+dr.toFixed(1)+'</div><div class="stat-lbl">Per day</div></div><div class="stat-card"><div class="stat-num" style="font-size:16px">'+getLastClose(yr,name).toLocaleString()+'</div><div class="stat-lbl">Closing</div></div></div><div style="font-size:12px;font-weight:700;margin-bottom:6px">Monthly Dispensed ('+ut+')</div>'+bars+'</div>';
 }
 
+// ── EXCEL EXPORT ──
 function exportExcel(){
   var yr=parseInt(document.getElementById('reg-year').value)||CY;
-  var wb=XLSX.utils.book_new();
-  var hdr=['#','Medicine','Category','Unit'];
-  var m; for(m=0;m<12;m++) hdr.push(MONTHS[m]+' Open',MONTHS[m]+' Disp',MONTHS[m]+' Close');
+  var wb=XLSX.utils.book_new(),hdr=['#','Medicine','Category','Unit'],m;
+  for(m=0;m<12;m++)hdr.push(MONTHS[m]+' Open',MONTHS[m]+' Disp',MONTHS[m]+' Close');
   hdr.push('Annual','Daily Rate');
   var rows=[hdr],meds=getAllMeds(),i;
-  for(i=0;i<meds.length;i++){
-    var med=meds[i],row=[i+1,med.name,med.cat,getUnitType(med.name,med.cat)],t=0;
-    for(m=0;m<12;m++){var op=getOpening(yr,med.name,m),disp=getDisp(yr,med.name,m),cl=getClosing(yr,med.name,m);row.push(op,disp,cl);t+=disp;}
-    row.push(t,getDailyRate(yr,med.name).toFixed(2));rows.push(row);
-  }
+  for(i=0;i<meds.length;i++){var med=meds[i],row=[i+1,med.name,med.cat,getUnitType(med.name,med.cat)],t=0;for(m=0;m<12;m++){var op=getOpening(yr,med.name,m),disp=getDisp(yr,med.name,m),cl=getClosing(yr,med.name,m);row.push(op,disp,cl);t+=disp;}row.push(t,getDailyRate(yr,med.name).toFixed(2));rows.push(row);}
   var ws=XLSX.utils.aoa_to_sheet(rows);XLSX.utils.book_append_sheet(wb,ws,'Stock '+yr);XLSX.writeFile(wb,'JAIN_AGM_Stock_'+yr+'.xlsx');
 }
 
-var dailyEntries = {};
+// ── DAILY DISPENSING ──
+var dailyEntries={};
 function initDailyTab(){
   var t=new Date();
   document.getElementById('disp-date').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
   document.getElementById('disp-year').value=t.getFullYear()>=2026?2026:2025;
-  var cf=document.getElementById('disp-cat-filter');
+  var cf=document.getElementById('disp-cat-filter'),cats=getCategories(),i;
   cf.innerHTML='<option value="all">All Categories</option>';
-  var cats=getCategories(),i;
   for(i=0;i<cats.length;i++){var o=document.createElement('option');o.value=cats[i];o.textContent=cats[i];cf.appendChild(o);}
-  var mf=document.getElementById('log-month-filter');
-  mf.innerHTML='<option value="all">All Months</option>';
+  var mf=document.getElementById('log-month-filter');mf.innerHTML='<option value="all">All Months</option>';
   for(i=0;i<12;i++){var o2=document.createElement('option');o2.value=i;o2.textContent=MONTHS[i];if(i===t.getMonth())o2.selected=true;mf.appendChild(o2);}
   dailyEntries={};renderDailyTable();renderDispLog();
 }
@@ -1204,39 +1114,32 @@ function renderDailyTable(){
   var showF=document.getElementById('disp-show-filter').value;
   var meds=getAllMeds(),html='',n=0,lastCat='',i;
   for(i=0;i<meds.length;i++){
-    var med=meds[i];
-    if(catF!=='all'&&med.cat!==catF) continue;
-    if(search&&med.name.toLowerCase().indexOf(search)<0) continue;
+    var med=meds[i];if(catF!=='all'&&med.cat!==catF)continue;if(search&&med.name.toLowerCase().indexOf(search)<0)continue;
     var entry=dailyEntries[med.name]||{qty:'',remarks:''};
-    if(showF==='entered'&&(!entry.qty||parseInt(entry.qty)<=0)) continue;
-    var ut=getUnitType(med.name,med.cat);
-    var stock=Math.max(0,Math.round(getLastClose(yr,med.name)));
-    var hasEntry=entry.qty&&parseInt(entry.qty)>0;
+    if(showF==='entered'&&(!entry.qty||parseInt(entry.qty)<=0))continue;
+    var ut=getUnitType(med.name,med.cat),stock=Math.max(0,Math.round(getLastClose(yr,med.name)));
+    var hasEntry=entry.qty&&parseInt(entry.qty)>0,midx=regN(med.name);
     if(med.cat!==lastCat){html+='<tr class="cat-row"><td colspan="7">'+med.cat+'</td></tr>';lastCat=med.cat;}
     n++;
-    html+='<tr id="drow-'+med.name.replace(/\W/g,'_')+'"'+(hasEntry?' style="background:#f0fff4"':'')+'>';
-    html+='<td style="color:#888">'+n+'</td>';
-    html+='<td><b>'+med.name+'</b></td>';
-    html+='<td style="color:#666;font-size:10px">'+med.cat+'</td>';
-    html+='<td><span class="badge badge-blue">'+ut+'</span></td>';
+    html+='<tr id="dr-'+sid(med.name)+'"'+(hasEntry?' style="background:#f0fff4"':'')+'>';
+    html+='<td style="color:#888">'+n+'</td><td><b>'+med.name+'</b></td><td style="color:#666;font-size:10px">'+med.cat+'</td><td><span class="badge badge-blue">'+ut+'</span></td>';
     html+='<td style="text-align:right;'+(stock===0?'color:#a00;font-weight:700':'')+'">'+stock.toLocaleString()+'</td>';
-    html+='<td style="padding:2px 4px"><input type="number" min="0" placeholder="0" value="'+(entry.qty||'')+'" style="width:85px;font-size:13px;font-weight:700;text-align:center;'+(hasEntry?'background:#f0fff4;border:2px solid #1a7a4a;border-radius:4px':'')+'" data-n="'+safeName(med.name)+'" oninput="onDailyQtyInput(this,this.dataset.n)"></td>';
-    html+='<td style="padding:2px 4px"><input type="text" placeholder="Remarks..." value="'+(entry.remarks||'')+'" style="width:120px;font-size:11px" data-n="'+safeName(med.name)+'" oninput="onDailyRemarksInput(this,this.dataset.n)"></td>';
-    html+='</tr>';
+    html+='<td style="padding:2px 4px"><input type="number" min="0" placeholder="0" value="'+(entry.qty||'')+'" style="width:85px;font-size:13px;font-weight:700;text-align:center;'+(hasEntry?'background:#f0fff4;border:2px solid #1a7a4a;border-radius:4px':'')+'" oninput="onDQ(this,'+midx+')"></td>';
+    html+='<td style="padding:2px 4px"><input type="text" placeholder="Remarks..." value="'+(entry.remarks||'')+'" style="width:120px;font-size:11px" oninput="onDR(this,'+midx+')"></td></tr>';
   }
   document.getElementById('daily-disp-body').innerHTML=html||'<tr><td colspan="7" style="text-align:center;padding:16px;color:#666">No medicines found.</td></tr>';
   updateEntryCount();
 }
-function onDailyQtyInput(el,name){
-  var val=el.value;
-  if(!dailyEntries[name]) dailyEntries[name]={qty:'',remarks:''};
+function onDQ(el,idx){
+  var name=getN(idx),val=el.value;
+  if(!dailyEntries[name])dailyEntries[name]={qty:'',remarks:''};
   dailyEntries[name].qty=val;
   var hasEntry=val&&parseInt(val)>0;
-  var row=document.getElementById('drow-'+name.replace(/\W/g,'_'));
+  var row=document.getElementById('dr-'+sid(name));
   if(row){row.style.background=hasEntry?'#f0fff4':'';el.style.background=hasEntry?'#f0fff4':'';el.style.border=hasEntry?'2px solid #1a7a4a':'';el.style.borderRadius=hasEntry?'4px':'';}
   updateEntryCount();
 }
-function onDailyRemarksInput(el,name){if(!dailyEntries[name])dailyEntries[name]={qty:'',remarks:''};dailyEntries[name].remarks=el.value;}
+function onDR(el,idx){var name=getN(idx);if(!dailyEntries[name])dailyEntries[name]={qty:'',remarks:''};dailyEntries[name].remarks=el.value;}
 function updateEntryCount(){
   var keys=Object.keys(dailyEntries),count=0,i;
   for(i=0;i<keys.length;i++){if(dailyEntries[keys[i]].qty&&parseInt(dailyEntries[keys[i]].qty)>0)count++;}
@@ -1245,8 +1148,7 @@ function updateEntryCount(){
 }
 function clearDailyEntries(){if(!confirm('Clear all entered quantities?'))return;dailyEntries={};renderDailyTable();}
 function saveAllDispEntries(){
-  var dateVal=document.getElementById('disp-date').value;
-  var yr=parseInt(document.getElementById('disp-year').value)||CY;
+  var dateVal=document.getElementById('disp-date').value,yr=parseInt(document.getElementById('disp-year').value)||CY;
   var st=document.getElementById('disp-save-status');
   if(!dateVal){st.textContent='Please select a date.';st.style.color='#a00';return;}
   var keys=Object.keys(dailyEntries),entries=[],i;
@@ -1254,13 +1156,10 @@ function saveAllDispEntries(){
   if(!entries.length){st.textContent='No quantities entered.';st.style.color='#a00';return;}
   var d=new Date(dateVal+'T00:00:00'),month=d.getMonth(),saved=0;
   for(i=0;i<entries.length;i++){
-    var name=entries[i].name,entry=entries[i].entry,qty=parseInt(entry.qty)||0;
-    if(!qty) continue;
-    var meds=getAllMeds(),med=null,j;
-    for(j=0;j<meds.length;j++){if(meds[j].name===name){med=meds[j];break;}}
-    var unit=med?getUnitType(name,med.cat):'unit',cat=med?med.cat:'';
+    var name=entries[i].name,entry=entries[i].entry,qty=parseInt(entry.qty)||0;if(!qty)continue;
+    var med=getMed(name),unit=med?getUnitType(name,med.cat):'unit',cat=med?med.cat:'';
     setDisp(yr,name,month,getDisp(yr,name,month)+qty);
-    dispLog.push({id:Date.now()+'_'+saved,date:dateVal,yr:yr,month:month,name:name,cat:cat,qty:qty,unit:unit,source:'Direct',remarks:entry.remarks||''});
+    dispLog.push({id:Date.now()+'_d_'+saved,date:dateVal,yr:yr,month:month,name:name,cat:cat,qty:qty,unit:unit,source:'Direct',remarks:entry.remarks||''});
     saved++;
   }
   sv('displog',dispLog);dailyEntries={};renderDailyTable();renderRegister();renderDispLog();
@@ -1272,106 +1171,74 @@ function renderDispLog(){
   var mF=document.getElementById('log-month-filter').value;
   var search=(document.getElementById('log-search').value||'').toLowerCase();
   var filtered=[],i;
-  for(i=0;i<dispLog.length;i++){
-    var e=dispLog[i];
-    if(e.yr!==yrF) continue;
-    if(mF!=='all'&&e.month!==parseInt(mF)) continue;
-    if(search&&e.name.toLowerCase().indexOf(search)<0) continue;
-    filtered.push(e);
-  }
+  for(i=0;i<dispLog.length;i++){var e=dispLog[i];if(e.yr!==yrF)continue;if(mF!=='all'&&e.month!==parseInt(mF))continue;if(search&&e.name.toLowerCase().indexOf(search)<0)continue;filtered.push(e);}
   filtered.sort(function(a,b){return b.date.localeCompare(a.date);});
   if(!filtered.length){document.getElementById('disp-log-body').innerHTML='<tr><td colspan="10" style="text-align:center;padding:14px;color:#666">No entries.</td></tr>';document.getElementById('disp-log-summary').textContent='';return;}
   var totalQty=0,html='';
   for(i=0;i<filtered.length;i++){
-    var e=filtered[i];
-    totalQty+=e.qty;
+    var e=filtered[i];totalQty+=e.qty;
     var ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-IN');
     var srcBadge=e.source&&e.source!=='Direct'?'<span class="badge" style="background:#e8d5ff;color:#5a0099;font-size:9px">'+e.source+'</span>':'<span class="badge badge-blue" style="font-size:9px">Direct</span>';
-    html+='<tr><td>'+(i+1)+'</td><td>'+ds+'</td><td><b>'+e.name+'</b></td><td style="color:#555;font-size:10px">'+e.cat+'</td><td><span class="badge badge-blue">'+e.unit+'</span></td><td style="font-weight:700;text-align:right">'+e.qty.toLocaleString()+'</td><td>'+srcBadge+'</td><td style="color:#666;font-size:11px">'+(e.remarks||'-')+'</td><td class="no-print"><button class="btn btn-info btn-sm" onclick="editDispEntry(\''+e.id+'\')">Edit</button></td><td class="no-print"><button class="btn btn-danger btn-sm" onclick="deleteDispEntry(\''+e.id+'\')">Del</button></td></tr>';
+    html+='<tr><td>'+(i+1)+'</td><td>'+ds+'</td><td><b>'+e.name+'</b></td><td style="color:#555;font-size:10px">'+e.cat+'</td><td><span class="badge badge-blue">'+e.unit+'</span></td><td style="font-weight:700;text-align:right">'+e.qty.toLocaleString()+'</td><td>'+srcBadge+'</td><td style="color:#666;font-size:11px">'+(e.remarks||'-')+'</td>';
+    html+='<td class="no-print"><button class="btn btn-info btn-sm" data-eid="'+e.id+'" onclick="editDispEntry(this.dataset.eid)">Edit</button></td>';
+    html+='<td class="no-print"><button class="btn btn-danger btn-sm" data-eid="'+e.id+'" onclick="deleteDispEntry(this.dataset.eid)">Del</button></td></tr>';
   }
   document.getElementById('disp-log-body').innerHTML=html;
   document.getElementById('disp-log-summary').textContent=filtered.length+' entries | Total: '+totalQty.toLocaleString()+' units';
 }
 function editDispEntry(id){
-  var i,entry=null;for(i=0;i<dispLog.length;i++){if(dispLog[i].id===id){entry=dispLog[i];break;}}
-  if(!entry)return;
-  var newQty=parseInt(prompt('Edit qty for '+entry.name+' on '+entry.date+' (current: '+entry.qty+')',entry.qty));
-  if(isNaN(newQty)||newQty<0){alert('Invalid quantity.');return;}
+  var i,entry=null;for(i=0;i<dispLog.length;i++){if(dispLog[i].id===id){entry=dispLog[i];break;}}if(!entry)return;
+  var newQty=parseInt(prompt('Edit qty for '+entry.name+' (current: '+entry.qty+')',entry.qty));if(isNaN(newQty)||newQty<0){alert('Invalid.');return;}
   var newRemarks=prompt('Remarks:',entry.remarks||'');
-  var cur=getDisp(entry.yr,entry.name,entry.month);
-  setDisp(entry.yr,entry.name,entry.month,Math.max(0,cur-entry.qty+newQty));
+  setDisp(entry.yr,entry.name,entry.month,Math.max(0,getDisp(entry.yr,entry.name,entry.month)-entry.qty+newQty));
   entry.qty=newQty;entry.remarks=newRemarks||'';sv('displog',dispLog);renderDispLog();renderRegister();
 }
 function deleteDispEntry(id){
-  var i,entry=null;for(i=0;i<dispLog.length;i++){if(dispLog[i].id===id){entry=dispLog[i];break;}}
-  if(!entry)return;
-  if(!confirm('Delete '+entry.name+' - '+entry.qty+' on '+entry.date+'? Qty will be added back.'))return;
+  var i,entry=null;for(i=0;i<dispLog.length;i++){if(dispLog[i].id===id){entry=dispLog[i];break;}}if(!entry)return;
+  if(!confirm('Delete '+entry.name+' - '+entry.qty+' on '+entry.date+'?'))return;
   setDisp(entry.yr,entry.name,entry.month,Math.max(0,getDisp(entry.yr,entry.name,entry.month)-entry.qty));
-  var newLog=[];for(i=0;i<dispLog.length;i++){if(dispLog[i].id!==id)newLog.push(dispLog[i]);}
+  var newLog=[],j;for(j=0;j<dispLog.length;j++){if(dispLog[j].id!==id)newLog.push(dispLog[j]);}
   dispLog=newLog;sv('displog',dispLog);renderDispLog();renderRegister();
 }
 function exportDispLogExcel(){
   var yrF=parseInt(document.getElementById('log-year-filter').value)||CY;
   var mF=document.getElementById('log-month-filter').value;
-  var filtered=[],i;
-  for(i=0;i<dispLog.length;i++){var e=dispLog[i];if(e.yr===yrF&&(mF==='all'||e.month===parseInt(mF)))filtered.push(e);}
+  var filtered=[],i;for(i=0;i<dispLog.length;i++){var e=dispLog[i];if(e.yr===yrF&&(mF==='all'||e.month===parseInt(mF)))filtered.push(e);}
   filtered.sort(function(a,b){return a.date.localeCompare(b.date);});
-  var wb=XLSX.utils.book_new();
-  var hdr=[['JAIN AGM Dispensing Log'],['Year: '+yrF],[],['#','Date','Medicine','Category','Unit','Qty','Source','Remarks']];
-  for(i=0;i<filtered.length;i++){var e=filtered[i];var ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-IN');hdr.push([i+1,ds,e.name,e.cat,e.unit,e.qty,e.source||'Direct',e.remarks||'']);}
-  var total=0;for(i=0;i<filtered.length;i++)total+=filtered[i].qty;
+  var wb=XLSX.utils.book_new(),hdr=[['JAIN AGM Dispensing Log'],['Year: '+yrF],[],['#','Date','Medicine','Category','Unit','Qty','Source','Remarks']];
+  var total=0;for(i=0;i<filtered.length;i++){var e=filtered[i];var ds=new Date(e.date+'T00:00:00').toLocaleDateString('en-IN');hdr.push([i+1,ds,e.name,e.cat,e.unit,e.qty,e.source||'Direct',e.remarks||'']);total+=e.qty;}
   hdr.push([],[,'Total','','',total,'','']);
   var ws=XLSX.utils.aoa_to_sheet(hdr);XLSX.utils.book_append_sheet(wb,ws,'Dispensing Log');XLSX.writeFile(wb,'Dispensing_Log_'+yrF+'.xlsx');
 }
 function resetAllData(){
-  if(!confirm('Reset all data to default?'))return;
+  if(!confirm('Reset to default?'))return;
   dispensed={2025:{},2026:{}};openingStock={2025:{},2026:{}};unitOverrides={};
-  var keys=['disp2025','disp2026','open2025','open2026','units'],i;
-  for(i=0;i<keys.length;i++){try{localStorage.removeItem('jagm_'+keys[i]);}catch(e){}}
+  var keys=['disp2025','disp2026','open2025','open2026','units'],i;for(i=0;i<keys.length;i++){try{localStorage.removeItem('jagm_'+keys[i]);}catch(e){}}
   renderRegister();alert('Data reset.');
 }
 
-function safeId(name){return name.replace(/[^a-zA-Z0-9]/g,'_');}
-function safeName(name){return name.replace(/\\/g,'\\\\').replace(/'/g,'&#39;');}
-
-  var r=String(s).toLowerCase();
-  r=r.replace(/^\d+[a-z]?\.\s*/,'');
-  r=r.replace(/[^a-z0-9]/g,' ');
-  r=r.replace(/\s+/g,' ');
-  return r.trim();
-}
-function fuzzyMatchMed(raw){
-  var n=normalizeMedName(raw);
-  if(!n) return null;
-  var allMeds=getAllMeds();
-  var names=[],norms=[],i,j,k;
-  for(i=0;i<allMeds.length;i++){names.push(allMeds[i].name);norms.push(normalizeMedName(allMeds[i].name));}
-  for(i=0;i<norms.length;i++){if(norms[i]===n) return names[i];}
-  for(i=0;i<norms.length;i++){if(n.indexOf(norms[i])>=0||norms[i].indexOf(n)>=0) return names[i];}
-  var tArr=n.split(' '),tokens=[];
-  for(i=0;i<tArr.length;i++){if(tArr[i].length>2) tokens.push(tArr[i]);}
+// ── DAILY REGISTER EXCEL IMPORT ──
+function normMed(s){var r=String(s).toLowerCase();r=r.replace(/^\d+[a-z]?\.\s*/,'');r=r.replace(/[^a-z0-9]/g,' ');r=r.replace(/\s+/g,' ');return r.trim();}
+function fuzzyMed(raw){
+  var n=normMed(raw);if(!n)return null;
+  var allMeds=getAllMeds(),names=[],norms=[],i,j,k;
+  for(i=0;i<allMeds.length;i++){names.push(allMeds[i].name);norms.push(normMed(allMeds[i].name));}
+  for(i=0;i<norms.length;i++){if(norms[i]===n)return names[i];}
+  for(i=0;i<norms.length;i++){if(n.indexOf(norms[i])>=0||norms[i].indexOf(n)>=0)return names[i];}
+  var tArr=n.split(' '),tokens=[];for(i=0;i<tArr.length;i++){if(tArr[i].length>2)tokens.push(tArr[i]);}
   var best=null,bestScore=0;
   for(i=0;i<norms.length;i++){
-    var mtArr=norms[i].split(' '),mt=[];
-    for(j=0;j<mtArr.length;j++){if(mtArr[j].length>2) mt.push(mtArr[j]);}
-    var hits=0;
-    for(j=0;j<tokens.length;j++){for(k=0;k<mt.length;k++){if(mt[k]===tokens[j]){hits++;break;}}}
-    var denom=tokens.length>mt.length?tokens.length:mt.length;
-    var score=denom>0?hits/denom:0;
+    var mtArr=norms[i].split(' '),mt=[];for(j=0;j<mtArr.length;j++){if(mtArr[j].length>2)mt.push(mtArr[j]);}
+    var hits=0;for(j=0;j<tokens.length;j++){for(k=0;k<mt.length;k++){if(mt[k]===tokens[j]){hits++;break;}}}
+    var denom=tokens.length>mt.length?tokens.length:mt.length,score=denom>0?hits/denom:0;
     if(score>bestScore&&score>=0.5){bestScore=score;best=names[i];}
   }
   return best;
 }
-function getImportMode(){
-  var radios=document.getElementsByName('impmode'),i;
-  for(i=0;i<radios.length;i++){if(radios[i].checked) return radios[i].value;}
-  return 'add';
-}
+function getImportMode(){var radios=document.getElementsByName('impmode'),i;for(i=0;i<radios.length;i++){if(radios[i].checked)return radios[i].value;}return 'add';}
 function importDailyRegisterExcel(evt){
-  var f=evt.target.files[0];
-  if(!f) return;
-  var fname=f.name;
-  var st=document.getElementById('daily-reg-import-status');
+  var f=evt.target.files[0];if(!f)return;
+  var fname=f.name,st=document.getElementById('daily-reg-import-status');
   st.innerHTML='Reading...';st.style.color='#1a3a5c';
   var mode=getImportMode();
   var reader=new FileReader();
@@ -1381,103 +1248,69 @@ function importDailyRegisterExcel(evt){
       var ws=wb.Sheets[wb.SheetNames[0]];
       var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
       var detMonth=-1,detYear=CY;
-      var mmap={'january':0,'february':1,'march':2,'april':3,'may':4,'june':5,'july':6,'august':7,'september':8,'october':9,'november':10,'december':11};
-      var mkeys=Object.keys(mmap);
-      var a,b,c,i;
+      var mmap={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+      var mkeys=Object.keys(mmap),a,b,c,i;
       for(a=0;a<5;a++){
         var rs=rows[a].join(' ').toLowerCase();
-        for(i=0;i<mkeys.length;i++){if(rs.indexOf(mkeys[i])>=0) detMonth=mmap[mkeys[i]];}
-        var ym=rs.match(/20\d\d/);if(ym) detYear=parseInt(ym[0]);
+        for(i=0;i<mkeys.length;i++){if(rs.indexOf(mkeys[i])>=0)detMonth=mmap[mkeys[i]];}
+        var ym=rs.match(/20\d\d/);if(ym)detYear=parseInt(ym[0]);
       }
       if(detMonth<0){st.innerHTML='Cannot detect month.';st.style.color='#a00';return;}
       var hdrIdx=3;
-      for(a=0;a<10;a++){
-        var rr=rows[a];
-        for(b=0;b<rr.length;b++){
-          if(String(rr[b]).toLowerCase().indexOf('medicine')>=0){hdrIdx=a;a=10;break;}
-        }
-      }
+      for(a=0;a<10;a++){var rr=rows[a];for(b=0;b<rr.length;b++){if(String(rr[b]).toLowerCase().indexOf('medicine')>=0){hdrIdx=a;a=10;break;}}}
       var hdrRow=rows[hdrIdx],colMed=1,dayCols=[];
-      for(b=0;b<hdrRow.length;b++){
-        var hs=String(hdrRow[b]).toLowerCase().trim();
-        if(hs.indexOf('medicine')>=0) colMed=b;
-        var dn=parseInt(hs);
-        if(!isNaN(dn)&&dn>=1&&dn<=31) dayCols.push({col:b,day:dn});
-      }
+      for(b=0;b<hdrRow.length;b++){var hs=String(hdrRow[b]).toLowerCase().trim();if(hs.indexOf('medicine')>=0)colMed=b;var dn=parseInt(hs);if(!isNaN(dn)&&dn>=1&&dn<=31)dayCols.push({col:b,day:dn});}
       if(dayCols.length===0){st.innerHTML='No day columns found.';st.style.color='#a00';return;}
       var batchQty={},unmatchedCount=0;
       for(a=hdrIdx+1;a<rows.length;a++){
-        var row=rows[a];
-        if(!row||row.length<3) continue;
-        var rn=String(row[colMed]||'').trim();
-        if(!rn||rn.toLowerCase().indexOf('total')>=0) continue;
-        var matched=fuzzyMatchMed(rn);
-        if(!matched){if(rn.length>1) unmatchedCount++;continue;}
-        var dt=0;
-        for(c=0;c<dayCols.length;c++){
-          dt+=parseFloat(String(row[dayCols[c].col]||'').replace(/[^0-9.]/g,''))||0;
-        }
-        if(dt>0) batchQty[matched]=(batchQty[matched]||0)+dt;
+        var row=rows[a];if(!row||row.length<3)continue;
+        var rn=String(row[colMed]||'').trim();if(!rn||rn.toLowerCase().indexOf('total')>=0)continue;
+        var matched=fuzzyMed(rn);if(!matched){if(rn.length>1)unmatchedCount++;continue;}
+        var dt=0;for(c=0;c<dayCols.length;c++){dt+=parseFloat(String(row[dayCols[c].col]||'').replace(/[^0-9.]/g,''))||0;}
+        if(dt>0)batchQty[matched]=(batchQty[matched]||0)+dt;
       }
-      var lk=detYear+'_'+detMonth,applied=0;
-      var bkeys=Object.keys(batchQty);
+      var lk=detYear+'_'+detMonth,applied=0,bkeys=Object.keys(batchQty);
       for(a=0;a<bkeys.length;a++){
         var nm=bkeys[a],qty=Math.round(batchQty[nm]);
-        if(mode==='add') setDisp(detYear,nm,detMonth,getDisp(detYear,nm,detMonth)+qty);
+        if(mode==='add')setDisp(detYear,nm,detMonth,getDisp(detYear,nm,detMonth)+qty);
         else setDisp(detYear,nm,detMonth,qty);
         applied++;
       }
-      if(!importLog[lk]) importLog[lk]=[];
+      if(!importLog[lk])importLog[lk]=[];
       importLog[lk].push({date:new Date().toLocaleDateString('en-IN'),filename:fname,mode:mode,d0:dayCols[0].day,d1:dayCols[dayCols.length-1].day,applied:applied,unmatched:unmatchedCount});
       sv('importlog',importLog);
       st.innerHTML='<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:10px;font-size:11px;line-height:1.9"><b style="color:#1a7a4a">Import done - '+mode+' mode</b><br>'+MONTHS[detMonth]+' '+detYear+' | Days '+dayCols[0].day+'-'+dayCols[dayCols.length-1].day+' | Updated: '+applied+(unmatchedCount>0?'<br><span style="color:#856404">Unmatched: '+unmatchedCount+'</span>':'')+'</div>';
-      renderImportLog(lk);
-      renderRegister();renderStats();
-    }catch(err){
-      st.innerHTML='Error: '+err.message;st.style.color='#a00';
-    }
+      renderImportLog(lk);renderRegister();renderStats();
+    }catch(err){st.innerHTML='Error: '+err.message;st.style.color='#a00';}
   };
-  reader.readAsArrayBuffer(f);
-  evt.target.value='';
+  reader.readAsArrayBuffer(f);evt.target.value='';
 }
 function renderImportLog(lk){
   var el=document.getElementById('import-log-display');if(!el)return;
   var entries=(importLog[lk]||[]).slice().reverse();
   if(!entries.length){el.innerHTML='';return;}
-  var parts=lk.split('_');
-  var label=MONTHS[parseInt(parts[1])]+' '+parts[0];
+  var parts=lk.split('_'),label=MONTHS[parseInt(parts[1])]+' '+parts[0];
   var h='<div style="margin-top:10px;border-top:1px solid #ddd;padding-top:8px;font-size:11px"><b style="color:#6b3fa0">Import Log - '+label+' ('+entries.length+' uploads)</b><div style="max-height:160px;overflow-y:auto;margin-top:5px">',i;
-  for(i=0;i<entries.length;i++){
-    var en=entries[i];
-    h+='<div style="background:#fafafa;border:1px solid #eee;border-radius:3px;padding:5px 8px;margin-bottom:4px">';
-    h+='#'+(entries.length-i)+' | '+en.mode+' | '+en.date+' | Days '+en.d0+'-'+en.d1+' | Meds: '+en.applied;
-    if(en.unmatched>0) h+=' | Unmatched: '+en.unmatched;
-    h+='</div>';
-  }
-  h+='</div></div>';
-  el.innerHTML=h;
+  for(i=0;i<entries.length;i++){var en=entries[i];h+='<div style="background:#fafafa;border:1px solid #eee;border-radius:3px;padding:5px 8px;margin-bottom:4px">#'+(entries.length-i)+' | '+en.mode+' | '+en.date+' | Days '+en.d0+'-'+en.d1+' | Meds: '+en.applied+(en.unmatched>0?' | Unmatched: '+en.unmatched:'')+'</div>';}
+  h+='</div></div>';el.innerHTML=h;
 }
 function clearImportLog(){
-  var keys=Object.keys(importLog);
-  if(!keys.length){alert('No import logs.');return;}
+  var keys=Object.keys(importLog);if(!keys.length){alert('No import logs.');return;}
   var choice=prompt('Enter key to clear (e.g. 2026_5 for June 2026). Available: '+keys.join(', '));
-  if(!choice) return;
-  var key=choice.trim();
+  if(!choice)return;var key=choice.trim();
   if(!importLog[key]){alert('Not found: '+key);return;}
-  if(!confirm('Clear log for '+key+'?')) return;
-  delete importLog[key];
-  sv('importlog',importLog);
-  var el=document.getElementById('import-log-display');
-  if(el) el.innerHTML='';
+  if(!confirm('Clear log for '+key+'?'))return;
+  delete importLog[key];sv('importlog',importLog);
+  var el=document.getElementById('import-log-display');if(el)el.innerHTML='';
 }
 
+// ── NAV ──
 function populateFilters(){
   document.getElementById('fy-label').textContent=CY;
-  var ms=document.getElementById('reg-month');
+  var ms=document.getElementById('reg-month'),i;
   ms.innerHTML='<option value="all">All Months</option>';
-  var i; for(i=0;i<12;i++){var o=document.createElement('option');o.value=i;o.textContent=MONTHS[i];ms.appendChild(o);}
-  var cats=getCategories();
-  var filterIds=['reg-cat','manual-cat-filter','med-list-cat'],fi;
+  for(i=0;i<12;i++){var o=document.createElement('option');o.value=i;o.textContent=MONTHS[i];ms.appendChild(o);}
+  var cats=getCategories(),filterIds=['reg-cat','manual-cat-filter','med-list-cat'],fi;
   for(fi=0;fi<filterIds.length;fi++){
     var el=document.getElementById(filterIds[fi]);if(!el)continue;
     el.innerHTML='<option value="all">All Categories</option>';
@@ -1490,31 +1323,27 @@ function populateFilters(){
 }
 function showTab(t,el){
   var panels=document.querySelectorAll('.panel'),tabs=document.querySelectorAll('.tab'),i;
-  for(i=0;i<panels.length;i++) panels[i].classList.remove('active');
-  for(i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+  for(i=0;i<panels.length;i++)panels[i].classList.remove('active');
+  for(i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
   document.getElementById('tab-'+t).classList.add('active');el.classList.add('active');
-  if(t==='daily') initDailyTab();
+  if(t==='daily')initDailyTab();
   if(t==='indent'){renderIndentPreview('OPD');renderIndentPreview('IPD');}
   if(t==='medicines'){renderMedList();populateFilters();}
   if(t==='po'){renderAutoPO();renderPOHistory();}
-  if(t==='analytics') populateAnalyticsSelect();
-  if(t==='register') renderRegister();
-  if(t==='invoices') renderInvoiceList();
+  if(t==='analytics')populateAnalyticsSelect();
+  if(t==='register')renderRegister();
+  if(t==='invoices')renderInvoiceList();
 }
 function showSubTab(tabId,sub,el){
   var panels=document.querySelectorAll('#tab-'+tabId+' .subpanel'),tabs=document.querySelectorAll('#tab-'+tabId+' .subtab'),i;
-  for(i=0;i<panels.length;i++) panels[i].classList.remove('active');
-  for(i=0;i<tabs.length;i++) tabs[i].classList.remove('active');
+  for(i=0;i<panels.length;i++)panels[i].classList.remove('active');
+  for(i=0;i<tabs.length;i++)tabs[i].classList.remove('active');
   document.getElementById(tabId+'-'+sub).classList.add('active');el.classList.add('active');
-  if(sub==='manual') renderManualPOTable();
-  if(sub==='history') renderPOHistory();
-  if(sub==='auto') renderAutoPO();
+  if(sub==='manual')renderManualPOTable();if(sub==='history')renderPOHistory();if(sub==='auto')renderAutoPO();
 }
 function closeModal(id){document.getElementById(id).style.display='none';}
 
-loadAll();
-populateFilters();
-renderRegister();
+loadAll();populateFilters();renderRegister();
 </script>
 </body>
 </html>
