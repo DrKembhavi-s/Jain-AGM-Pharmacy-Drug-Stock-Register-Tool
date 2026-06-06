@@ -335,6 +335,16 @@ Use Edit Mode in the register to update opening stock and dispensed quantities.<
 <label class="btn btn-primary btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:6px">📂 Choose File<input type="file" accept=".xlsx,.xls" onchange="importExcelData(event)" style="display:none"></label>
 <div id="import-status" style="font-size:11px;margin-top:4px"></div>
 </div>
+<div class="gen-box" style="border-color:#6b3fa0">
+<h3 style="color:#6b3fa0">📅 Import Daily Stock Register (Excel)</h3>
+<div class="info-box" style="background:#f5f0ff;border-color:#c9a0ff;font-size:11px">
+Upload your college software's Daily Stock Register Excel.<br>
+<b>Format:</b> Row 4 = headers (S.No, Medicine Name, Category, Opening, Day 1…Day N, Closing)<br>
+Month &amp; Year auto-detected from header. Medicine names fuzzy-matched automatically.
+</div>
+<label class="btn btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:6px;background:#6b3fa0;color:#fff">📂 Upload Daily Register Excel<input type="file" accept=".xlsx,.xls" onchange="importDailyRegisterExcel(event)" style="display:none"></label>
+<div id="daily-reg-import-status" style="font-size:11px;margin-top:4px"></div>
+</div>
 <div class="gen-box" style="border-color:#1a7a4a">
 <h3 style="color:#1a7a4a">🧾 Import Supplier Invoice (JSON)</h3>
 <div class="info-box" style="background:#f0fff4;border-color:#9ae6b4;font-size:11px">
@@ -1524,6 +1534,167 @@ function showSubTab(tabId,sub,el){
   if(sub==='manual')renderManualPOTable();if(sub==='history')renderPOHistory();if(sub==='auto')renderAutoPO();
 }
 function closeModal(id){document.getElementById(id).style.display='none';}
+
+// ── DAILY REGISTER EXCEL IMPORT ──
+function importDailyRegisterExcel(e){
+  var f=e.target.files[0];if(!f)return;
+  var st=document.getElementById('daily-reg-import-status');
+  st.innerHTML='⏳ Reading file...';st.style.color='#1a3a5c';
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      var wb=XLSX.read(ev.target.result,{type:'array'});
+      var ws=wb.Sheets[wb.SheetNames[0]];
+      var rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+
+      // ── Detect month & year from first few rows ──
+      var detectedMonth=-1,detectedYear=CY;
+      var monthNames={january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+      for(var ri=0;ri<5;ri++){
+        var rowStr=rows[ri].join(' ').toLowerCase();
+        Object.keys(monthNames).forEach(function(mn){
+          if(rowStr.indexOf(mn)>=0)detectedMonth=monthNames[mn];
+        });
+        var ym=rowStr.match(/20\d\d/);if(ym)detectedYear=parseInt(ym[0]);
+      }
+      if(detectedMonth<0){st.innerHTML='❌ Could not detect month from file header. Please check the file.';st.style.color='#a00';return;}
+
+      // ── Find header row (contains "Medicine Name" or "Day 1" or S.No) ──
+      var headerRowIdx=-1;
+      for(var ri=0;ri<10;ri++){
+        var r=rows[ri];
+        for(var ci=0;ci<r.length;ci++){
+          var cell=String(r[ci]).toLowerCase();
+          if(cell.indexOf('medicine')>=0||cell==='1'||cell.indexOf('s.no')>=0){
+            headerRowIdx=ri;break;
+          }
+        }
+        if(headerRowIdx>=0)break;
+      }
+      if(headerRowIdx<0)headerRowIdx=3; // fallback: row 4 (0-indexed 3)
+
+      var headerRow=rows[headerRowIdx];
+
+      // ── Find column indices ──
+      var colMedName=-1,colCat=-1,colOpen=-1,colClose=-1;
+      var dayCols=[]; // {col, day}
+      headerRow.forEach(function(h,ci){
+        var hs=String(h).toLowerCase().trim();
+        if(hs.indexOf('medicine')>=0||hs.indexOf('med name')>=0)colMedName=ci;
+        else if(hs.indexOf('categ')>=0)colCat=ci;
+        else if(hs.indexOf('open')>=0)colOpen=ci;
+        else if(hs.indexOf('clos')>=0)colClose=ci;
+        else{
+          // Day columns: header is a number 1-31
+          var n=parseInt(hs);
+          if(!isNaN(n)&&n>=1&&n<=31)dayCols.push({col:ci,day:n});
+        }
+      });
+
+      // Fallback column detection if headers not found
+      if(colMedName<0)colMedName=1;
+      if(colOpen<0&&dayCols.length>0)colOpen=dayCols[0].col-1;
+      if(colClose<0&&dayCols.length>0)colClose=dayCols[dayCols.length-1].col+1;
+
+      if(dayCols.length===0){st.innerHTML='❌ No day columns found. Expected columns headed 1, 2, 3... for each day.';st.style.color='#a00';return;}
+
+      // ── Build fuzzy match index of all medicines ──
+      function normalize(s){
+        return String(s).toLowerCase()
+          .replace(/^\d+[a-z]?\.\s*/,'')   // strip leading "1." or "10a."
+          .replace(/[^a-z0-9]/g,' ')        // non-alphanumeric → space
+          .replace(/\s+/g,' ').trim();
+      }
+      var allMeds=getAllMeds();
+      var medIndex=allMeds.map(function(m){return{name:m.name,norm:normalize(m.name)};});
+
+      function fuzzyMatch(raw){
+        var n=normalize(raw);
+        if(!n)return null;
+        // 1. Exact
+        for(var i=0;i<medIndex.length;i++)if(medIndex[i].norm===n)return medIndex[i].name;
+        // 2. One contains the other
+        for(var i=0;i<medIndex.length;i++){
+          if(n.indexOf(medIndex[i].norm)>=0||medIndex[i].norm.indexOf(n)>=0)return medIndex[i].name;
+        }
+        // 3. Token overlap score
+        var tokens=n.split(' ').filter(function(t){return t.length>2;});
+        var best=null,bestScore=0;
+        medIndex.forEach(function(m){
+          var mt=m.norm.split(' ').filter(function(t){return t.length>2;});
+          var matches=tokens.filter(function(t){return mt.indexOf(t)>=0;}).length;
+          var score=matches/(Math.max(tokens.length,mt.length)||1);
+          if(score>bestScore&&score>=0.5){bestScore=score;best=m.name;}
+        });
+        return best;
+      }
+
+      // ── Process data rows ──
+      var matched=0,unmatched=[],skipped=0;
+      var monthTotal={};  // medName -> total dispensed this month
+
+      for(var ri=headerRowIdx+1;ri<rows.length;ri++){
+        var row=rows[ri];
+        if(!row||row.length<3)continue;
+        var rawName=String(row[colMedName]||'').trim();
+        if(!rawName||rawName===''||rawName.toLowerCase().indexOf('total')>=0)continue;
+        // Skip category header rows (◆ or all-caps category names)
+        if(rawName.indexOf('◆')>=0||rawName.toUpperCase()===rawName&&rawName.length>3&&!/\d/.test(rawName))continue;
+
+        var medName=fuzzyMatch(rawName);
+        if(!medName){unmatched.push(rawName);continue;}
+
+        // Sum all day columns
+        var dayTotal=0;
+        dayCols.forEach(function(dc){
+          var v=row[dc.col];
+          var vs=String(v).trim().replace(/[^0-9.]/g,'');
+          var n=parseFloat(vs)||0;
+          dayTotal+=n;
+        });
+
+        if(dayTotal>0){
+          monthTotal[medName]=(monthTotal[medName]||0)+dayTotal;
+          matched++;
+        } else {
+          skipped++;
+        }
+      }
+
+      // ── Apply to dispensed data ──
+      var applied=0;
+      Object.keys(monthTotal).forEach(function(name){
+        setDisp(detectedYear,name,detectedMonth,Math.round(monthTotal[name]));
+        applied++;
+      });
+
+      // ── Build result HTML ──
+      var mn=MONTHS[detectedMonth];
+      var resultHTML='<div style="background:#f0fff4;border:1px solid #9ae6b4;border-radius:4px;padding:10px;font-size:11px;line-height:2">';
+      resultHTML+='<b style="font-size:12px;color:#1a7a4a">✅ Import Complete</b><br>';
+      resultHTML+='<b>Month detected:</b> '+mn+' '+detectedYear+'<br>';
+      resultHTML+='<b>Day columns found:</b> '+dayCols.length+' days (Day '+dayCols[0].day+' – Day '+dayCols[dayCols.length-1].day+')<br>';
+      resultHTML+='<b>Medicines updated:</b> '+applied+'<br>';
+      resultHTML+='<b>Zero-dispensing (skipped):</b> '+skipped+'<br>';
+      if(unmatched.length>0){
+        resultHTML+='<br><b style="color:#856404">⚠️ '+unmatched.length+' unmatched names (not updated):</b><br>';
+        resultHTML+='<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:3px;padding:6px;max-height:120px;overflow-y:auto;margin-top:3px">';
+        unmatched.forEach(function(u){resultHTML+='<div style="color:#856404">• '+u+'</div>';});
+        resultHTML+='</div><div style="font-size:10px;color:#555;margin-top:4px">👆 These names did not match any medicine in your list. You can add them via Medicine List tab or manually update via Edit Mode in the Stock Register.</div>';
+      }
+      resultHTML+='</div>';
+      st.innerHTML=resultHTML;
+
+      renderRegister();
+      renderStats();
+
+    }catch(err){
+      st.innerHTML='❌ Error: '+err.message+'<br><span style="font-size:10px;color:#555">Make sure the file is a valid Excel (.xlsx/.xls) in the standard Daily Stock Register format.</span>';
+      st.style.color='#a00';
+    }
+  };
+  reader.readAsArrayBuffer(f);e.target.value='';
+}
 
 // ── INIT ──
 loadAll();populateFilters();renderRegister();
