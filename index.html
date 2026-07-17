@@ -370,11 +370,26 @@ Enter quantities dispensed today. Leave blank or 0 for medicines not dispensed. 
 <div id="add-med-status" style="font-size:11px;margin-top:7px"></div>
 </div>
 <div>
-<div class="gen-box">
-<h3>Import Dispensed Data (Excel)</h3>
-<div class="info-box" style="font-size:11px">Sheet names must contain 2025 or 2026. Col 0=Medicine, Col 1-12=Jan-Dec.</div>
-<label class="btn btn-primary btn-sm" style="cursor:pointer;display:inline-block;margin-bottom:6px">Choose File<input type="file" accept=".xlsx,.xls" onchange="importExcelData(event)" style="display:none"></label>
-<div id="import-status" style="font-size:11px;margin-top:4px"></div>
+<div class="gen-box" style="border-color:#e67e00;max-width:100%">
+<h3 style="color:#e67e00">📋 Paste OPD Dispensing Report (from PDF)</h3>
+<div class="info-box" style="background:#fff8f0;border-color:#e67e00;font-size:11px">
+<b>How to use:</b> Open the OPD Pharmacy Dispensery Report PDF → Press Ctrl+A (Select All) → Ctrl+C (Copy) → Click in the box below → Ctrl+V (Paste) → Click Process Report.<br>
+The tool will automatically aggregate quantities by medicine name and update the stock register.
+</div>
+<div style="display:flex;gap:8px;margin-bottom:6px;align-items:center;flex-wrap:wrap">
+<div><label style="font-size:11px;display:block;margin-bottom:2px;font-weight:700">Report Date</label>
+<input type="date" id="paste-date" style="font-size:12px;border:2px solid #e67e00;border-radius:4px;padding:4px 8px"></div>
+<div><label style="font-size:11px;display:block;margin-bottom:2px;font-weight:700">Year</label>
+<select id="paste-year" style="width:85px"><option value="2025">2025</option><option value="2026" selected>2026</option></select></div>
+<div><label style="font-size:11px;display:block;margin-bottom:2px">Import Mode</label>
+<select id="paste-mode" style="width:130px"><option value="add">Add to existing</option><option value="replace">Replace month total</option></select></div>
+</div>
+<textarea id="paste-report-text" rows="8" style="width:100%;font-size:11px;font-family:monospace;border:2px solid #e67e00;border-radius:4px;padding:8px;resize:vertical" placeholder="Paste the copied PDF text here..."></textarea>
+<div style="display:flex;gap:8px;margin-top:6px;flex-wrap:wrap;align-items:center">
+<button class="btn btn-warning" onclick="processPastedReport()" style="font-size:13px;padding:7px 18px">Process Report</button>
+<button class="btn btn-sm" style="background:#ccc" onclick="document.getElementById('paste-report-text').value='';document.getElementById('paste-result').innerHTML=''">Clear</button>
+</div>
+<div id="paste-result" style="margin-top:8px;font-size:11px"></div>
 </div>
 <div class="gen-box" style="border-color:#6b3fa0">
 <h3 style="color:#6b3fa0">Import Daily Stock Register (Excel)</h3>
