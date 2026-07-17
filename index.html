@@ -252,7 +252,67 @@ Enter quantities dispensed today. Leave blank or 0 for medicines not dispensed. 
 </div>
 </div>
 
-<div id="tab-invoices" class="panel"><div id="inv-po-list"></div></div>
+<div id="tab-invoices" class="panel">
+<div style="display:grid;grid-template-columns:340px 1fr;gap:14px;max-width:1100px">
+
+<!-- Left: Invoice header fields -->
+<div>
+<div class="gen-box">
+<h3>Invoice Details</h3>
+<div class="gen-row"><label>Invoice No</label><input type="text" id="mi-number" style="width:190px" placeholder="INV-JAGM-2026-001"></div>
+<div class="gen-row"><label>Date</label><input type="date" id="mi-date" style="width:190px"></div>
+<div class="gen-row"><label>Supplier Name</label><input type="text" id="mi-supplier" style="width:190px" placeholder="e.g. SDM Pharmaceuticals"></div>
+<div class="gen-row"><label>Supplier Address</label><input type="text" id="mi-sup-addr" style="width:190px" placeholder="City, State"></div>
+<div class="gen-row"><label>Supplier GSTIN</label><input type="text" id="mi-sup-gstin" style="width:190px"></div>
+<div class="gen-row"><label>Bill To</label><input type="text" id="mi-billto" value="Principal, JAIN AGM AMC &amp; H, Varur, Hubli - 581207" style="width:190px"></div>
+<div class="gen-row"><label>Default GST %</label>
+<select id="mi-gst-default" style="width:100px"><option value="0">0%</option><option value="5">5%</option><option value="12" selected>12%</option><option value="18">18%</option></select>
+<button class="btn btn-info btn-sm" onclick="applyMIGst()">Apply All</button></div>
+<div class="gen-row"><label>Notes / Terms</label><input type="text" id="mi-notes" style="width:190px" placeholder="e.g. Payment within 30 days"></div>
+</div>
+<div class="gen-box">
+<h3>Add Medicine to Invoice</h3>
+<div class="gen-row"><label>Medicine</label>
+<select id="mi-med-sel" style="width:190px"><option value="">-- Select --</option></select></div>
+<div class="gen-row"><label>Qty</label><input type="number" id="mi-qty" min="1" value="1" style="width:80px"></div>
+<div class="gen-row"><label>Rate per unit (Rs)</label><input type="number" id="mi-rate" min="0" step="0.01" value="0" style="width:100px"></div>
+<div class="gen-row"><label>GST %</label><input type="number" id="mi-gst" min="0" max="28" value="12" style="width:70px"></div>
+<button class="btn btn-success btn-sm" onclick="addMIRow()">+ Add to Invoice</button>
+<div id="mi-add-status" style="font-size:11px;margin-top:5px;color:#1a7a4a"></div>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn btn-success" onclick="exportMIExcel()">Download Invoice (Excel)</button>
+<button class="btn btn-danger btn-sm" onclick="clearMI()">Clear Invoice</button>
+</div>
+</div>
+
+<!-- Right: Invoice preview table -->
+<div>
+<div style="background:#fff;border:1px solid #ddd;border-radius:5px;padding:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<h3 style="color:#1a3a5c;font-size:13px">Invoice Items <span id="mi-item-count" style="color:#555;font-weight:400;font-size:11px">(0 items)</span></h3>
+<div id="mi-totals" style="font-size:12px;color:#1a3a5c;font-weight:700"></div>
+</div>
+<div class="tbl-wrap" style="max-height:55vh">
+<table>
+<thead><tr>
+<th>#</th><th>Medicine</th><th>Category</th><th>Unit</th>
+<th style="text-align:right">Qty</th>
+<th style="text-align:right">Rate</th>
+<th style="text-align:right">Base Amt</th>
+<th style="text-align:center">GST%</th>
+<th style="text-align:right">GST Amt</th>
+<th style="text-align:right">Total</th>
+<th class="no-print">Del</th>
+</tr></thead>
+<tbody id="mi-body"></tbody>
+</table>
+</div>
+<div id="mi-summary" style="margin-top:8px;font-size:12px;text-align:right;color:#1a3a5c"></div>
+</div>
+</div>
+</div>
+</div>
 
 <div id="tab-indent" class="panel">
 <div class="subtabs">
@@ -450,7 +510,8 @@ var RAW_2026={'Ashwagandha Churna':[3652,9844,6357,11965,0,0,0,0,0,0,0,0],'Avipa
 
 var INVOICE_STOCK_2026={'Kaishora Guggulu':500,'Kanchanara Guggulu':500,'Simhanada Guggulu':500,'Trayodashanga Guggulu':250,'Punarnava Mandura':1000,'Swasakutara Rasa':500,'Saptamrita Loha':500,'Diabegone Forte':500,'Kuberaksha Bais':1000,'Gomutra Ghan Vati':500,'Giloy Ghan Vati':500,'Kutaj Ghan Vati':250,'Mahashudarshan Ghan Vati':500,'Mahamanjisthadi Ghan Vati':500,'Maharasnadi Ghan Vati':500,'Nirgundi Ghan Vati':500,'Parijat Ghan Vati':500,'Rasna Saptak Ghan Vati':500,'Varunadi Ghan Vati Ashmari':500,'Amratadi Guggul':500,'Gokshuradi Guggul':500,'Kukutnakhi Guggul':500,'Rasnadi Guggul':500,'Swayambhu Guggul':500,'Lakshami Vilas Ras':500,'Shirshuladi Vajra Ras':500,'Sutshekhar Ras':500,'Aam Pachak Vati':1000,'Kandughna Mahakashay':500,'Kushthaghna Mahakashay Vati':500,'Dhatri Loh Vati':1000,'Abhaya Arishta':25,'Amrita Arishta':25,'Ashoka Arishta':25,'Aragwada Arishta':25,'Usira Asava':8,'Kumari Asava':25,'Khadira Arishta':25,'Chandana Asava':25,'Dashamula Arishta':25,'Saribadasava':25,'Aravindasava':25,'Pilocid Ointment':20,'Rhukot Ointment':15,'Mahatikta Ghrita':20,'Shatadhauta Ghrita Ointment':30,'Katakhadiradi Kashaya':20,'Gandhravahastyadi Ks. Tab':20,'Rasnasaptaka Kwatha Choorna':20,'Asthavarga Kashaya':200,'Prasarinyadi Ks. Tab':200,'Sahacharadi Ks. Tab':200,'Amruttotara Kashaya':200,'Nishakatakadi Kasaya':200,'Agastya Haritaki Rasayana':20,'Kushmanda Rasayana':20,'Trivrith Leha':20,'Dashamula Rasayanam':20,'Shatavari Gulam':20,'Haridra Khanda':20,'Kacha Yapanam Kuzhampu':5,'Netra Amritam':5,'Elaneer Kuzhampu':5,'Krimikutara Rasa':200,'Dhanvantari Vati':200,'Bilwadi Vati':200,'Prasaranyadi Kashayam':20,'Sahacharadi Kashayam':20,'Rasnairandadi Kwatham':200,'Balaguluchyadi Kwatham':200,'Dhanvantaram Kwatham':200,'Indukantam Kwatham':200,'Aragvadhadi Kwatham':200,'Migrakot Tablet':200,'Ostikot Tablet':200,'Niruryadi Gulika':200,'Valiya Marma Gulika':200,'Hridayarnavarasam Gulika':200,'Vettumaran Gulika':200};
 
-var BASE_LIST=[['Ashwagandha Churna','CHURNAS'],['Avipattikara Churna','CHURNAS'],['Amalaki Churna','CHURNAS'],['Abhaya Choorna','CHURNAS'],['Balachaturabhadra Churna','CHURNAS'],['Haridra Choorna','CHURNAS'],['Hingwashtaka Choorna','CHURNAS'],['Manjistadi Churna','CHURNAS'],['Nishaamalaki Choorna','CHURNAS'],['Panchakola Choorna','CHURNAS'],['Sitopaladi Choorna','CHURNAS'],['Talisadi Choorna','CHURNAS'],['Trikatu Choorna','CHURNAS'],['Triphala Choorna','CHURNAS'],['Vaishwanara Choorna','CHURNAS'],['Vidanga Churna','CHURNAS'],['Yastimadhu Choorna','CHURNAS'],['Shuddha Gairika Churna','CHURNAS'],['Pushyanuga Churna','CHURNAS'],['Swadista Virechana Churna','CHURNAS'],['Shatavari Choorna','CHURNAS'],['Asanadi Kw. Churna','KWATHA CHOORNAS'],['Dashamoola Kw. Churna','KWATHA CHOORNAS'],['Manjisthadi Kw. Choorna','KWATHA CHOORNAS'],['Shadangadi Kwata. Choorna','KWATHA CHOORNAS'],['Triphala Kwata. Choorna','KWATHA CHOORNAS'],['Panchavalkala Kwatha Choorna','KWATHA CHOORNAS'],['Eranda Mula Kw. Churna','KWATHA CHOORNAS'],['Mustadi Kw. Churna','KWATHA CHOORNAS'],['Rasnasaptaka Kwatha Choorna','KWATHA CHOORNAS'],['Brahmi Ghrita','GHRITAS'],['Guggulu Tiktaka Ghrita','GHRITAS'],['Indukantha Ghrita','GHRITAS'],['Mahatikta Ghrita','GHRITAS'],['Phalasarpi Ghrita','GHRITAS'],['Shatavari Ghrita','GHRITAS'],['Sukumara Ghrita','GHRITAS'],['Triphala Ghrita','GHRITAS'],['Dadimadi Ghrita','GHRITAS'],['Shatadhouta Ghrita','GHRITAS'],['Ashwagandha Ghrita','GHRITAS'],['Agastya Haritaki Rasayana','LEHAS'],['Ashwagandha Rasayana','LEHAS'],['Dashamula Rasayanam','LEHAS'],['Kushmanda Rasayana','LEHAS'],['Manibhadra Leham','LEHAS'],['Shatavari Gulam','LEHAS'],['Sukumara Leha','LEHAS'],['Trivrith Leha','LEHAS'],['Haridra Khanda','LEHAS'],['Agni Tundi Vati','VATI/RASAS'],['Anuloma DS','VATI/RASAS'],['Arogyavardhini Vati','VATI/RASAS'],['Bilwadi Vati','VATI/RASAS'],['Bolabhadda Rasa','VATI/RASAS'],['Chandrakala Rasa','VATI/RASAS'],['Chitrakadi Vati','VATI/RASAS'],['Chandraprabha Vati','VATI/RASAS'],['Gandhaka Rasayana','VATI/RASAS'],['Kamaduga Rasa','VATI/RASAS'],['Krimikutara Rasa','VATI/RASAS'],['Laghusutashekara Rasa','VATI/RASAS'],['Lasunadi Vati','VATI/RASAS'],['Lavangadi Vati','VATI/RASAS'],['Nishakatakadi Kasaya','VATI/RASAS'],['Pachaka Vati','VATI/RASAS'],['Pathyadi Ghanavati','VATI/RASAS'],['Pravala Panchamrtha','VATI/RASAS'],['Punarnava Mandura','VATI/RASAS'],['Rajapravartini Vati','VATI/RASAS'],['Rasayana Vati','VATI/RASAS'],['Saptamrita Loha','VATI/RASAS'],['Shaddharana Vati','VATI/RASAS'],['Sudarshana Ghanavati','VATI/RASAS'],['Swasakutara Rasa','VATI/RASAS'],['Tapyadi Vati','VATI/RASAS'],['Tribhuvana Keerti Rasa','VATI/RASAS'],['Trishul Rasa','VATI/RASAS'],['Varunadi Kashaya Tab','VATI/RASAS'],['Vishatinduka Vati','VATI/RASAS'],['Manasamitra Vati','VATI/RASAS'],['Amavatari Rasa','VATI/RASAS'],['Kuberaksha Vati','VATI/RASAS'],['Gandhravahastyadi Ks. Tab','VATI/RASAS'],['Prasarinyadi Ks. Tab','VATI/RASAS'],['Sahacharadi Ks. Tab','VATI/RASAS'],['Goutex Tab','VATI/RASAS'],['Nirocil Tab','VATI/RASAS'],['Pilocid Tab','VATI/RASAS'],['Pilocid Cap','VATI/RASAS'],['Rhukot Tab','VATI/RASAS'],['Dhanvantari Vati','VATI/RASAS'],['Diabegone Forte','VATI/RASAS'],['Kuberaksha Bais','VATI/RASAS'],['Gomutra Ghan Vati','VATI/RASAS'],['Giloy Ghan Vati','VATI/RASAS'],['Kutaj Ghan Vati','VATI/RASAS'],['Mahashudarshan Ghan Vati','VATI/RASAS'],['Mahamanjisthadi Ghan Vati','VATI/RASAS'],['Maharasnadi Ghan Vati','VATI/RASAS'],['Nirgundi Ghan Vati','VATI/RASAS'],['Parijat Ghan Vati','VATI/RASAS'],['Rasna Saptak Ghan Vati','VATI/RASAS'],['Varunadi Ghan Vati Ashmari','VATI/RASAS'],['Lakshami Vilas Ras','VATI/RASAS'],['Shirshuladi Vajra Ras','VATI/RASAS'],['Sutshekhar Ras','VATI/RASAS'],['Aam Pachak Vati','VATI/RASAS'],['Kushthaghna Mahakashay Vati','VATI/RASAS'],['Dhatri Loh Vati','VATI/RASAS'],['Rasnairandadi Kwatham','VATI/RASAS'],['Balaguluchyadi Kwatham','VATI/RASAS'],['Dhanvantaram Kwatham','VATI/RASAS'],['Indukantam Kwatham','VATI/RASAS'],['Aragvadhadi Kwatham','VATI/RASAS'],['Migrakot Tablet','VATI/RASAS'],['Ostikot Tablet','VATI/RASAS'],['Niruryadi Gulika','VATI/RASAS'],['Valiya Marma Gulika','VATI/RASAS'],['Hridayarnavarasam Gulika','VATI/RASAS'],['Vettumaran Gulika','VATI/RASAS'],['Anu Taila','TAILAS'],['Bilwa Taila','TAILAS'],['Bhringraja Taila','TAILAS'],['Brihat Saindhavadi Taila','TAILAS'],['Dhanwantari Taila','TAILAS'],['Ghandarva Hastadi Taila','TAILAS'],['Jatyadi Taila','TAILAS'],['Karpsyadi Taila','TAILAS'],['Karanja Taila','TAILAS'],['Kottam Chukkadi Taila','TAILAS'],['Kshirabala Taila','TAILAS'],['Lakshadi Taila','TAILAS'],['Mahamashadi Taila','TAILAS'],['Mahanarayana Taila','TAILAS'],['Mahavishagarbha Taila','TAILAS'],['Murrchita Tila Taila','TAILAS'],['Murrivenna Taila','TAILAS'],['Pinda Taila','TAILAS'],['Prasaranyadi Taila','TAILAS'],['Sahacharadi Taila','TAILAS'],['Shadbindu Taila','TAILAS'],['Yastimadhu Taila','TAILAS'],['Narayana Taila','TAILAS'],['Kacha Yapanam Kuzhampu','EYE MEDICINES'],['Netra Amritam','EYE MEDICINES'],['Elaneer Kuzhampu','EYE MEDICINES'],['Sandhilin Liniment','LINIMENTS'],['Rhumapar Liniment','LINIMENTS'],['Kaishora Guggulu','GUGGULU'],['Kanchanara Guggulu','GUGGULU'],['Navaka Guggulu','GUGGULU'],['Nimbadi Guggulu','GUGGULU'],['Simhanada Guggulu','GUGGULU'],['Trayodashanga Guggulu','GUGGULU'],['Triphala Guggulu','GUGGULU'],['Yogaraja Guggulu','GUGGULU'],['Amratadi Guggul','GUGGULU'],['Gokshuradi Guggul','GUGGULU'],['Kukutnakhi Guggul','GUGGULU'],['Rasnadi Guggul','GUGGULU'],['Swayambhu Guggul','GUGGULU'],['Abhaya Arishta','ASAVA-ARISHTA'],['Amrita Arishta','ASAVA-ARISHTA'],['Aragwada Arishta','ASAVA-ARISHTA'],['Arjuna Arishta','ASAVA-ARISHTA'],['Ashoka Arishta','ASAVA-ARISHTA'],['Aravindasava','ASAVA-ARISHTA'],['Ashwagandha Arishta','ASAVA-ARISHTA'],['Chandana Asava','ASAVA-ARISHTA'],['Dashamula Arishta','ASAVA-ARISHTA'],['Kanaka Asava','ASAVA-ARISHTA'],['Khadira Arishta','ASAVA-ARISHTA'],['Kumari Asava','ASAVA-ARISHTA'],['Lodra Asava','ASAVA-ARISHTA'],['Mustaka Arishta','ASAVA-ARISHTA'],['Punarnava Asava','ASAVA-ARISHTA'],['Rohitika Arishta','ASAVA-ARISHTA'],['Saraswata Arishta','ASAVA-ARISHTA'],['Saribadasava','ASAVA-ARISHTA'],['Usira Asava','ASAVA-ARISHTA'],['Vasakasava','ASAVA-ARISHTA'],['Amavatari Kashaya','KASHAYAS'],['Asthavarga Kashaya','KASHAYAS'],['Bharadi Kashaya','KASHAYAS'],['Katakhadiradi Kashaya','KASHAYAS'],['Kokilaksha Kashaya','KASHAYAS'],['Manjistadi Kashaya','KASHAYAS'],['Rasnadi Kashaya','KASHAYAS'],['Varunadi Kashaya','KASHAYAS'],['Amruttotara Kashaya','KASHAYAS'],['Prasaranyadi Kashayam','KASHAYAS'],['Sahacharadi Kashayam','KASHAYAS'],['Kandughna Mahakashay','KASHAYAS'],['Madiphala Rasayana Syrup','SYRUP'],['Syrup Nirocil','SYRUP'],['Syrup Balachaturbhadra Rasa','SYRUP'],['Dashanga Agada Lepa Choorna','EXTERNAL USE'],['Kottam Chukkadi Lepa Choorna','EXTERNAL USE'],['Avalagujadi Lepa','EXTERNAL USE'],['Pilocid Ointment','OINTMENTS'],['Psorakot Ointment','OINTMENTS'],['Rhukot Ointment','OINTMENTS'],['Trichoderma Ointment','OINTMENTS'],['Jatyadi Ghrita Ointment','OINTMENTS'],['Shatadhauta Ghrita Ointment','OINTMENTS'],['Aparajita Dhupa Churna','MISCELLANEOUS'],['Eladi Cream','MISCELLANEOUS'],['Gandhaka Malahara','MISCELLANEOUS'],['Gandakadya Malahara','MISCELLANEOUS'],['Guduchi Satva','MISCELLANEOUS'],['White Ointment','MISCELLANEOUS']];
+var BASE_LIST=[['Ashwagandha Churna','CHURNAS'],['Avipattikara Churna','CHURNAS'],['Amalaki Churna','CHURNAS'],['Abhaya Choorna','CHURNAS'],['Balachaturabhadra Churna','CHURNAS'],['Haridra Choorna','CHURNAS'],['Hingwashtaka Choorna','CHURNAS'],['Manjistadi Churna','CHURNAS'],['Nishaamalaki Choorna','CHURNAS'],['Panchakola Choorna','CHURNAS'],['Sitopaladi Choorna','CHURNAS'],['Talisadi Choorna','CHURNAS'],['Trikatu Choorna','CHURNAS'],['Triphala Choorna','CHURNAS'],['Vaishwanara Choorna','CHURNAS'],['Vidanga Churna','CHURNAS'],['Yastimadhu Choorna','CHURNAS'],['Shuddha Gairika Churna','CHURNAS'],['Pushyanuga Churna','CHURNAS'],['Swadista Virechana Churna','CHURNAS'],['Shatavari Choorna','CHURNAS'],['Asanadi Kw. Churna','KWATHA CHOORNAS'],['Dashamoola Kw. Churna','KWATHA CHOORNAS'],['Manjisthadi Kw. Choorna','KWATHA CHOORNAS'],['Shadangadi Kwata. Choorna','KWATHA CHOORNAS'],['Triphala Kwata. Choorna','KWATHA CHOORNAS'],['Panchavalkala Kwatha Choorna','KWATHA CHOORNAS'],['Eranda Mula Kw. Churna','KWATHA CHOORNAS'],['Mustadi Kw. Churna','KWATHA CHOORNAS'],['Rasnasaptaka Kwatha Choorna','KWATHA CHOORNAS'],['Brahmi Ghrita','GHRITAS'],['Guggulu Tiktaka Ghrita','GHRITAS'],['Indukantha Ghrita','GHRITAS'],['Mahatikta Ghrita','GHRITAS'],['Phalasarpi Ghrita','GHRITAS'],['Shatavari Ghrita','GHRITAS'],['Sukumara Ghrita','GHRITAS'],['Triphala Ghrita','GHRITAS'],['Kalyanaka Ghrita','GHRITAS'],['Dadimadi Ghrita','GHRITAS'],['Shatadhouta Ghrita','GHRITAS'],['Ashwagandha Ghrita','GHRITAS'],['Agastya Haritaki Rasayana','LEHAS'],['Ashwagandha Rasayana','LEHAS'],['Dashamula Rasayanam','LEHAS'],['Kushmanda Rasayana','LEHAS'],['Manibhadra Leham','LEHAS'],['Shatavari Gulam','LEHAS'],['Sukumara Leha','LEHAS'],['Trivrith Leha','LEHAS'],['Haridra Khanda','LEHAS'],['Agni Tundi Vati','VATI/RASAS'],['Anuloma DS','VATI/RASAS'],['Arogyavardhini Vati','VATI/RASAS'],['Bilwadi Vati','VATI/RASAS'],['Bolabhadda Rasa','VATI/RASAS'],['Chandrakala Rasa','VATI/RASAS'],['Chitrakadi Vati','VATI/RASAS'],['Chandraprabha Vati','VATI/RASAS'],['Gandhaka Rasayana','VATI/RASAS'],['Kamaduga Rasa','VATI/RASAS'],['Krimikutara Rasa','VATI/RASAS'],['Laghusutashekara Rasa','VATI/RASAS'],['Lasunadi Vati','VATI/RASAS'],['Lavangadi Vati','VATI/RASAS'],['Nishakatakadi Kasaya','VATI/RASAS'],['Pachaka Vati','VATI/RASAS'],['Pathyadi Ghanavati','VATI/RASAS'],['Pravala Panchamrtha','VATI/RASAS'],['Punarnava Mandura','VATI/RASAS'],['Rajapravartini Vati','VATI/RASAS'],['Rasayana Vati','VATI/RASAS'],['Saptamrita Loha','VATI/RASAS'],['Shaddharana Vati','VATI/RASAS'],['Sudarshana Ghanavati','VATI/RASAS'],['Swasakutara Rasa','VATI/RASAS'],['Tapyadi Vati','VATI/RASAS'],['Tribhuvana Keerti Rasa','VATI/RASAS'],['Trishul Rasa','VATI/RASAS'],['Varunadi Kashaya Tab','VATI/RASAS'],['Vishatinduka Vati','VATI/RASAS'],['Manasamitra Vati','VATI/RASAS'],['Amavatari Rasa','VATI/RASAS'],['Kuberaksha Vati','VATI/RASAS'],['Gandhravahastyadi Ks. Tab','VATI/RASAS'],['Prasarinyadi Ks. Tab','VATI/RASAS'],['Sahacharadi Ks. Tab','VATI/RASAS'],['Goutex Tab','VATI/RASAS'],['Nirocil Tab','VATI/RASAS'],['Pilocid Tab','VATI/RASAS'],['Pilocid Cap','VATI/RASAS'],['Rhukot Tab','VATI/RASAS'],['Dhanvantari Vati','VATI/RASAS'],['Diabegone Forte','VATI/RASAS'],['Kuberaksha Bais','VATI/RASAS'],['Gomutra Ghan Vati','VATI/RASAS'],['Giloy Ghan Vati','VATI/RASAS'],['Kutaj Ghan Vati','VATI/RASAS'],['Mahashudarshan Ghan Vati','VATI/RASAS'],['Mahamanjisthadi Ghan Vati','VATI/RASAS'],['Maharasnadi Ghan Vati','VATI/RASAS'],['Nirgundi Ghan Vati','VATI/RASAS'],['Parijat Ghan Vati','VATI/RASAS'],['Rasna Saptak Ghan Vati','VATI/RASAS'],['Varunadi Ghan Vati Ashmari','VATI/RASAS'],['Lakshami Vilas Ras','VATI/RASAS'],['Shirshuladi Vajra Ras','VATI/RASAS'],['Sutshekhar Ras','VATI/RASAS'],['Aam Pachak Vati','VATI/RASAS'],['Kushthaghna Mahakashay Vati','VATI/RASAS'],['Dhatri Loh Vati','VATI/RASAS'],['Rasnairandadi Kwatham','VATI/RASAS'],['Balaguluchyadi Kwatham','VATI/RASAS'],['Dhanvantaram Kwatham','VATI/RASAS'],['Indukantam Kwatham','VATI/RASAS'],['Aragvadhadi Kwatham','VATI/RASAS'],['Migrakot Tablet','VATI/RASAS'],['Ostikot Tablet','VATI/RASAS'],['Niruryadi Gulika','VATI/RASAS'],['Valiya Marma Gulika','VATI/RASAS'],['Hridayarnavarasam Gulika','VATI/RASAS'],['Vettumaran Gulika','VATI/RASAS'],
+['Brahmi Vati','VATI/RASAS'],['Ekangaveera Rasa','VATI/RASAS'],['Arshakutara Rasa','VATI/RASAS'],['Medohara Guggulu','GUGGULU'],['Anu Taila','TAILAS'],['Bilwa Taila','TAILAS'],['Bhringraja Taila','TAILAS'],['Brihat Saindhavadi Taila','TAILAS'],['Dhanwantari Taila','TAILAS'],['Ghandarva Hastadi Taila','TAILAS'],['Jatyadi Taila','TAILAS'],['Karpsyadi Taila','TAILAS'],['Karanja Taila','TAILAS'],['Kottam Chukkadi Taila','TAILAS'],['Kshirabala Taila','TAILAS'],['Lakshadi Taila','TAILAS'],['Mahamashadi Taila','TAILAS'],['Mahanarayana Taila','TAILAS'],['Mahavishagarbha Taila','TAILAS'],['Murrchita Tila Taila','TAILAS'],['Murrivenna Taila','TAILAS'],['Pinda Taila','TAILAS'],['Prasaranyadi Taila','TAILAS'],['Sahacharadi Taila','TAILAS'],['Shadbindu Taila','TAILAS'],['Yastimadhu Taila','TAILAS'],['Narayana Taila','TAILAS'],['Kacha Yapanam Kuzhampu','EYE MEDICINES'],['Netra Amritam','EYE MEDICINES'],['Elaneer Kuzhampu','EYE MEDICINES'],['Sandhilin Liniment','LINIMENTS'],['Rhumapar Liniment','LINIMENTS'],['Kaishora Guggulu','GUGGULU'],['Kanchanara Guggulu','GUGGULU'],['Navaka Guggulu','GUGGULU'],['Nimbadi Guggulu','GUGGULU'],['Simhanada Guggulu','GUGGULU'],['Trayodashanga Guggulu','GUGGULU'],['Triphala Guggulu','GUGGULU'],['Yogaraja Guggulu','GUGGULU'],['Amratadi Guggul','GUGGULU'],['Gokshuradi Guggul','GUGGULU'],['Kukutnakhi Guggul','GUGGULU'],['Rasnadi Guggul','GUGGULU'],['Swayambhu Guggul','GUGGULU'],['Abhaya Arishta','ASAVA-ARISHTA'],['Amrita Arishta','ASAVA-ARISHTA'],['Aragwada Arishta','ASAVA-ARISHTA'],['Arjuna Arishta','ASAVA-ARISHTA'],['Ashoka Arishta','ASAVA-ARISHTA'],['Aravindasava','ASAVA-ARISHTA'],['Ashwagandha Arishta','ASAVA-ARISHTA'],['Chandana Asava','ASAVA-ARISHTA'],['Dashamula Arishta','ASAVA-ARISHTA'],['Kanaka Asava','ASAVA-ARISHTA'],['Khadira Arishta','ASAVA-ARISHTA'],['Kumari Asava','ASAVA-ARISHTA'],['Lodra Asava','ASAVA-ARISHTA'],['Mustaka Arishta','ASAVA-ARISHTA'],['Punarnava Asava','ASAVA-ARISHTA'],['Rohitika Arishta','ASAVA-ARISHTA'],['Saraswata Arishta','ASAVA-ARISHTA'],['Saribadasava','ASAVA-ARISHTA'],['Usira Asava','ASAVA-ARISHTA'],['Vasakasava','ASAVA-ARISHTA'],['Amavatari Kashaya','KASHAYAS'],['Asthavarga Kashaya','KASHAYAS'],['Bharadi Kashaya','KASHAYAS'],['Katakhadiradi Kashaya','KASHAYAS'],['Kokilaksha Kashaya','KASHAYAS'],['Manjistadi Kashaya','KASHAYAS'],['Rasnadi Kashaya','KASHAYAS'],['Varunadi Kashaya','KASHAYAS'],['Amruttotara Kashaya','KASHAYAS'],['Prasaranyadi Kashayam','KASHAYAS'],['Sahacharadi Kashayam','KASHAYAS'],['Kandughna Mahakashay','KASHAYAS'],['Madiphala Rasayana Syrup','SYRUP'],['Syrup Nirocil','SYRUP'],['Syrup Balachaturbhadra Rasa','SYRUP'],['Dashanga Agada Lepa Choorna','EXTERNAL USE'],['Kottam Chukkadi Lepa Choorna','EXTERNAL USE'],['Avalagujadi Lepa','EXTERNAL USE'],['Pilocid Ointment','OINTMENTS'],['Psorakot Ointment','OINTMENTS'],['Rhukot Ointment','OINTMENTS'],['Trichoderma Ointment','OINTMENTS'],['Jatyadi Ghrita Ointment','OINTMENTS'],['Shatadhauta Ghrita Ointment','OINTMENTS'],['Aparajita Dhupa Churna','MISCELLANEOUS'],['Eladi Cream','MISCELLANEOUS'],['Gandhaka Malahara','MISCELLANEOUS'],['Gandakadya Malahara','MISCELLANEOUS'],['Guduchi Satva','MISCELLANEOUS'],['White Ointment','MISCELLANEOUS']];
 
 // ── STATE ──
 var customMedicines=[];
@@ -549,7 +610,8 @@ function exportAllData(){
   var backup={version:2,exported:new Date().toISOString(),data:{}},i;
   for(i=0;i<keys.length;i++){try{var v=localStorage.getItem('jagm_'+keys[i]);if(v)backup.data[keys[i]]=JSON.parse(v);}catch(e){}}
   var blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JAGM_Backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='JAGM_Backup_'+new Date().toISOString().slice(0,10)+'.json';  a.click();
+  localStorage.setItem('jagm_last_backup',Date.now().toString());
   document.getElementById('backup-status').textContent='Saved.';
   setTimeout(function(){document.getElementById('backup-status').textContent='';},4000);
 }
@@ -562,7 +624,28 @@ function importAllData(e){
       var backup=JSON.parse(ev.target.result);if(!backup.data)throw new Error('Invalid');
       var keys=['custom','open2025','open2026','disp2025','disp2026','units','pohistory','displog','indentdata','indentmeta','importlog'],i,r=0;
       for(i=0;i<keys.length;i++){if(backup.data[keys[i]]!==undefined){try{localStorage.setItem('jagm_'+keys[i],JSON.stringify(backup.data[keys[i]]));r++;}catch(err){}}}
-      loadAll();populateFilters();renderRegister();renderMedList();
+      loadAll();populateFilters();renderRegister();
+// Persistence check
+(function(){
+  try{
+    var testKey='jagm_test_'+Date.now();
+    localStorage.setItem(testKey,'1');
+    localStorage.removeItem(testKey);
+  }catch(e){
+    document.getElementById('backup-status').textContent='WARNING: localStorage not available. Data will NOT be saved. Open in normal Chrome (not incognito).';
+    document.getElementById('backup-status').style.color='#ffcccc';
+  }
+  // Remind to export backup weekly
+  var lastBackup=localStorage.getItem('jagm_last_backup');
+  var now=Date.now();
+  if(!lastBackup||(now-parseInt(lastBackup))>7*24*60*60*1000){
+    setTimeout(function(){
+      var bs=document.getElementById('backup-status');
+      if(bs)bs.textContent='Reminder: Export a data backup today to keep your records safe.';
+      setTimeout(function(){if(bs)bs.textContent='';},8000);
+    },2000);
+  }
+})();renderMedList();
       document.getElementById('backup-status').textContent='Restored '+r+' datasets.';
       setTimeout(function(){document.getElementById('backup-status').textContent='';},4000);
     }catch(err){alert('Restore failed: '+err.message);}
@@ -899,10 +982,19 @@ function buildIndentEditor(){
     var d;for(d=0;d<DEPTS.length;d++)html+='<option value="'+DEPTS[d]+'"'+(DEPTS[d]===entry.dept?' selected':'')+'>'+DEPTS[d]+'</option>';
     html+='</select></td>';
     html+='<td style="padding:2px 4px"><input type="text" placeholder="Remarks..." value="'+(entry.remarks||'')+'" style="width:110px;font-size:11px" oninput="onIR(this,'+midx+')"></td>';
+    html+='<td class="no-print" style="padding:2px 4px"><button class="btn btn-danger btn-sm" data-idx="'+midx+'" onclick="clearIndentEntry(parseInt(this.dataset.idx))">X</button></td>';
     html+='</tr>';
   }
   document.getElementById('indent-editor-body').innerHTML=html||'<tr><td colspan="8" style="text-align:center;padding:16px;color:#666">No medicines found.</td></tr>';
   updateIndentCount();
+}
+function clearIndentEntry(idx){
+  var name=getN(idx),type=currentIndentType;
+  if(indentData[type][name]){indentData[type][name]={qty:'',dept:'',remarks:''}}
+  var row=document.getElementById('ir-'+sid(name));
+  if(row){row.classList.remove('ind-row-entered');}
+  updateIndentCount();
+  buildIndentEditor();
 }
 function onIQ(el,idx){
   var name=getN(idx),type=currentIndentType,val=el.value;
@@ -1217,7 +1309,104 @@ function resetAllData(){
   renderRegister();alert('Data reset.');
 }
 
-// ── DAILY REGISTER EXCEL IMPORT ──
+// ── MANUAL INVOICE ──
+var miRows=[];
+function initManualInvoice(){
+  var sel=document.getElementById('mi-med-sel');
+  if(!sel)return;
+  sel.innerHTML='<option value="">-- Select --</option>';
+  var meds=getAllMeds(),i;
+  for(i=0;i<meds.length;i++){
+    var o=document.createElement('option');o.value=meds[i].name;o.textContent=meds[i].name+' ('+meds[i].cat+')';sel.appendChild(o);
+  }
+  var t=new Date();
+  var di=document.getElementById('mi-date');
+  if(di&&!di.value) di.value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0');
+  renderMITable();
+}
+function addMIRow(){
+  var medName=document.getElementById('mi-med-sel').value;
+  var qty=parseFloat(document.getElementById('mi-qty').value)||0;
+  var rate=parseFloat(document.getElementById('mi-rate').value)||0;
+  var gst=parseFloat(document.getElementById('mi-gst').value)||0;
+  var st=document.getElementById('mi-add-status');
+  if(!medName){st.textContent='Please select a medicine.';st.style.color='#a00';return;}
+  if(qty<=0){st.textContent='Qty must be > 0.';st.style.color='#a00';return;}
+  var med=getMed(medName);
+  var base=qty*rate,gstAmt=base*gst/100;
+  miRows.push({name:medName,cat:med?med.cat:'',unit:med?getUnitType(medName,med.cat):'unit',qty:qty,rate:rate,gst:gst,base:base,gstAmt:gstAmt,total:base+gstAmt});
+  st.textContent=medName+' added.';st.style.color='#1a7a4a';
+  document.getElementById('mi-qty').value=1;
+  document.getElementById('mi-rate').value=0;
+  renderMITable();
+}
+function deleteMIRow(idx){miRows.splice(idx,1);renderMITable();}
+function applyMIGst(){
+  var g=parseFloat(document.getElementById('mi-gst-default').value)||0;
+  document.getElementById('mi-gst').value=g;
+  var i;
+  for(i=0;i<miRows.length;i++){
+    miRows[i].gst=g;miRows[i].gstAmt=miRows[i].base*g/100;miRows[i].total=miRows[i].base+miRows[i].gstAmt;
+  }
+  renderMITable();
+}
+function renderMITable(){
+  var html='',sub=0,gstTotal=0,grandTotal=0,i;
+  for(i=0;i<miRows.length;i++){
+    var r=miRows[i];sub+=r.base;gstTotal+=r.gstAmt;grandTotal+=r.total;
+    html+='<tr><td>'+(i+1)+'</td><td><b>'+r.name+'</b></td><td style="color:#555;font-size:10px">'+r.cat+'</td>'+
+      '<td><span class="badge badge-blue">'+r.unit+'</span></td>'+
+      '<td style="text-align:right">'+r.qty+'</td>'+
+      '<td style="text-align:right">'+r.rate.toFixed(2)+'</td>'+
+      '<td style="text-align:right">'+r.base.toFixed(2)+'</td>'+
+      '<td style="text-align:center">'+r.gst+'%</td>'+
+      '<td style="text-align:right">'+r.gstAmt.toFixed(2)+'</td>'+
+      '<td style="text-align:right;font-weight:700">'+r.total.toFixed(2)+'</td>'+
+      '<td class="no-print"><button class="btn btn-danger btn-sm" data-ridx="'+i+'" onclick="deleteMIRow(parseInt(this.dataset.ridx))">X</button></td></tr>';
+  }
+  document.getElementById('mi-body').innerHTML=html||'<tr><td colspan="11" style="text-align:center;padding:14px;color:#666">No items added yet. Select a medicine and click Add.</td></tr>';
+  document.getElementById('mi-item-count').textContent='('+miRows.length+' item'+(miRows.length===1?'':'s')+')';
+  document.getElementById('mi-summary').innerHTML=miRows.length?
+    'Subtotal: <b>Rs '+sub.toFixed(2)+'</b> &nbsp;|&nbsp; GST: <b>Rs '+gstTotal.toFixed(2)+'</b> &nbsp;|&nbsp; <span style="font-size:14px;color:#1a3a5c">Grand Total: <b>Rs '+grandTotal.toFixed(2)+'</b></span>':'';
+}
+function clearMI(){if(!confirm('Clear all invoice items?'))return;miRows=[];renderMITable();}
+function exportMIExcel(){
+  if(!miRows.length){alert('No items in invoice.');return;}
+  var invNum=document.getElementById('mi-number').value||'Invoice';
+  var invDate=document.getElementById('mi-date').value||'';
+  var supplier=document.getElementById('mi-supplier').value||'';
+  var supAddr=document.getElementById('mi-sup-addr').value||'';
+  var supGstin=document.getElementById('mi-sup-gstin').value||'';
+  var billTo=document.getElementById('mi-billto').value||'';
+  var notes=document.getElementById('mi-notes').value||'';
+  var wb=XLSX.utils.book_new();
+  var rows=[
+    ['JAIN AGM AYURVEDIC MEDICAL COLLEGE & HOSPITAL'],
+    ['TAX INVOICE'],
+    [],
+    ['Invoice No:',invNum,'Date:',invDate],
+    ['Supplier:',supplier,'Address:',supAddr],
+    ['Supplier GSTIN:',supGstin],
+    ['Bill To:',billTo],
+    [],
+    ['#','Medicine','Category','Unit','Qty','Rate (Rs)','Base Amount','GST %','GST Amount','Total (Rs)']
+  ];
+  var sub=0,gstT=0,grand=0,i;
+  for(i=0;i<miRows.length;i++){
+    var r=miRows[i];
+    rows.push([i+1,r.name,r.cat,r.unit,r.qty,r.rate.toFixed(2),r.base.toFixed(2),r.gst+'%',r.gstAmt.toFixed(2),r.total.toFixed(2)]);
+    sub+=r.base;gstT+=r.gstAmt;grand+=r.total;
+  }
+  rows.push([],[,'','','','','Subtotal','','',sub.toFixed(2)]);
+  rows.push([,'','','','','GST Total','','',gstT.toFixed(2)]);
+  rows.push([,'','','','','GRAND TOTAL','','',grand.toFixed(2)]);
+  if(notes)rows.push([],[,'Notes:',notes]);
+  var ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:4},{wch:32},{wch:16},{wch:10},{wch:8},{wch:12},{wch:14},{wch:8},{wch:12},{wch:14}];
+  XLSX.utils.book_append_sheet(wb,ws,'Invoice');
+  XLSX.writeFile(wb,invNum+'_'+supplier+'.xlsx');
+}
+
 function normMed(s){var r=String(s).toLowerCase();r=r.replace(/^\d+[a-z]?\.\s*/,'');r=r.replace(/[^a-z0-9]/g,' ');r=r.replace(/\s+/g,' ');return r.trim();}
 function fuzzyMed(raw){
   var n=normMed(raw);if(!n)return null;
@@ -1332,7 +1521,7 @@ function showTab(t,el){
   if(t==='po'){renderAutoPO();renderPOHistory();}
   if(t==='analytics')populateAnalyticsSelect();
   if(t==='register')renderRegister();
-  if(t==='invoices')renderInvoiceList();
+  if(t==='invoices')initManualInvoice();
 }
 function showSubTab(tabId,sub,el){
   var panels=document.querySelectorAll('#tab-'+tabId+' .subpanel'),tabs=document.querySelectorAll('#tab-'+tabId+' .subtab'),i;
