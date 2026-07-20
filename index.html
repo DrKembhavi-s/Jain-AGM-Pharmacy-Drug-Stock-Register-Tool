@@ -282,6 +282,7 @@ Enter quantities dispensed today. Leave blank or 0 for medicines not dispensed. 
 </div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
 <button class="btn btn-success" onclick="exportMIExcel()">Download Invoice (Excel)</button>
+<button class="btn btn-info" onclick="exportMIWord()">Download Invoice (Word)</button>
 <button class="btn btn-danger btn-sm" onclick="clearMI()">Clear Invoice</button>
 </div>
 </div>
@@ -1029,24 +1030,16 @@ function updateIndentCount(){
 }
 function saveIndentAndUpdateStock(){
   var type=currentIndentType,dateVal=document.getElementById('ind-date').value,indNum=document.getElementById('ind-number').value;
-  var yr=parseInt((document.getElementById('reg-year')||{value:CY}).value)||CY;
   if(!dateVal){alert('Please select a date.');return;}
   var keys=Object.keys(indentData[type]),entries=[],i;
   for(i=0;i<keys.length;i++){var e=indentData[type][keys[i]];if(e.qty&&parseInt(e.qty)>0)entries.push({name:keys[i],entry:e});}
   if(!entries.length){alert('No quantities entered.');return;}
-  var d=new Date(dateVal+'T00:00:00'),month=d.getMonth(),saved=0;
-  for(i=0;i<entries.length;i++){
-    var name=entries[i].name,entry=entries[i].entry,qty=parseInt(entry.qty)||0;if(!qty)continue;
-    var med=getMed(name),unit=med?getUnitType(name,med.cat):'unit',cat=med?med.cat:'';
-    setDisp(yr,name,month,getDisp(yr,name,month)+qty);
-    dispLog.push({id:Date.now()+'_i_'+saved,date:dateVal,yr:yr,month:month,name:name,cat:cat,qty:qty,unit:unit,source:type+' Indent',remarks:entry.remarks||''});
-    saved++;
-  }
-  sv('displog',dispLog);
+  // Save indent data only — do NOT update stock register
+  // Stock is updated only when medicines are actually procured/received
   indentMeta[type].date=dateVal;indentMeta[type].number=indNum;indentMeta[type].saved=true;
   sv('indentmeta',indentMeta);sv('indentdata',indentData);
-  closeModal('indent-modal');renderIndentPreview(type);renderRegister();renderDispLog();
-  alert(type+' Indent saved. '+saved+' medicines updated.');
+  closeModal('indent-modal');renderIndentPreview(type);
+  alert(type+' Indent saved successfully. '+entries.length+' medicines in indent.\n\nNote: Stock register is NOT updated — stock updates only when medicines are actually received/procured.');
 }
 function renderIndentPreview(type){
   var el=document.getElementById('indent-preview-'+type);if(!el)return;
@@ -1469,7 +1462,7 @@ function importDailyRegisterExcel(evt){
       for(a=hdrIdx+1;a<rows.length;a++){
         var row=rows[a];if(!row||row.length<3)continue;
         var rn=String(row[colMed]||'').trim();if(!rn||rn.toLowerCase().indexOf('total')>=0)continue;
-        var matched=fuzzyMed(rn);if(!matched){if(rn.length>1)unmatchedCount++;continue;}
+        var matched=matchMedName(rn);if(!matched){if(rn.length>1)unmatchedCount++;continue;}
         var dt=0;for(c=0;c<dayCols.length;c++){dt+=parseFloat(String(row[dayCols[c].col]||'').replace(/[^0-9.]/g,''))||0;}
         if(dt>0)batchQty[matched]=(batchQty[matched]||0)+dt;
       }
